@@ -10,8 +10,9 @@ export function Step2BodyComposition() {
   const updateUserWithGuidance = useStore(state => state.updateUserWithGuidance);
   // Combine into user object for convenience
   const user = { bodyFatPct, rmrManual };
-  
-  const [showManualRmrInput, setShowManualRmrInput] = useState(!!user.rmrManual);
+
+  // Remove local state, derive from store
+  const showManualRmrInput = !!rmrManual;
 
   const handleBodyFatChange = useCallback((bodyFatPct?: number) => {
     updateUserWithGuidance({ bodyFatPct: bodyFatPct === 0 ? undefined : bodyFatPct });
@@ -21,13 +22,12 @@ export function Step2BodyComposition() {
     updateUserWithGuidance({ rmrManual: rmr === 0 ? undefined : rmr });
   }, [updateUserWithGuidance]);
 
+  // Only clear rmrManual if it is set
   const handleToggleShowManualRmr = useCallback(() => {
-    const newShowState = !showManualRmrInput;
-    setShowManualRmrInput(newShowState);
-    if (!newShowState) {
+    if (rmrManual) {
       updateUserWithGuidance({ rmrManual: undefined });
     }
-  }, [showManualRmrInput, updateUserWithGuidance]);
+  }, [rmrManual, updateUserWithGuidance]);
 
   return (
     <StepContainer>

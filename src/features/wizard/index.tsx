@@ -1,20 +1,17 @@
 // Cleaned-up Wizard component with correct Zustand selector, safe state updates, and logging
 
-import React, { Suspense, useMemo, useCallback, useEffect } from 'react';
+import React, { Suspense, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { Button } from '../../components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { GuidanceList } from '../../components/ui/GuidanceList';
 import { Step1PersonalInfo } from './molecules/Step1PersonalInfo';
 import { Step2BodyComposition } from './molecules/Step2BodyComposition';
 import { MobileWizardLayout } from './organisms/MobileWizardLayout';
 import { MobileProgressBar } from './organisms/MobileProgressBar';
-import { MobileValidationFeedback } from './atoms/MobileValidationFeedback';
 import { StepLoadingFallback } from './atoms/StepLoadingFallback';
 import { ChunkErrorBoundary } from './atoms/ChunkErrorBoundary';
 import { useChunkPreloader, useConnectionAware } from '../../hooks/useConnectionAware';
-import { shallow } from 'zustand/shallow';
 
 const Step3ActivityGoals = React.lazy(() => import('./molecules/Step3ActivityGoals'));
 const Step4DietPreferences = React.lazy(() => import('./molecules/Step4DietPreferences'));
@@ -146,8 +143,6 @@ export default function Wizard() {
   const handleBack = useCallback(() => {
     if (step > 1) updateUi({ step: step - 1 });
   }, [step, updateUi]);
-
-  const handleScrollToTop = useCallback(() => window.scrollTo({ top: 0, behavior: 'smooth' }), []);
 
   // Full wizard UI render
   return (

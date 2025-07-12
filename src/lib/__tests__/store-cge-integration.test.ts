@@ -496,7 +496,7 @@ describe('Store CGE Integration', () => {
         { pal: 'veryActive', expectedPal: 1.9 }
       ];
       
-      testCases.forEach(({ pal, expectedPal }) => {
+      testCases.forEach(({ expectedPal }) => {
         store.setTdee(expectedPal as any, 0); // Add goalPct parameter
         expect(store.calc.derivedMetrics.palFactor).toBe(expectedPal);
       });

@@ -26,7 +26,7 @@ interface StoreState {
   updateUserWithGuidance: (userData: Partial<UserInput>) => void;
   refreshGuidance: () => void;
   recalcRmr: (formula?: string) => void;
-  setTdee: (pal: string, goalPct: number, options?: any) => void;
+  setTdee: (pal: string, goalPct: number) => void;
   setMacros: (dietStyle?: string, proteinTarget?: number) => void;
   setUser: (updates: Partial<UserInput>) => void;
   setRmr: (options?: any) => void;
@@ -206,7 +206,7 @@ export const useStore = create<StoreState>()(
       scheduleGuidanceUpdate(get);
     },
 
-    setTdee: (pal, goalPct, options) => {
+    setTdee: (pal, goalPct) => {
       set((state) => {
         // Ensure pal is a valid PalKey (string)
         let palKey: keyof typeof PAL_VALUES = 'moderate';
