@@ -1,0 +1,61 @@
+{
+  "guidance": {
+    "mealTiming": {
+      "preWorkoutMuscleGain": "Pre-workout: {protein}g protein + {carbs}g carbs {window} minutes before training",
+      "preWorkoutFatLoss": "Pre-workout: {protein}g protein + {caffeine} caffeine {timing} minutes before training",
+      "preWorkoutMaintenance": "Pre-workout: {recommendation}",
+      "postWorkoutMuscleGain": "Post-workout: {protein}g protein + {carbs}g carbs within {window} hours",
+      "postWorkoutFatLossLean": "Post-workout: {protein}g protein + {carbs}g carbs (suitable for {bodyFat}% body fat)",
+      "postWorkoutFatLossGeneral": "Post-workout: {protein}g protein, minimal carbs to preserve fat loss",
+      "postWorkoutMaintenance": "Post-workout: {recommendation}",
+      "frequencyMuscleGain": "Daily frequency: {meals} eating occasions to {reason}",
+      "frequencyFatLossIF": "Daily frequency: Consider {method} for {benefit}. {timing}",
+      "frequencyFatLossRegular": "Daily frequency: {meals} meals for {reason}",
+      "frequencyMaintenance": "Daily frequency: {meals} meals {flexibility}",
+      "earlyWorkoutOptimization": "Early workout timing: Small meal {timing} with {content}, then {postTiming}"
+    },
+    "micronutrient": {
+      "b12Supplement": "Consider {supplement} supplementation ({dosage}) due to {reason}",
+      "b12SupplementElderly": "Consider {supplement} supplementation ({dosage}) due to {reason}",
+      "b12Consider": "Consider monitoring {supplement} levels due to {reason}",
+      "ironNeeds": "Monitor iron intake for {demographic} ({amount}) due to {reason}",
+      "ironAbsorption": "Enhance iron absorption with {enhancer}. Avoid {inhibitor}: {timing}",
+      "electrolyteBalance": "Monitor {electrolytes} due to {reason}. Include {sources}",
+      "vitaminDSupport": "Consider vitamin D supplementation for {demographic} ({amount}) due to {reason}",
+      "omega3Sources": "Include {foodSources} or consider {supplement} due to {reason}",
+      "calciumSources": "Include {sources} to meet {amount} calcium needs due to {reason}",
+      "hydrationProtein": "Ensure {recommendation} due to {reason}",
+      "creatineConsider": "Consider {supplement} ({amount}) due to {reason} for {benefit}"
+    },
+    "hydration": {
+      "dailyTarget": "Target {total}L daily: {base}L base + {additional}ml for {reason}",
+      "trainingExtra": "Add {amount}ml {timing} on training days",
+      "electrolytesConsider": "Consider electrolyte replacement due to {reason}"
+    },
+    "allergySwap": {
+      "proteinAlternatives": "For {allergen} allergy, try these protein sources: {alternatives}",
+      "fatAlternatives": "For {allergen} allergy, try these fat sources: {alternatives}",
+      "carbAlternatives": "For {allergen} allergy, try these carb sources: {alternatives}",
+      "genericAdvice": "For {allergen} allergy: {advice}"
+    },
+    "lifestyle": {
+      "sleepLow": "Current sleep ({current}h) is below optimal. Target {target} hours for better {impact}",
+      "stressHigh": "High stress levels may impact {impact}. Consider stress management techniques"
+    }
+  },
+  "validation": {
+    "prot_critical": "Protein intake is critically low. Increase to meet minimum requirements",
+    "prot_low_general": "Protein intake is below recommended levels for your goals",
+    "prot_high": "Protein intake is very high. Ensure adequate kidney function",
+    "fat_too_low": "Fat intake is below essential fatty acid requirements",
+    "fat_high": "Fat intake is quite high for a non-ketogenic diet",
+    "carb_keto_break": "Carbohydrate intake exceeds ketogenic diet limits",
+    "fiber_low": "Fiber intake may be insufficient. Consider adding high-fiber foods",
+    "macro_balance_off": "Custom macro distribution is off-target. Consider auto-balance",
+    "proteinFloorRaised": "Protein has been raised to meet minimum requirements",
+    "macro_conflict": "Unable to meet macro targets with current constraints. Please adjust calories or custom macros."
+  },
+  "disclaimer": {
+    "medical": "{text}"
+  }
+} 

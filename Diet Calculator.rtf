@@ -1,0 +1,872 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 .SFNS-Bold;\f1\fnil\fcharset0 .SFNS-Regular;\f2\fnil\fcharset0 HelveticaNeue-Bold;
+\f3\fnil\fcharset0 .SFNS-RegularItalic;\f4\froman\fcharset0 TimesNewRomanPSMT;\f5\fnil\fcharset0 HelveticaNeue-BoldItalic;
+\f6\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red14\green14\blue14;}
+{\*\expandedcolortbl;;\cssrgb\c6700\c6700\c6700;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs44 \cf2 Diet and Macronutrient Calculator Specification
+\f1\b0\fs28 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs34 \cf2 Overview
+\f1\b0\fs28 \
+\
+This diet and macronutrient calculator is a comprehensive tool for personalized nutrition planning. It uses evidence-based formulas and guidelines to estimate an individual\'92s Total Daily Energy Expenditure (TDEE) and optimal macronutrient targets. Users input personal data (age, gender, body composition, etc.) and goals, and the calculator outputs daily calorie needs, macronutrient breakdowns (in both grams and % of calories), and optional micronutrient recommendations. The calculator accommodates various diets (e.g. vegan, keto, paleo) and goals (weight loss, maintenance, muscle gain), with advanced settings for manual overrides. It is adaptable for the general population as well as specific groups like athletes and older adults. Key reference equations (Mifflin-St Jeor, Cunningham, etc.) and dietary guidelines are incorporated   to ensure accuracy and credibility.\
+\
+
+\f0\b\fs34 User Inputs
+\f1\b0\fs28 \
+\
+To generate personalized results, the calculator accepts the following inputs:\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Age & Gender:
+\f1\b0  Used in metabolic equations (e.g. Mifflin-St Jeor) since basal calorie needs vary by age and sex . Age also factors into life-stage recommendations (older adults may need more protein , and women of childbearing age have unique needs).\
+	\'95	
+\f2\b Body Weight & Height:
+\f1\b0  Used for calculating resting metabolic rate if not directly provided. Height and weight (along with age and gender) feed into formulas like Mifflin-St Jeor . Weight is also used to scale macronutrient needs (e.g. protein per kg body weight).\
+	\'95	
+\f2\b Body Fat Percentage:
+\f1\b0  Allows use of body composition in calculations instead of BMI. With body fat %, the calculator can compute 
+\f2\b Lean Body Mass (LBM)
+\f1\b0  and use formulas like Katch-McArdle or Cunningham for RMR . For example, LBM = Weight \'d7 (1 \uc0\u8722  bodyFat%) . This yields a more personalized metabolic rate by accounting for muscle mass.\
+	\'95	
+\f2\b Resting Metabolic Rate (RMR):
+\f1\b0  Optionally, a user can input a measured RMR (from indirect calorimetry or fitness trackers). If provided, this value overrides calculated RMR. If not provided, the calculator will estimate RMR using a chosen equation. 
+\f2\b Basal metabolic rate (BMR)
+\f1\b0  is often used interchangeably with RMR for calculation purposes; RMR is slightly higher but in practice formulas like Mifflin-St Jeor predict an RMR/BMR value.\
+	\'95	
+\f2\b Physical Activity Level (PAL):
+\f1\b0  A factor or category describing daily activity and exercise level. The user can select an activity multiplier or input a custom value. For example: Sedentary (PAL \uc0\u8776 1.2), Lightly Active (\u8776 1.375), Moderately Active (\u8776 1.55), Very Active (\u8776 1.725), Extra Active (\u8776 1.9) . These multipliers represent how much above RMR one\'92s daily calorie burn is, based on work, exercise frequency, etc. (See 
+\f2\b TDEE Calculation
+\f1\b0  below).\
+	\'95	
+\f2\b Thermic Effect of Food (TEF):
+\f1\b0  The user may allow the calculator to apply a default value (around 10% of caloric intake ) or manually adjust this if they have a specific diet composition. TEF (diet-induced thermogenesis) is the energy expended to digest and process food. High-protein diets raise TEF (protein\'92s TEF ~20\'9630% of its calories, vs ~5\'9610% for carbs and ~0\'963% for fats ). Advanced users can tweak the TEF percentage if, for example, they follow a very high-protein regimen or have data on their personal thermogenesis.\
+	\'95	
+\f2\b Dietary Preferences:
+\f1\b0  Users can specify if they follow a particular diet pattern:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Vegan/Vegetarian:
+\f1\i0  The calculator will account for the absence of animal products. While macro targets can remain similar, the tool may suggest higher protein intake from plant sources (due to lower protein bioavailability) and flag crucial micronutrients (e.g. vitamin B\uc0\u8321 \u8322 , iron, calcium) for vegans . No animal-derived foods will be suggested.\
+	\'95	
+\f3\i Ketogenic (Keto):
+\f1\i0  A very low-carb, high-fat diet. The calculator can switch to a keto macro ratio (typically ~5\'9610% of calories from carbs, ~20% protein, ~70\'9675% fat ). It may also disable the TEF override (since a keto diet\'92s high fat content yields a slightly lower TEF).\
+	\'95	
+\f3\i Low-Carb:
+\f1\i0  A less extreme reduction in carbs than keto. Often defined as <130 g or <26% of calories from carbs . The user can choose a low-carb setting, and the calculator will allocate a higher percentage of calories to protein and fat accordingly.\
+	\'95	
+\f3\i Paleo:
+\f1\i0  Focuses on whole foods (lean meats, veggies, fruit, nuts; excluding grains, legumes, dairy, processed foods). Paleo isn\'92t a fixed macro ratio, but it tends to be high in protein, moderate in fat (emphasizing unsaturated fats), and moderate to lower in carbs . The calculator in paleo mode can default to a balanced macro spread (for example, roughly 30% protein, 30% carb, 40% fat) and highlight high-fiber, unprocessed food choices.\
+	\'95	
+\f3\i (Other diets)
+\f1\i0  can be accommodated similarly. For instance, a \'93High-Protein\'94 mode might ensure protein is at the upper recommended range; a \'93Mediterranean\'94 mode might emphasize unsaturated fats and moderate protein. The framework is flexible to include additional dietary patterns.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Allergies/Restrictions:
+\f1\b0  Users can list any food allergies or intolerances (e.g. nut allergy, gluten-free, lactose intolerance). While this doesn\'92t change macro needs, it guides the qualitative recommendations (e.g. suggesting alternative fat sources if nuts are avoided, or calcium sources beyond dairy if lactose intolerant). The calculator\'92s output can include notes or options that respect these restrictions.\
+	\'95	
+\f2\b Goal:
+\f1\b0  The user\'92s goal is critical for calorie and macro adjustments:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Weight Loss:
+\f1\i0  The calculator will propose a caloric intake below maintenance (TDEE). By default, a moderate deficit is used (commonly 500 kcal/day deficit for ~1 lb/week loss , or ~15\'9620% below TDEE). The user can adjust the aggressiveness (e.g. 250 kcal deficit for slower loss, or 750+ for faster loss, with appropriate caution). Macro distribution might emphasize protein to preserve lean mass during caloric restriction .\
+	\'95	
+\f3\i Weight Maintenance:
+\f1\i0  Calorie target equals the TDEE (no deficit or surplus). Macros are set within normal healthy ranges unless customized by the user. This is the default mode.\
+	\'95	
+\f3\i Muscle Gain (Weight Gain):
+\f1\i0  The calculator will add a caloric surplus above TDEE. A conservative surplus (typically +300\'96500 kcal/day) is recommended to promote muscle growth while minimizing fat gain . Users can specify the surplus size. Macro recommendations in a gain phase usually ensure ample protein for muscle synthesis and sufficient carbs to fuel training.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Advanced/Other Inputs:
+\f1\b0  Advanced users may input additional parameters for finer control. Examples include:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Specific 
+\f2\b exercise calories
+\f1\b0  or training routines (to precisely calculate activity energy instead of using a generic PAL factor).\
+	\'95	
+\f2\b Stress or injury factors
+\f1\b0  (for clinical use, a stress/injury factor sometimes adjusts calorie needs, but for a general tool this might be beyond scope).\
+	\'95	
+\f2\b Life-stage modifiers:
+\f1\b0  e.g. if \'93Pregnant\'94 or \'93Breastfeeding\'94 is selected, the calculator could add evidence-based calorie needs (e.g. +340 kcal in 2nd trimester, +450 kcal in 3rd trimester ; +500 kcal for lactation).\
+	\'95	
+\f2\b Micronutrient targets:
+\f1\b0  if the user wants to customize specific micronutrient goals (like higher iron intake for anemia, etc.), they could input or select these preferences for the output to consider.\
+\
+All inputs have sensible defaults or typical choices, but the user can override values (especially in an \'93advanced mode\'94). For example, if a user knows their exact measured RMR or prefers a specific macro ratio, they can manually input those values.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs34 \cf2 Calculation of TDEE (Total Daily Energy Expenditure)
+\f1\b0\fs28 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b \cf2 TDEE
+\f1\b0  represents the total calories a person burns in a day, combining basal metabolism, activity, and digestion. The calculator computes TDEE through the following steps:\
+\pard\tqr\tx260\tx420\li420\fi-420\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	1.	
+\f2\b Calculate Resting Metabolic Rate (RMR):
+\f1\b0  This is the energy expended at rest. The calculator will use one of the established equations, unless an RMR is provided by the user.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Mifflin-St Jeor Equation:
+\f1\i0  (Default) Widely regarded as one of the most accurate for general population . It requires weight, height, age, and gender:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Male:
+\f1\b0  RMR = 10 \'d7 weight (kg) + 6.25 \'d7 height (cm) \'96 5 \'d7 age (y) + 5\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b \cf2 Female:
+\f1\b0  RMR = 10 \'d7 weight (kg) + 6.25 \'d7 height (cm) \'96 5 \'d7 age (y) \'96 161\
+(This yields RMR in kcal/day .)\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f3\i \cf2 Rationale:
+\f1\i0  Mifflin-St Jeor was found to predict RMR within 10% of measured values in more individuals than other formulas . It has largely replaced the older Harris-Benedict formula from 1919.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Katch-McArdle Formula:
+\f1\i0  Uses lean body mass (LBM) if body fat % is known .\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b BMR
+\f1\b0  = 370 + 21.6 \'d7 LBM (kg) . (This formula gives basal calories based on muscle mass.)\
+	\'95	LBM is calculated from weight and body fat %. For example, a 80 kg person with 20% fat has LBM = 80 \'d7 (1 \'96 0.20) = 64 kg.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Cunningham Equation:
+\f1\i0  Another lean-mass-based formula, often used for athletes or very muscular individuals:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b RMR
+\f1\b0  = 500 + 22 \'d7 LBM (kg) . (In an example, an athlete with 58 kg LBM would have RMR \uc0\u8776  500 + 22\'d758 \u8776  1776 kcal  .)\
+	\'95	Cunningham is essentially an alternate form of Katch-McArdle with a different constant; it tends to give slightly higher values, better reflecting needs of those with above-average muscle mass.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Other Equations:
+\f1\i0  The calculator can offer Harris-Benedict as an option for comparison or for completeness. Harris-Benedict (revised 1984) has formulas similar in structure to Mifflin (different coefficients) but tends to overestimate RMR in modern populations . The user could also select the 
+\f2\b Schofield
+\f1\b0  or 
+\f2\b WHO
+\f1\b0  equations if needed, or any specialized formula (e.g. 
+\f2\b Owen
+\f1\b0  formula) if provided, but these are generally not necessary for most users.\
+	\'95	
+\f3\i Direct RMR input:
+\f1\i0  If the user enters their own RMR (from a metabolic test or fitness tracker), the calculator will skip the above formula calculations and use the given value. The interface might allow toggling \'93Use custom RMR\'94 to input this. This caters to advanced users or clinical scenarios (e.g. measured via indirect calorimetry).\
+\pard\tqr\tx260\tx420\li420\fi-420\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	2.	
+\f2\b Incorporate Physical Activity:
+\f1\b0  To go from RMR to 
+\f3\i maintenance calories
+\f1\i0 , the calculator multiplies by a 
+\f2\b Physical Activity Level (PAL)
+\f1\b0  factor. This accounts for exercise, job activity, and general lifestyle movement.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Users can choose standard activity categories, which map to multipliers as follows :\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Sedentary (PAL ~1.2):
+\f1\b0  Little to no exercise, desk job lifestyle.\
+	\'95	
+\f2\b Lightly Active (PAL ~1.375):
+\f1\b0  Light exercise 1\'963 days/week or a job with mild activity.\
+	\'95	
+\f2\b Moderately Active (PAL ~1.55):
+\f1\b0  Moderate exercise 3\'965 days/week (e.g. regular workouts) or a somewhat active job (e.g. teacher, retail).\
+	\'95	
+\f2\b Very Active (PAL ~1.725):
+\f1\b0  Hard exercise 6\'967 days/week or physical job (e.g. construction worker, full-time athlete).\
+	\'95	
+\f2\b Extra Active (PAL ~1.9):
+\f1\b0  Very intense daily training or extremely physical job, possibly twice-a-day workouts.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	The calculator multiplies RMR by the PAL factor to estimate 
+\f2\b Calories from Activity + RMR
+\f1\b0 . For example, if RMR = 1600 kcal and PAL = 1.55 (moderate), then unadjusted TDEE = 1600 \'d7 1.55 \uc0\u8776  2480 kcal.\
+	\'95	
+\f2\b Custom Activity Input:
+\f1\b0  In advanced mode, users might input exercise in terms of calories or MET-hours. In that case, the calculator could do: TDEE = RMR + Exercise Calories + Non-exercise activity (NEAT) + (then TEF). For simplicity, using PAL is an aggregate approach. If a user is, say, an athlete who knows they burn ~500 kcal/day through training, they might prefer to input that directly and use a base PAL for daily living (like 1.2) for more precision.\
+\pard\tqr\tx260\tx420\li420\fi-420\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	3.	
+\f2\b Thermic Effect of Food (TEF) Addition:
+\f1\b0  By default, PAL multipliers were empirically derived and usually 
+\f3\i already account
+\f1\i0  for an average TEF (~10%). However, to be explicit and adjustable, the calculator can calculate TEF separately:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	A common estimate is 
+\f2\b 10% of total caloric intake
+\f1\b0  . If using this method, the calculator might take the above \'93unadjusted TDEE\'94 and divide by 0.9 (or multiply by 1.1) to add 10% for TEF. For example, 2480 kcal with TEF becomes ~2755 kcal/day.\
+	\'95	Alternatively, the calculator can first compute \'93TDEE without TEF\'94 = RMR \'d7 PAL, then compute TEF = 0.1 \'d7 (RMR \'d7 PAL) and add it, yielding the same result.\
+	\'95	
+\f2\b Diet Composition Influence:
+\f1\b0  As an advanced nuance, TEF can be adjusted based on the chosen macro split:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Protein has a high thermic effect (20\'9630% of protein calories burned in processing) while carbs are ~5\'9610% and fats ~0\'963% . If a user chooses a 
+\f2\b high-protein diet
+\f1\b0 , the calculator might bump TEF slightly above 10%. For a 
+\f2\b high-fat ketogenic diet
+\f1\b0 , TEF might be a bit lower. This could be an automatic adjustment or left for the user to tweak.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	The default assumption (10%) works for most mixed diets . The interface might label this as \'93Thermic Effect of Food (TEF): assumed 10% (you can adjust if your diet is very high in protein or very low in carbs).\'94\
+\pard\tqr\tx260\tx420\li420\fi-420\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	4.	
+\f2\b Total Daily Energy Expenditure:
+\f1\b0  After accounting for RMR, activity, and TEF, the result is the maintenance calorie requirement:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b TDEE = RMR \'d7 PAL + TEF
+\f1\b0  (if TEF added on) \'96 or effectively 
+\f3\i RMR \'d7 PAL \'d7 1.1
+\f1\i0  (if 10% used). This is the calorie level to maintain current weight given the inputs.\
+	\'95	The calculator will display TDEE as a key output. It\'92s often useful to show a breakdown of TDEE components for transparency. For example: 
+\f3\i \'93Estimated RMR: 1600 kcal; Activity: +880 kcal (PAL 1.55); TEF: +250 kcal (10% of intake); 
+\f5\b TDEE: ~2730 kcal/day
+\f3\b0 .\'94
+\f1\i0  This educates users on where the calories are going (some tools even chart this).\
+	\'95	If the user provided a custom RMR, the output will note that (e.g. \'93Using user-provided RMR of X kcal\'94).\
+	\'95	
+\f2\b Special adjustments:
+\f1\b0  If relevant inputs like pregnancy were given, the additional calories (e.g. \'93+340 kcal for 2nd trimester\'94) would be added after calculating the base TDEE. Similarly for goals, as described next.\
+\pard\tqr\tx260\tx420\li420\fi-420\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	5.	
+\f2\b Adjust for Goal (Caloric Surplus or Deficit):
+\f1\b0  The TDEE above is the maintenance level. For weight goals:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	In 
+\f2\b weight loss mode
+\f1\b0 , the calculator subtracts a user-selected calorie amount or percentage. Default might be 20% below TDEE or 500 kcal less (since a 500 kcal/day deficit is roughly 0.45 kg or 1 lb weight loss per week ). The output will explicitly state the target intake and the assumed weekly weight loss. For example: 
+\f3\i \'93To lose ~0.5 kg per week, your daily target is 
+\f5\b 2200 kcal
+\f3\b0  (500 kcal below your maintenance of 2700 kcal).\'94
+\f1\i0  It may also caution not to go below a certain minimum (to ensure nutritional needs are met).\
+	\'95	In 
+\f2\b muscle gain mode
+\f1\b0 , the calculator adds calories. A conservative surplus around 300 kcal is suggested for lean gains , but the user can set this (some might choose +500 kcal for faster gains, accepting more fat gain). The output might say: 
+\f3\i \'93Bulking goal: 
+\f5\b 3200 kcal
+\f3\b0  per day (approx. +400 kcal over maintenance, aiming for +0.3\'960.5% body weight per week).\'94
+\f1\i0  The reference to expected weight gain rate (e.g. ~0.25\'960.5% of body weight weekly) helps manage expectations .\
+	\'95	
+\f2\b Maintenance goal
+\f1\b0  simply keeps calories at TDEE. The tool might still allow minor tweaks if the user wants (e.g. to slowly recomp or adjust weight by very small amounts).\
+	\'95	The calculator ensures that after applying a deficit or surplus, it recalculates the 
+\f2\b new
+\f1\b0  TEF if doing it explicitly. (Because consuming less or more changes the TEF slightly in absolute terms, though this fine point can usually be ignored for simplicity.)\
+	\'95	The result of this step is the 
+\f2\b daily calorie target
+\f1\b0  tailored to the goal.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs34 \cf2 Macronutrient Breakdown
+\f1\b0\fs28 \
+\
+Once daily calories are determined (maintenance or goal-adjusted), the calculator computes a recommended macronutrient distribution. Macronutrients \'96 carbohydrates, protein, and fats \'96 are the sources of calories and will be customized in grams and as percentages of total calories.\
+\
+Key considerations and default recommendations for macros:\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b General Balance and Ranges:
+\f1\b0  For healthy adults, standard reference ranges for macros (Acceptable Macronutrient Distribution Ranges, AMDR) are:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Carbohydrates:
+\f1\b0  45\'9665% of total calories\
+	\'95	
+\f2\b Fats:
+\f1\b0  20\'9635% of total calories\
+	\'95	
+\f2\b Protein:
+\f1\b0  10\'9635% of total calories .\
+These ranges ensure sufficient intake and chronic disease risk reduction while allowing flexibility. The calculator will keep suggested macros within these bounds unless a specific diet (keto, etc.) is chosen that intentionally goes outside (with appropriate notes/warnings).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Protein:
+\f1\b0  The calculator prioritizes protein, as it\'92s crucial for body function and particularly important for muscle maintenance/gain and satiety during weight loss.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Baseline:
+\f1\b0  The RDA minimum is ~0.8 g per kg body weight (\uc0\u8776 0.36 g/lb) for sedentary adults . However, many individuals benefit from higher protein:\
+	\'95	
+\f2\b Active Individuals/Athletes:
+\f1\b0  Suggested intake 
+\f2\b 1.2\'962.0 g/kg
+\f1\b0  body weight . Research and sports nutrition guidelines indicate intakes in this range improve muscle repair and performance adaptations, and the upper end (~2.0 g/kg) is useful during intense training or calorie deficits to preserve muscle .\
+	\'95	
+\f2\b Weight Loss:
+\f1\b0  The calculator may set protein toward the higher end (e.g. 1.5\'962.2 g/kg) when a deficit is chosen, to mitigate muscle loss. For example, a 70 kg person aiming to lose fat might be given ~130 g protein (\uc0\u8776 1.85 g/kg).\
+	\'95	
+\f2\b Muscle Gain:
+\f1\b0  Protein will also be high (though beyond ~2.2 g/kg there\'92s likely no further benefit). Typically 1.6\'962.0 g/kg is sufficient even for bodybuilding goals, as excess beyond that is not significantly used for muscle-building . The calculator might cap suggestions around 2 g/kg by default, but allow user override for personal preference.\
+	\'95	
+\f2\b Older Adults:
+\f1\b0  If age > ~60, the tool can recommend protein at least ~1.0\'961.2 g/kg , because seniors need more protein to preserve muscle mass and function (an elderly user of 70 kg might get ~70\'9684 g protein suggested instead of the 56 g that 0.8 g/kg would give). This aligns with the PROT-AGE study group recommendations for older populations .\
+	\'95	
+\f2\b Diet Preferences:
+\f1\b0 \
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Vegan:
+\f1\i0  The protein target might be set slightly higher or flagged to ensure adequacy, because plant proteins can be less bioavailable. The output will encourage a variety of protein sources (legumes, tofu, seitan, etc.) and likely mention supplementing 
+\f2\b vitamin B\uc0\u8321 \u8322 
+\f1\b0   and possibly 
+\f2\b omega-3
+\f1\b0  (flax/chia or algal oil) for vegans.\
+	\'95	
+\f3\i Keto/Paleo:
+\f1\i0  Usually inherently higher in protein. The calculator will still ensure it\'92s within safe limits. For keto, protein is moderate (too high protein can kick one out of ketosis), typically ~20% of calories  \'96 the tool might set ~1.5 g/kg and then adjust carb to the very low threshold.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Output:
+\f1\b0  Protein will be reported in grams per day and as a percentage of calories. For instance, the output might say: 
+\f3\i \'93Protein: 130 g/day (26% of calories)\'94
+\f1\i0 . It may also break that into per-meal suggestions or mention equivalents (especially for educational feedback, e.g. \'93~130 g is roughly what you\'92d get from 5 servings of lean protein like chicken breast, fish, or tofu throughout the day.\'94).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Carbohydrates:
+\f1\b0  Carbs are the body\'92s main fuel, especially for brain and athletic performance.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Baseline Range:
+\f1\b0  The calculator\'92s default for a balanced diet might assign carbs ~45\'9655% of calories (unless otherwise specified by the user). For example, on a 2500 kcal maintenance diet, 50% carbs = 1250 kcal, which is ~312 g of carbs (since 1 g carb = 4 kcal).\
+	\'95	
+\f2\b Athletic Needs:
+\f1\b0  Endurance athletes or those training frequently at high intensity often need higher carbs to replenish glycogen. The tool can accommodate this by either allowing a higher percent or by letting the user specify grams per kg. For example, an endurance athlete might target 
+\f2\b 6\'9610 g/kg
+\f1\b0  carbs on heavy training days . If the user flags themselves as an athlete or selects a high activity level, the calculator could suggest a higher carb percentage (e.g. 55\'9660% of calories, or even more on specific days if periodizing carbs).\
+	\'95	
+\f2\b Low-Carb/Keto:
+\f1\b0  If the user chose a low-carb or ketogenic preference, the calculator will drastically reduce carbs:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Keto:
+\f1\i0  Typically <50 g per day, often ~5\'9610% of calories . The output will highlight that this is extremely low (e.g. \'93Carbs: 30 g/day (8% of calories) \'96 
+\f2\b Ketogenic level
+\f1\b0 \'94) and may note the need for sufficient fiber and micronutrients from non-starchy vegetables. It might also warn that this is below the AMDR for carbs , but is intentional for ketosis.\
+	\'95	
+\f3\i Low-Carb (non-keto):
+\f1\i0  The user can define what that means for them. A common threshold is <130 g/day . The calculator might default to, say, 25% calories from carbs (which on a 2000 kcal diet is 125 g, meeting that definition). It should ensure protein and fat are increased to compensate calorie-wise.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Fiber:
+\f1\b0  The calculator can optionally include a fiber recommendation (e.g. \'93aim for 25\'9638 g of fiber per day\'94 as per general dietary guidelines). This isn\'92t a macro that contributes calories (fiber is usually counted within carbs but not fully absorbed), but it\'92s nutritionally relevant. If the user\'92s diet type might risk low fiber (like keto), the tool will definitely remind them to include fibrous low-carb veggies or supplements for gut health.\
+	\'95	
+\f2\b Output:
+\f1\b0  Carbs are shown in grams and percent. For example: 
+\f3\i \'93Carbohydrates: 300 g/day (50% of calories)\'94
+\f1\i0 . If relevant, an explanation might follow, e.g. \'93Emphasize complex carbs (whole grains, fruits, vegetables) for sustained energy and nutrients. For low-carb diets, focus on non-starchy vegetables and allowable fruits.\'94\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Fats:
+\f1\b0  Dietary fat is essential for hormone production, nutrient absorption, and satiety.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Baseline Range:
+\f1\b0  Typically set to ~20\'9635% of calories . For instance, a balanced plan might use ~30% of calories from fat. On 2500 kcal, 30% = 750 kcal, which is ~83 g of fat (9 kcal per gram of fat).\
+	\'95	
+\f2\b Lower Limit:
+\f1\b0  The calculator should enforce a minimum fat intake (e.g. no less than ~15\'9620% of calories, or ~0.5 g/kg body weight) because extremely low fat can impair absorption of fat-soluble vitamins and hormone levels. If a user tries to set fat too low, the tool could provide a warning or adjust it up.\
+	\'95	
+\f2\b High-Fat Diets:
+\f1\b0  For keto or high-fat preference, fat will be set high. In keto mode, fat might be ~70% or more of calories . The output will likely stress choosing healthy fats (unsaturated fats from fish, olive oil, nuts, avocado, etc.) to align with health recommendations, and limiting trans fats or excessive saturated fats.\
+	\'95	
+\f2\b Individual Needs:
+\f1\b0  Some people prefer higher fat for satiety or blood sugar management. The tool can accommodate, as long as it stays within user-defined preferences or at least the AMDR (unless deliberately doing keto). If an athletic user sets a very high carb, fat will by necessity be on the lower end (20% or so); the calculator balances these trade-offs automatically once one sets a macro ratio.\
+	\'95	
+\f2\b Output:
+\f1\b0  e.g. 
+\f3\i \'93Fats: 70 g/day (25% of calories)\'94
+\f1\i0 . Additional guidance might note the types of fats to emphasize: \'93include sources of omega-3 (e.g. fish, flaxseed) and limit saturated fat to <10% of calories\'94 \'96 perhaps with a footnote if detailed.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Custom Macro Ratios:
+\f1\b0  The tool will likely offer preset ratio options such as \'93Balanced\'94 (e.g. 50%C / 20%P / 30%F), \'93Zone Diet\'94 (40%C / 30%P / 30%F), \'93Low-Carb\'94 (25%C / 30%P / 45%F), \'93High-Protein\'94 (30%C / 30%P / 40%F), etc., in addition to user-defined percentages. Advanced users can manually input any percentages (the interface should ensure they sum to 100%).\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	If the user modifies one macro, the calculator can auto-adjust the others or allow the user to specify each.\
+	\'95	It might also allow setting targets in grams instead of percent (some people might say \'93I want 150 g protein\'94 and let the rest auto-balance).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Micronutrient Recommendations (Optional):
+\f1\b0  If the user toggles this feature, the calculator can output a summary of key micronutrient targets based on dietary guidelines:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	For example, it can list RDA or Adequate Intake for vitamins and minerals for the user\'92s demographic (age, sex). e.g. Calcium, Iron, Vitamin D, B12, Sodium, Potassium, etc.\
+	\'95	It could highlight ones of special concern:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	If female of reproductive age: ensure adequate iron (18 mg/day) and folate (400 \'b5g/day) are met.\
+	\'95	If vegan: emphasize vitamin B\uc0\u8321 \u8322  (supplement ~2.4 \'b5g/day) , iron (~18 mg, from plant sources + vitamin C), calcium (dark greens, fortified plant milks), and maybe iodine or zinc.\
+	\'95	If older adult: focus on calcium/vitamin D for bone health, vitamin B\uc0\u8326 /B\u8321 \u8322 , and protein as mentioned.\
+	\'95	Athletes: mention electrolytes (e.g. sodium, potassium, magnesium) if heavy sweating, and adequate hydration.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	The micronutrient suggestions would not be individually calculated by default (that requires a full dietary assessment), but the tool can provide general targets and tips. For instance, 
+\f3\i \'93Aim for at least 1000 mg calcium daily. If you are dairy-free, include fortified alternatives or leafy greens. Ensure 15 \'b5g (600 IU) of vitamin D \'96 consider supplements if sunlight exposure is low.\'94
+\f1\i0 \
+	\'95	If the tool is being very comprehensive, it might allow the user to input a micronutrient focus (say they want to ensure 30 g fiber, or monitor sodium intake, etc.) and incorporate that into the plan output.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Output Format for Macros:
+\f1\b0  The calculator will present a clear table or list of the macro targets. For example:
+\f6\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs26 \cf2 Nutrient
+\f6\b0\fs24 \cf0 	
+\f0\b\fs26 \cf2 Target (per day)
+\f6\b0\fs24 \cf0 	
+\f0\b\fs26 \cf2 % of Calories (approx)
+\f6\b0\fs24 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b\fs26 \cf2 Calories
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 2200 kcal (target for weight loss)
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 \'96
+\f6\fs24 \cf0 \
+
+\f2\b\fs26 \cf2 Protein
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 130 g
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 24%
+\f6\fs24 \cf0 \
+
+\f2\b\fs26 \cf2 Carbohydrate
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 200 g (\uc0\u8776  25 g fiber recommended)
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 36%
+\f6\fs24 \cf0 \
+
+\f2\b\fs26 \cf2 Fat
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 73 g
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 30%
+\f6\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f1\fs28 \cf2 Additionally, the output can list 
+\f3\i per-meal
+\f1\i0  suggestions if useful (e.g. if three meals, ~43 g protein per meal, etc.) or a sample daily menu breakdown following these numbers, though that veers into meal planning rather than calculation.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs34 \cf2 Customization for Dietary Preferences and Restrictions
+\f1\b0\fs28 \
+\
+One of the strengths of this calculator is adaptability. After computing basic calorie and macro targets, it adjusts recommendations to align with the user\'92s dietary choices and needs:\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Diet Pattern Modifications:
+\f1\b0  The macro distribution and qualitative advice change based on selected diet:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Vegan/Vegetarian:
+\f1\b0  Protein will be allocated with plant sources in mind. The tool might suggest slightly higher protein grams to compensate for lower bioavailability of plant protein. It will also encourage combining different plant proteins to get all essential amino acids (e.g. grains + legumes). Key micronutrient advisories: vitamin B\uc0\u8321 \u8322  (since it\'92s not present in unfortified plant foods, supplementation is recommended ), iron (plant iron is non-heme; aim for plenty of beans, lentils, spinach + vitamin C sources to aid absorption), calcium (from fortified plant milks, tofu, leafy greens), omega-3 (ALA sources like flax, chia, walnuts or algal DHA supplements). The calculator could flag these in a \'93Nutrient Notes\'94 section for vegans. For vegetarians, B\u8321 \u8322  is less an issue if dairy/eggs included, but iron can still be worth noting.\
+	\'95	
+\f2\b Keto:
+\f1\b0  The macro output is tailored to keep carbohydrates extremely low (often <50g). The tool will likely prompt the user to focus on high-fat foods: e.g. olive oil, avocado, nuts, seeds, fatty fish, etc., and moderate protein (too much protein can convert to glucose via gluconeogenesis and interfere with ketosis). It might list the carb target in net carbs (carbs minus fiber) since keto dieters track net carbs. A keto mode might also add a caution about the diet being very restrictive and not suitable for everyone (with perhaps a reference to ensure users have informed consent). The micronutrient output could note potential need for electrolytes (sodium, potassium, magnesium) as people on keto often need to consciously get enough of these, and maybe fiber supplements if vegetable intake is insufficient.\
+	\'95	
+\f2\b Low-Carb (Non-Keto):
+\f1\b0  The calculator reduces carb percentage and increases fat and protein accordingly. For example, a user choosing \'93low-carb\'94 might get a ratio like 25% carbs, 30% protein, 45% fat. The output will encourage non-starchy vegetables, and possibly higher fiber from sources like flax/chia (since grains might be limited). It will also emphasize protein and fat sources that are filling and nutritious to make up for reduced carbs.\
+	\'95	
+\f2\b Paleo:
+\f1\b0  As it\'92s more about food choices, the macro ratio might default to moderate carbs (somewhere in 20\'9635% range), high protein (25\'9630%), and the remainder fat (~40% or so) which is in line with what some paleo practitioners end up consuming  . The output will list allowed vs. non-allowed food categories rather than a strict macro rule. For example, it may say 
+\f3\i \'93Emphasize lean meats, fish, fruits, veggies, nuts, and seeds. Avoid grains, legumes, dairy, refined sugar, and processed foods.\'94
+\f1\i0  Micronutrient notes: Paleo diets often inherently provide high fiber and micronutrients if done with a variety of produce; however, calcium might be lower if no dairy, so alternative calcium sources (bone-in fish, leafy greens) could be recommended.\
+	\'95	
+\f2\b Other Diets:
+\f1\b0  The framework can be expanded. For instance:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f3\i Mediterranean:
+\f1\i0  The calculator could adjust to a higher fat (mostly unsaturated) and moderate carb/protein distribution, and encourage foods like olive oil, fish, whole grains, legumes, veggies, and moderate wine.\
+	\'95	
+\f3\i Zone Diet:
+\f1\i0  Fixed 40/30/30 ratio \'96 the user could simply input that or select it from presets.\
+	\'95	
+\f3\i Gluten-Free:
+\f1\i0  If a user marks this, it doesn\'92t change macro targets but the advice on carb sources will focus on rice, quinoa, potatoes, etc., instead of wheat.\
+	\'95	
+\f3\i Intermittent Fasting:
+\f1\i0  While IF is more about meal timing than macros, the tool could accommodate by structuring the output (like advising two larger meals instead of three, etc.) \'96 but that might be beyond scope for calculation.\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	The key is that the macro calculator\'92s outputs are 
+\f3\i contextualized
+\f1\i0  by the diet choice: it\'92s not just numbers, but also source recommendations and any necessary warnings (e.g. \'93with your very low carb intake, ensure you\'92re getting enough fiber and minerals \'96 consider a multivitamin or consult a professional\'94).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Allergies/Intolerances:
+\f1\b0  The output will avoid recommending foods that the user cannot have:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	If someone indicates 
+\f2\b nut allergy
+\f1\b0 , any generic advice about \'93nuts and seeds for healthy fats\'94 would be replaced with alternatives (olive oil, avocado, etc.). The micronutrient section might note other ways to get nutrients one might get from nuts (e.g. magnesium from greens or seeds if those are okay, omega-3 from fish or flax, etc.).\
+	\'95	
+\f2\b Lactose intolerance or dairy-free:
+\f1\b0  The tool would suggest non-dairy sources of protein and calcium (fortified plant milks, tofu, leafy greens, almonds if not allergic, etc.). If the user is okay with other animal products, it might emphasize meats, eggs, fish for protein instead of whey or milk.\
+	\'95	
+\f2\b Gluten allergy (Celiac):
+\f1\b0  Carb suggestions would highlight gluten-free options (rice, oats if certified GF, quinoa, potatoes, corn, etc.). Fiber via fruits, veg, and GF whole grains will be stressed.\
+	\'95	
+\f2\b Other:
+\f1\b0  The user could input any exclusion (shellfish, soy, etc.). The logic is that any dietary advice or sample foods in the output filter those out. This is more about how the info is presented rather than the numeric calculations. If the calculator has a recipe or meal suggestion component, it would likewise exclude those items in generating sample menus.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Goal-based Macro Tweaks:
+\f1\b0  Depending on the goal (loss/gain), the macro breakdown might be adjusted:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	For 
+\f2\b Weight Loss:
+\f1\b0  Often slightly higher protein (to preserve muscle and promote satiety) and slightly lower carbs or fats (to achieve the calorie deficit). The calculator could, for instance, bump protein to the higher end of the allowed range, and reduce either carbs or fat based on user preference. If no preference, it might reduce carbs moderately as many find that helpful for appetite control (unless the person is an endurance athlete who needs carbs). It might also emphasize high-fiber, high-volume foods to help the user feel full in a deficit.\
+	\'95	For 
+\f2\b Muscle Gain:
+\f1\b0  Protein is kept high (though beyond a point extra protein doesn\'92t increase muscle, but it\'92s often kept around ~2 g/kg). Carbs are important as they are protein-sparing and fuel heavy training \'96 so a slight tilt toward more carbs might be given if the user\'92s goal is muscle gain and they indicated regular strength training. Fats can be kept moderate. Essentially the extra calories in a surplus could be split between carbs and fats per user comfort, but many muscle-building diets go high on carbs to drive insulin and anabolic environment, unless the person prefers otherwise.\
+	\'95	For 
+\f2\b Recomposition (lose fat + gain muscle):
+\f1\b0  If a user somehow indicates this dual goal (which usually means very slow body change), the calculator might recommend a small deficit or at maintenance with high protein and strength training. This scenario might come up if someone selects both fat loss and muscle gain as goals \'96 the tool could then suggest a conservative approach (slight deficit or maintenance + heavy training).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Manual Overrides & Advanced Adjustments:
+\f1\b0  Throughout the macro planning, the user can manually tweak values:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Suppose the calculator suggests 130 g protein but the user prefers 150 g \'96 they should be able to input that, and then the calculator will reallocate calories from carbs or fats to account for the extra 20 g protein (which is ~80 kcal). The interface might have sliders or input boxes for grams or percents of each macro.\
+	\'95	The tool could also allow the user to pick which macro to prioritize when adjusting. For example, an \'93advanced mode\'94 toggle could open up fields like:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	\'93Set protein to ___ g\'94 (or as %).\
+	\'95	\'93Set fat to at least ___ g or ___%\'94 (maybe they want a minimum fat for satiety or hormone reasons).\
+	\'95	\'93Carbs will then fill the remainder of calories\'94 (by default).\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Example:
+\f1\b0  An advanced user might say \'93I want 40% carbs, 30% protein, 30% fat exactly\'94 \'96 they input those numbers and the calculator uses them (and perhaps validates the totals 100%). Another might say \'93I know I need 120 g protein and I never go below 50 g fat for health, let the rest be carbs\'94 \'96 the tool would take those as constraints and compute that maybe that ends up being ~55% carbs given their calories.\
+	\'95	Additionally, advanced users could override 
+\f2\b which equation
+\f1\b0  is used for RMR (maybe to compare results). The specification would include that as an option: e.g. a dropdown to select Mifflin vs Cunningham vs custom value. Similarly, they might override the PAL and directly input a custom daily calorie burn number if they have one from a fitness tracker.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Algorithm/Logic Flow Summary:
+\f1\b0  Bringing it together, the internal logic follows a sequence:\
+\pard\tqr\tx660\tx820\li820\fi-820\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	1.	
+\f2\b Input Phase:
+\f1\b0  Collect all user inputs (with defaults). Validate them (e.g. ensure height/weight are in plausible range, percent macros sum to 100 if custom, etc.).\
+
+\f4 	2.	
+\f2\b RMR Calculation:
+\f1\b0  If custom RMR given, use it; else compute via chosen equation (default Mifflin-St Jeor). If using a lean-mass formula and body fat% is missing, fall back to Mifflin or prompt for needed data.\
+
+\f4 	3.	
+\f2\b Base TDEE:
+\f1\b0  Multiply RMR by PAL (or add exercise calories) to get an initial daily expenditure. This is the 
+\f2\b unadjusted TDEE
+\f1\b0 .\
+
+\f4 	4.	
+\f2\b Add TEF:
+\f1\b0  Either by multiplying by ~1.1 or using a more detailed method if applicable. Obtain 
+\f2\b maintenance TDEE
+\f1\b0 .\
+
+\f4 	5.	
+\f2\b Goal Adjustment:
+\f1\b0  Modify the calorie target up or down according to goal. This finalizes the 
+\f2\b daily calorie target
+\f1\b0 .\
+
+\f4 	6.	
+\f2\b Macronutrient Allocation:
+\f1\b0  Assign protein, fat, carbs based on either defaults or user-specified ratios:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Determine protein grams (based on g/kg guidelines or percent). Calories from protein = grams \'d7 4.\
+	\'95	Determine fat grams (based on % or g/kg min). Calories from fat = grams \'d7 9.\
+	\'95	Remaining calories go to carbs. Convert to grams (\'f74).\
+	\'95	If user set all three explicitly (or via a preset), just calculate grams from percentages of the target calories.\
+	\'95	Ensure none of the macros violate general health thresholds (if so, possibly flag a warning rather than hard override, since the user might be intentionally doing so for a diet like keto).\
+\pard\tqr\tx660\tx820\li820\fi-820\sl324\slmult1\sb240\partightenfactor0
+
+\f4 \cf2 	7.	
+\f2\b Micronutrient & Additional Recommendations:
+\f1\b0  Based on the profile and diet, prepare any micronutrient targets or warnings. Also possibly generate a short advice section (like hydration needs, or reminder about exercise for weight goals, etc., though that might be beyond the core \'93calculator\'94 spec).\
+
+\f4 	8.	
+\f2\b Output Generation:
+\f1\b0  Present the results in a clear format:\
+\pard\tqr\tx900\tx1060\li1060\fi-1060\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Daily Calorie target (TDEE or adjusted) with explanation.\
+	\'95	Macronutrient targets (grams & %), often best in a small table or well-formatted list.\
+	\'95	If enabled, a list of micronutrient recommendations or any notes specific to the user\'92s inputs (diet, allergies, etc.).\
+	\'95	If applicable, a few 
+\f3\i tips or options
+\f1\i0  (like \'93to achieve this protein intake, you could eat X, Y, Z\'85\'94 but that may be optional).\
+	\'95	The output should cite the formulas used (so users see transparency: e.g. \'93Calculated via Mifflin-St Jeor equation \'94) and could reference resources (for example, linking to Dietary Guidelines or a source for the macro ranges ).\
+\
+The entire process ensures the user gets a scientifically-grounded calorie and macro plan tailored to their personal data and goals, while also allowing personalization and acknowledging different dietary approaches.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs34 \cf2 Example Input-Output Scenarios
+\f1\b0\fs28 \
+\
+To illustrate the calculator\'92s behavior, here are a few example cases with inputs and expected outputs:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs30 \cf2 Example 1: Balanced Diet, Maintenance
+\f1\b0\fs28 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b \cf2 Input:
+\f1\b0  30-year-old male, 180 cm, 75 kg, ~15% body fat, RMR not provided (so calculate), moderately active job + exercises 3x/week (PAL = 1.55), goal = maintain weight, no specific diet (general healthy diet), no allergies.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b RMR:
+\f1\b0  Using Mifflin-St Jeor:\
+RMR = 10\'d775 + 6.25\'d7180 \'96 5\'d730 + 5 = 750 + 1125 \'96 150 + 5 = 
+\f2\b 1730 kcal/day
+\f1\b0  (approximately).\
+	\'95	
+\f2\b TDEE:
+\f1\b0  Multiply by PAL 1.55 = 1730 \'d7 1.55 \uc0\u8776  
+\f2\b 2680 kcal
+\f1\b0 . Add ~10% for TEF (~268 kcal) \uc0\u8594  
+\f2\b ~2950 kcal/day
+\f1\b0  maintenance. (The calculator might output a rounded value like \'93~3000 kcal/day\'94 as TDEE.)\
+	\'95	
+\f2\b Macros:
+\f1\b0  A balanced default ratio might be selected (e.g. Carbs 50%, Protein 20%, Fat 30% of calories):\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Carbs: 50% of 2950 = 1475 kcal \uc0\u8594  
+\f2\b \uc0\u8776 370 g carbs
+\f1\b0  per day .\
+	\'95	Protein: 20% of 2950 = 590 kcal \uc0\u8594  
+\f2\b \uc0\u8776 148 g protein
+\f1\b0  per day. This is about 2.0 g/kg, a bit higher than needed for maintenance but within acceptable range (the user could dial this down if desired, say to 15% for ~111 g which is ~1.5 g/kg).\
+	\'95	Fat: 30% of 2950 = 885 kcal \uc0\u8594  
+\f2\b \uc0\u8776 98 g fat
+\f1\b0  per day.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Output:
+\f1\b0  The tool would show: \'93
+\f2\b TDEE: ~2950 kcal/day
+\f1\b0  to maintain your weight.\'94 Then something like:
+\f6\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b\fs26 \cf2 Macronutrient
+\f6\b0\fs24 \cf0 	
+\f2\b\fs26 \cf2 Daily Target
+\f6\b0\fs24 \cf0 	
+\f2\b\fs26 \cf2 Percent
+\f6\b0\fs24 \cf0 \
+
+\f2\b\fs26 \cf2 Carbohydrate
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 ~370 g
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 ~50%
+\f6\fs24 \cf0 \
+
+\f2\b\fs26 \cf2 Protein
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 ~150 g
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 ~20%
+\f6\fs24 \cf0 \
+
+\f2\b\fs26 \cf2 Fat
+\f6\b0\fs24 \cf0 	
+\f1\fs26 \cf2 ~98 g
+\f6\fs24 \cf0 	
+\f1\fs26 \cf2 ~30%
+\f6\fs24 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f1\fs28 \cf2 It might add: \'93This is a moderate, balanced diet. For 3000 kcal, example day might include ~8 servings of grains/starches, 6 servings of protein foods, 4\'965 servings of fats, plenty of vegetables, etc.\'94 (if giving a qualitative sense). Micronutrient-wise, it would assume a varied diet covers needs; it might still mention general advice like a limit on added sugars, adequate fiber (e.g. \'93aim for 30+ g fiber\'94). Because no special diet or goal constraints are present, the output is straightforward.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs30 \cf2 Example 2: Weight Loss with Higher Protein, Low-Carb Preference
+\f1\b0\fs28 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b \cf2 Input:
+\f1\b0  25-year-old female, 165 cm, 68 kg, 25% body fat. Light exercise (PAL = 1.375). Goal = lose weight (aim ~0.5 kg/week). Diet = \'93lower carb, higher protein\'94 (not keto, but user prefers fewer carbs). No allergies.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b RMR:
+\f1\b0  Mifflin-St Jeor: 10\'d768 + 6.25\'d7165 \'96 5\'d725 \'96 161 = 680 + 1031 \'96 125 \'96 161 \uc0\u8776  
+\f2\b 1425 kcal/day
+\f1\b0 .\
+	\'95	
+\f2\b TDEE (maintenance):
+\f1\b0  1425 \'d7 1.375 \uc0\u8776  1960 kcal. TEF ~10% => ~2160 kcal/day maintenance.\
+	\'95	
+\f2\b Calorie target for weight loss:
+\f1\b0  ~500 kcal deficit \uc0\u8594  
+\f2\b ~1660 kcal/day
+\f1\b0 . (The calculator might round to 1650 or so and say \'93This deficit should lead to ~0.5 kg/week fat loss . Do not go below 1200 kcal without medical supervision.\'94)\
+	\'95	
+\f2\b Macros:
+\f1\b0  The user\'92s preference is low-carb/high-protein. The tool might allocate Protein 30%, Fat 35%, Carbs 35% of calories, for example. Alternatively, it might target an absolute protein amount like 1.8 g/kg:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Target protein: 1.8 \'d7 68 \uc0\u8776  
+\f2\b 122 g protein
+\f1\b0  (which is ~488 kcal, ~30% of 1660). This high protein will help preserve lean mass during the deficit .\
+	\'95	Fat: perhaps ~35% of calories = 581 kcal \uc0\u8594  
+\f2\b ~65 g fat
+\f1\b0 . (Adequate for satiety and essential fatty acids.)\
+	\'95	Carbs: remaining ~35% = 581 kcal \uc0\u8594  
+\f2\b ~145 g carbs
+\f1\b0 . This is lower than a typical 45\'9665% but not extreme; it\'92s within a moderately low-carb range (around 35% of kcal, >130 g so not keto low) \'96 matches the user\'92s low-carb preference .\
+	\'95	Fiber goal: maybe ~25 g (the output will encourage plenty of non-starchy vegetables, given the lower total carbs).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Output:
+\f1\b0 \
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Calories: \'93
+\f2\b 1660 kcal/day
+\f1\b0  (500 kcal/day deficit from maintenance ~2160 kcal) for a healthy weight loss of ~0.5 kg/week.\'94\
+	\'95	Macros: e.g. \'93
+\f2\b Protein: 120 g (30%)
+\f1\b0 , Carbs: 145 g (35%), Fat: 65 g (35%).\'94 The output might highlight: \'93Higher protein intake (~1.8 g/kg) to support muscle maintenance during calorie deficit . Lower-carb approach (~145 g/day) chosen per your preference \'96 focus on high-fiber veggies, adequate protein, and healthy fats to keep you full.\'94\
+	\'95	It could list some suggestions: e.g. \'93Ensure each meal contains ~30\'9640 g protein (e.g. chicken breast, Greek yogurt, tofu). Use vegetables (broccoli, zucchini, salad greens) and modest portions of fruits/whole grains for carbs. Healthy fats like avocados, olive oil, and fish will help satiety. Drink plenty of water.\'94\
+	\'95	Micronutrient notes might include: iron and calcium for a young woman (especially if her diet is low in red meat or dairy due to the low-carb focus, ensure other sources or a multivitamin). If she\'92s low-carb but not excluding whole food groups entirely, a general multivitamin could be optional.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs30 \cf2 Example 3: Muscle Gain for Athlete (High-Carb)
+\f1\b0\fs28 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b \cf2 Input:
+\f1\b0  22-year-old male, 178 cm, 72 kg, 12% body fat. Very active (PAL = 1.725; he\'92s an athlete training ~6 days/week). Goal = gain muscle mass slowly. Diet = high-carb performance diet (not worried about fat, just enough protein and lots of carbs for training). No restrictions.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b RMR:
+\f1\b0  Using Cunningham due to known low body fat and athletic build: LBM = 72 * (1 \'96 0.12) \uc0\u8776  63.4 kg. RMR = 500 + 22\'d763.4 \u8776  
+\f2\b 1895 kcal
+\f1\b0  . (Mifflin might have given a bit less, around 1700, so Cunningham shows his muscular build raises RMR.)\
+	\'95	
+\f2\b TDEE (maintenance):
+\f1\b0  1895 \'d7 1.725 \uc0\u8776  3265 kcal. TEF ~10% => ~3590 kcal/day maintenance. Given his heavy training, it\'92s plausible. The calculator might output ~3600 kcal maintenance.\
+	\'95	
+\f2\b Goal surplus:
+\f1\b0  He wants to gain muscle with minimal fat, so aim +300 kcal/day. Target \uc0\u8776  
+\f2\b 3900 kcal/day
+\f1\b0 . This should yield roughly +0.25\'960.5% body weight per week gain  .\
+	\'95	
+\f2\b Macros:
+\f1\b0  As an athlete focusing on performance:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Protein: Even at maintenance, athletes need around 1.4\'961.6 g/kg typically. For muscle gain, 2.0 g/kg is plenty. At 72 kg, that\'92s ~144 g protein. That\'92s ~576 kcal (about 15% of 3900). We might go a bit higher to 20% to be sure: say 
+\f2\b ~180 g protein
+\f1\b0  (which is 720 kcal, ~18.5%).\
+	\'95	Fat: He doesn\'92t have a specific directive, but generally keep fat moderate. Maybe ~25% of calories from fat = 975 kcal \uc0\u8594  
+\f2\b ~108 g fat
+\f1\b0 . This provides essential fats without displacing carbs too much.\
+	\'95	Carbs: The remainder (~56\'9660% of calories). With 3900 kcal total, after protein and fat above, carbs get ~3900 \'96 (720+975) = 2205 kcal. That\'92s 
+\f2\b \uc0\u8776 550 g of carbs
+\f1\b0 . In g/kg, that\'92s about 7.6 g/kg, which is within recommended range for heavy training days .\
+	\'95	Such a high carb intake is purposeful for intense training recovery (e.g. if he\'92s doing two-a-days or endurance runs, etc.).\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Output:
+\f1\b0 \
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	\'93
+\f2\b Daily Calories:
+\f1\b0  ~3900 kcal (includes a ~300 kcal surplus over ~3600 kcal maintenance to support muscle gain).\'94\
+	\'95	\'93
+\f2\b Macros:
+\f1\b0  Carbs ~550 g (56%), Protein ~180 g (18%), Fat ~108 g (25%).\'94 (Those % sum ~99% due to rounding.)\
+	\'95	The tool might note: \'93This high calorie and high carbohydrate intake is designed for an athletic training schedule \'96 ensure you\'92re fueling around workouts (e.g. ~1.2g/kg carbs immediately post-workout, which for you is ~85g, to maximize recovery). Protein ~180 g/day (~2.5 g/kg of lean mass) will support muscle repair and growth. Fat is kept moderate (~25% of calories) for overall health and to avoid gastrointestinal discomfort when eating so many carbs.\'94\
+	\'95	Micronutrients: Emphasize a varied diet given the volume of food \'96 likely mention hydration and electrolytes (since with 550 g carbs he\'92s probably also needing to replenish sodium/potassium lost in sweat). Calcium, iron, etc., should be fine if he eats a broad diet, but a general tip: \'93Eat plenty of fruits/vegetables for micronutrients and antioxidants to aid recovery. Possibly consider omega-3 intake for inflammation (if not eating fish, maybe fish oil).\'94\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs30 \cf2 Example 4: Older Adult, Mild Calorie Deficit, Mediterranean Diet
+\f1\b0\fs28 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f2\b \cf2 Input:
+\f1\b0  60-year-old female, 160 cm, 70 kg, ~30% body fat. Lightly active (PAL 1.3, some walking). Goal = lose a bit of weight for health (slow rate). Diet preference = Mediterranean-style. No major health issues, but at 60 she\'92s mindful of heart health and bone health.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b RMR:
+\f1\b0  Mifflin-St Jeor: 10\'d770 + 6.25\'d7160 \'96 5\'d760 \'96 161 = 700 + 1000 \'96 300 \'96 161 = 
+\f2\b 1239 kcal/day
+\f1\b0 . (We might also consider that at 60, true RMR might be slightly lower due to loss of muscle, but this is a decent estimate.)\
+	\'95	
+\f2\b TDEE:
+\f1\b0  1239 \'d7 1.3 \uc0\u8776  1610 kcal. TEF 10% \u8594  ~1770 kcal/day maintenance.\
+	\'95	
+\f2\b Goal:
+\f1\b0  She wants a mild deficit, perhaps 15% (since drastic diets might not be suitable). 15% of 1770 ~265, so target \uc0\u8776  
+\f2\b 1500 kcal/day
+\f1\b0 . That should yield ~0.25 kg/week loss.\
+	\'95	
+\f2\b Macros:
+\f1\b0  Mediterranean diet is typically moderate-high fat (mostly healthy fats), moderate carb, moderate protein:\
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	Protein: As an older adult, aim ~1.1 g/kg  to help prevent muscle loss, even in a deficit. At 70 kg, that\'92s ~77 g. Let\'92s allocate slightly more, say 
+\f2\b 80\'9685 g protein
+\f1\b0  (~22% of 1500 kcal) to be safe. (85 g = 340 kcal).\
+	\'95	Fat: Could be ~35% of calories from mostly unsaturated sources (olive oil, nuts, fish). 35% of 1500 = 525 kcal \uc0\u8594  
+\f2\b ~58 g fat
+\f1\b0 .\
+	\'95	Carbs: remaining ~43% (~635 kcal) \uc0\u8594  
+\f2\b ~160 g carbs
+\f1\b0 . This is within a balanced range and allows plenty of fruits, whole grains, and vegetables.\
+	\'95	Fiber target: ~30 g (especially important in Mediterranean diet from veggies/legumes).\
+	\'95	Note: Mediterranean diets often include wine; the tool might caution about extra calories from alcohol if relevant, but moderate wine (1 small glass/day) could be fitted within those carbs if desired.\
+\pard\tqr\tx100\tx260\li260\fi-260\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	
+\f2\b Output:
+\f1\b0 \
+\pard\tqr\tx500\tx660\li660\fi-660\sl324\slmult1\sb240\partightenfactor0
+\cf2 	\'95	\'93
+\f2\b Calories:
+\f1\b0  1500 kcal/day (approx 15% below maintenance of ~1770 kcal for gradual weight loss).\'94\
+	\'95	\'93
+\f2\b Macronutrients:
+\f1\b0  ~160 g carbs (43%), ~85 g protein (23%), ~58 g fat (35%).\'94\
+	\'95	Explanation: \'93This is a moderately high fat, lower-carb plan in line with Mediterranean dietary patterns. Protein is set at ~1.2 g/kg to help preserve muscle at age 60 . Emphasis on healthy fats (olive oil, nuts, avocados, fish) and high-fiber carbs (vegetables, legumes, whole grains in moderation).\'94\
+	\'95	Micronutrient notes: \'93Ensure adequate calcium and vitamin D for bone health (e.g. dairy or fortified plant milk, leafy greens; consider a supplement if needed), and B12 (since absorption can decrease with age \'96 if you eat meat/fish and dairy, B12 should be fine, otherwise a supplement may help). Mediterranean diet inherently provides plenty of potassium, magnesium, and vitamins if rich in fruits, veg, and legumes \'96 keep those as staples. Limit salt to keep blood pressure in check, opt for herbs/spices for flavor.\'94\
+	\'95	The output might also suggest regular strength exercise to preserve muscle (not a diet calculator\'92s job per se, but could be a tip since older individuals benefit greatly from combining nutrition with exercise).\
+\
+Each of these examples demonstrates how the calculator adapts to different scenarios. The outputs are comprehensive: listing the personalized calorie target, the macro breakdown (with justification and context), and any special considerations (diet-type advice, micronutrient focus, etc.). Citations to equations and guidelines are included to show the user that the recommendations come from trusted scientific sources (e.g. Mifflin-St Jeor formula , AMDR guidelines , protein recommendations , etc.).\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl324\slmult1\pardirnatural\partightenfactor0
+
+\f0\b\fs34 \cf2 References and Scientific Basis
+\f1\b0\fs28 \
+\
+(All calculations and recommendations in this framework are grounded in established nutritional science. Key references include: the Mifflin-St Jeor equation for RMR , which is widely validated; the Cunningham/Katch-McArdle formulas for lean-mass-based RMR ; standard PAL multipliers for activity ; the thermic effect of food ~10% assumption  and macronutrient-specific TEF values ; Acceptable Macronutrient Distribution Ranges  from the Institute of Medicine; high-protein diet guidelines for athletes and weight management ; specialized needs for older adults ; and diet-specific macro ratios, such as ketogenic percentages  and paleo diet composition . The weight loss and gain adjustments rely on classic principles of roughly 3500 kcal per pound of fat, hence the 500 kcal/day deficit or surplus rule of thumb  . All these sources underpin the logic, ensuring the calculator\'92s output is not only personalized but also evidence-based and safe.)}

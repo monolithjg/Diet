@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diet Calculator - Offline</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .offline-container {
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .offline-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .offline-icon svg {
+      width: 40px;
+      height: 40px;
+      fill: white;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #2d3436;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #636e72;
+      margin-bottom: 2rem;
+    }
+
+    .status-section {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .status-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .status-label {
+      font-weight: 600;
+      color: #2d3436;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      animation: blink 1.5s infinite;
+    }
+
+    .status-online {
+      background: #00b894;
+    }
+
+    .status-offline {
+      background: #e17055;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+
+    .retry-button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .retry-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .features-list {
+      text-align: left;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .features-list h3 {
+      margin-bottom: 1rem;
+      color: #2d3436;
+      text-align: center;
+    }
+
+    .features-list ul {
+      list-style: none;
+    }
+
+    .features-list li {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .features-list li::before {
+      content: "✓";
+      color: #00b894;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .offline-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7L12 21.5L23.64 7zM3.53 10.95l8.47 9.64 8.47-9.64C20.04 10.62 16.81 8 12 8s-8.04 2.62-8.47 2.95z"/>
+        <path d="M12 8c-4.81 0-8.04 2.62-8.47 2.95L12 21.5l8.47-10.55C20.04 10.62 16.81 8 12 8z" opacity="0.3"/>
+      </svg>
+    </div>
+    
+    <h1>You're Offline</h1>
+    <p>Don't worry! Your Diet Calculator data is safely stored and you can continue using some features offline.</p>
+    
+    <div class="status-section">
+      <div class="status-item">
+        <span class="status-label">Network Status</span>
+        <div class="status-indicator status-offline" id="networkStatus"></div>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Cached Data</span>
+        <div class="status-indicator status-online"></div>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Service Worker</span>
+        <div class="status-indicator status-online" id="serviceWorkerStatus"></div>
+      </div>
+    </div>
+    
+    <button class="retry-button" onclick="checkConnection()" id="retryButton">
+      Check Connection
+    </button>
+    
+    <div class="features-list">
+      <h3>Available Offline</h3>
+      <ul>
+        <li>View your last calculation results</li>
+        <li>Access cached macro recommendations</li>
+        <li>Browse previously loaded guidance</li>
+        <li>Use the calculator with stored data</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Network status monitoring
+    function updateNetworkStatus() {
+      const indicator = document.getElementById('networkStatus');
+      const retryButton = document.getElementById('retryButton');
+      
+      if (navigator.onLine) {
+        indicator.className = 'status-indicator status-online';
+        retryButton.textContent = 'Go Online';
+        retryButton.disabled = false;
+      } else {
+        indicator.className = 'status-indicator status-offline';
+        retryButton.textContent = 'Check Connection';
+        retryButton.disabled = false;
+      }
+    }
+
+    // Check service worker status
+    function updateServiceWorkerStatus() {
+      const indicator = document.getElementById('serviceWorkerStatus');
+      
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        indicator.className = 'status-indicator status-online';
+      } else {
+        indicator.className = 'status-indicator status-offline';
+      }
+    }
+
+    // Check connection and potentially reload
+    async function checkConnection() {
+      const retryButton = document.getElementById('retryButton');
+      retryButton.disabled = true;
+      retryButton.textContent = 'Checking...';
+      
+      try {
+        // Try to fetch a small resource to test connectivity
+        const response = await fetch('/', { 
+          method: 'HEAD',
+          cache: 'no-cache',
+          mode: 'no-cors'
+        });
+        
+        // If we get here, we're likely back online
+        retryButton.textContent = 'Redirecting...';
+        
+        // Small delay for UX, then redirect to main app
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+        
+      } catch (error) {
+        // Still offline
+        retryButton.textContent = 'Still Offline';
+        setTimeout(() => {
+          updateNetworkStatus();
+        }, 2000);
+      }
+    }
+
+    // Listen for network status changes
+    window.addEventListener('online', () => {
+      updateNetworkStatus();
+      // Automatically try to go back online
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+    });
+
+    window.addEventListener('offline', updateNetworkStatus);
+
+    // Initialize status on load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNetworkStatus();
+      updateServiceWorkerStatus();
+    });
+
+    // Auto-check connection periodically
+    setInterval(() => {
+      if (navigator.onLine) {
+        // Quietly test if we can actually reach the server
+        fetch('/', { method: 'HEAD', cache: 'no-cache', mode: 'no-cors' })
+          .then(() => {
+            // We're truly back online, redirect
+            window.location.href = '/';
+          })
+          .catch(() => {
+            // Navigator says online but we can't reach server
+            // Keep showing offline page
+          });
+      }
+    }, 10000); // Check every 10 seconds
+  </script>
+</body>
+</html>

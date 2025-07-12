@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TDEE Calculations > golden outputs snapshot 1`] = `
+{
+  "activeHighProtein": {
+    "adjustedCalories": 3967.5,
+    "palFactor": 1.725,
+    "tdee": 3967.5,
+    "tef": 517.5,
+  },
+  "moderateBalanced": {
+    "adjustedCalories": 2813.25,
+    "palFactor": 1.55,
+    "tdee": 2813.25,
+    "tef": 255.75,
+  },
+  "sedentaryKetoSurplus": {
+    "adjustedCalories": 2069.76,
+    "palFactor": 1.2,
+    "tdee": 1881.6,
+    "tef": 201.6,
+  },
+}
+`;
