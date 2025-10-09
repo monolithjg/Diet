@@ -10,7 +10,7 @@ export function StepContainer({
   className = ''
 }: StepContainerProps) {
   return (
-    <div className={`w-full max-w-2xl mx-auto ${className}`}>
+    <div className={`w-full max-w-2xl mx-auto ${className} sm:flex sm:flex-col sm:justify-center sm:min-h-[70vh]`}>
       {children}
     </div>
   );

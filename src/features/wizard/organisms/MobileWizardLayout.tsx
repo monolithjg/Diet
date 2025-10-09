@@ -14,6 +14,7 @@ interface MobileWizardLayoutProps {
 
 export function MobileWizardLayout({
   step,
+  totalSteps = 4,
   stepTitle,
   stepDescription,
   stepContent,
@@ -53,9 +54,9 @@ export function MobileWizardLayout({
         {progressBar}
       </header>
 
-      <div className="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+      <div className="flex-1 min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
         {/* Main Content Area: Step Title, Description, Form */}
-        <main className="lg:col-span-2 bg-white shadow-lg sm:shadow-xl rounded-lg flex flex-col overflow-hidden">
+        <main className="lg:col-span-2 bg-white shadow-lg sm:shadow-xl rounded-lg flex-1 flex flex-col h-full w-full overflow-hidden">
           {/* Step Header */}
           <div className="p-4 sm:p-6 border-b border-gray-200">
             <div className="flex items-start justify-between">
@@ -96,8 +97,10 @@ export function MobileWizardLayout({
           )}
 
           {/* Step Content (Form) */}
-          <div className="flex-grow p-4 sm:p-6 overflow-y-auto">
-            {stepContent}
+          <div className="flex-grow p-4 sm:p-6 overflow-y-auto flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center h-full">
+              {stepContent}
+            </div>
           </div>
 
           {/* Step Navigation */}
@@ -167,9 +170,9 @@ export function MobileWizardLayout({
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-10">
         <div className="container mx-auto px-1">
           <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
-            <span>Step {step} of 4</span>
+            <span>Step {step} of {totalSteps}</span>
             <div className="flex space-x-1">
-              {Array.from({ length: 4 }).map((_, index) => (
+              {Array.from({ length: totalSteps }).map((_, index) => (
                 <div
                   key={index}
                   className={`w-2 h-2 rounded-full ${

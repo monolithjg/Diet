@@ -15,11 +15,19 @@ interface ConnectionState {
   connectionType: 'wifi' | 'cellular' | 'unknown';
 }
 
+const isNavigatorAvailable = typeof navigator !== 'undefined';
+
 // Feature detection for Network Information API
-const hasNetworkInfo = 'connection' in navigator || 'mozConnection' in navigator || 'webkitConnection' in navigator;
+const hasNetworkInfo = (() => {
+  if (!isNavigatorAvailable) return false;
+  const nav = navigator as any;
+  return 'connection' in nav || 'mozConnection' in nav || 'webkitConnection' in nav;
+})();
 
 function getConnection(): any {
-  return (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+  if (!isNavigatorAvailable) return null;
+  const nav = navigator as any;
+  return nav.connection || nav.mozConnection || nav.webkitConnection || null;
 }
 
 /**
@@ -28,7 +36,7 @@ function getConnection(): any {
  */
 export function useConnectionAware() {
   const [connectionState, setConnectionState] = useState<ConnectionState>({
-    isOnline: navigator.onLine,
+    isOnline: isNavigatorAvailable ? navigator.onLine : false,
     isSlowConnection: false,
     isSaveDataEnabled: false,
     networkInfo: null,
@@ -37,8 +45,20 @@ export function useConnectionAware() {
 
   // Update connection state based on Network Information API
   const updateConnectionState = useCallback(() => {
+    if (!isNavigatorAvailable) {
+      setConnectionState({
+        isOnline: false,
+        isSlowConnection: false,
+        isSaveDataEnabled: false,
+        networkInfo: null,
+        connectionType: 'unknown'
+      });
+      return;
+    }
+
     const connection = getConnection();
-    
+    const nav = navigator as Navigator;
+
     let networkInfo: NetworkInfo | null = null;
     let isSlowConnection = false;
     let isSaveDataEnabled = false;
@@ -67,13 +87,13 @@ export function useConnectionAware() {
       }
     } else {
       // Fallback: assume slow connection on mobile devices without API
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(nav.userAgent);
       isSlowConnection = isMobile;
       connectionType = isMobile ? 'cellular' : 'wifi';
     }
 
     setConnectionState({
-      isOnline: navigator.onLine,
+      isOnline: nav.onLine,
       isSlowConnection,
       isSaveDataEnabled,
       networkInfo,
@@ -83,6 +103,10 @@ export function useConnectionAware() {
 
   // Listen for connection changes
   useEffect(() => {
+    if (!isNavigatorAvailable || typeof window === 'undefined') {
+      return;
+    }
+
     updateConnectionState();
 
     const handleOnline = () => {

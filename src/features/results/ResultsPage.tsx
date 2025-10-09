@@ -1,6 +1,13 @@
 import React from 'react';
 import { useStore } from '../../lib/store';
 import { useNavigate } from 'react-router-dom';
+import type { GuidanceMessage } from '../../lib/macros';
+
+const severityClassMap: Record<GuidanceMessage['type'], string> = {
+  info: 'text-blue-600',
+  warn: 'text-yellow-600',
+  critical: 'text-red-600'
+};
 
 const ResultsPage: React.FC = () => {
   const { calc, ui } = useStore();
@@ -28,7 +35,7 @@ const ResultsPage: React.FC = () => {
         <ul>
           {ui.guidance.map((msg, index) => (
             <li key={index} className="mb-2">
-              <span className={`font-bold text-${msg.type === 'critical' ? 'red-600' : msg.type === 'warn' ? 'yellow-600' : 'blue-600'}`}>{msg.type.toUpperCase()}:</span> {msg.key}
+              <span className={`font-bold ${severityClassMap[msg.type] || 'text-blue-600'}`}>{msg.type.toUpperCase()}:</span> {msg.key}
             </li>
           ))}
         </ul>

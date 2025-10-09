@@ -97,7 +97,7 @@ export function Step1PersonalInfo() {
 
   return (
     <StepContainer>
-      <div className="space-y-6 sm:space-y-8">
+      <div className="space-y-6 sm:space-y-8 sm:flex sm:flex-col sm:justify-center sm:min-h-[70vh]">
         {/* Header */}
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
