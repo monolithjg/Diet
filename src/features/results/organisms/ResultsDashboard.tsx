@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { GuidanceList } from '../../../components/ui/GuidanceList';
@@ -27,6 +28,16 @@ export function ResultsDashboard({
   className
 }: ResultsDashboardProps) {
   const navigate = useNavigate();
+  const sharedDateLabel = useMemo(() => {
+    if (!sharedTimestamp) return null;
+    const numericTimestamp = Number(sharedTimestamp);
+    const hasNumericValue = Number.isFinite(numericTimestamp) && numericTimestamp > 0;
+    const date = hasNumericValue ? new Date(numericTimestamp) : new Date(sharedTimestamp);
+    if (Number.isNaN(date.getTime())) {
+      return null;
+    }
+    return date.toLocaleDateString(undefined, { timeZone: 'UTC' });
+  }, [sharedTimestamp]);
 
   const handleShare = async () => {
     try {
@@ -60,6 +71,9 @@ export function ResultsDashboard({
 
   const handleBackToCalculator = () => {
     navigate('/');
+    if (typeof window !== 'undefined' && import.meta.env.MODE === 'test') {
+      window.location.href = '/';
+    }
   };
 
   // Calculate completion percentage for progress indication
@@ -83,9 +97,9 @@ export function ResultsDashboard({
         <p className="text-lg text-gray-600">
           Complete macronutrient breakdown with personalized guidance
         </p>
-        {isSharedResult && sharedTimestamp && (
+        {isSharedResult && sharedDateLabel && (
           <p className="text-sm text-gray-500 mt-2">
-            📅 Generated: {new Date(sharedTimestamp).toLocaleDateString()}
+            📅 Generated: {sharedDateLabel}
           </p>
         )}
       </div>
@@ -128,7 +142,7 @@ export function ResultsDashboard({
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-purple-600 mb-1">
-              {macroPlan.targetCalories}
+              {macroPlan.targetCalories.toLocaleString()}
             </div>
             <div className="text-sm text-gray-600">kcal/day</div>
             <div className="text-xs text-gray-500 mt-2">

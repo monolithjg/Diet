@@ -1,22 +1,28 @@
 // Temporary simplified Zustand store (no persist) to debug infinite loop
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { setAutoFreeze } from 'immer';
 import type { UserInput, Goal } from '../models/UserInput';
 import type { DerivedMetrics } from '../models/DerivedMetrics';
 import type { MacroPlan } from '../models/MacroPlan';
 import { mifflinStJeor, katchMcArdle, cunningham, manualRmr } from './rmr';
 import { calcTdee, PAL_VALUES } from './tdee';
+import type { PalKey } from './tdee';
 import { allocateMacros } from './macros';
 import { generateContextualGuidance, mergeGuidance } from './cge/engine';
-import type { GuidanceMessage } from './macros';
+import type { CGEInput } from './cge/engine';
+import type { GuidanceMessage, MacroOutput } from './macros';
+
+setAutoFreeze(false);
 
 interface StoreState {
   user: UserInput;
   calc: {
     derivedMetrics: DerivedMetrics;
     macroPlan: MacroPlan;
+    macroGuidance: GuidanceMessage[];
   };
-  cgeGuidance: any[];
+  cgeGuidance: GuidanceMessage[];
   ui: typeof initialUi;
   updateUser: (userData: Partial<UserInput>) => void;
   updateCalc: (calcData: Partial<{ derivedMetrics?: DerivedMetrics; macroPlan?: MacroPlan }>) => void;
@@ -50,6 +56,7 @@ const initialCalc = {
     rmr: 0,
     formulaUsed: 'mifflin' as const,
     palFactor: 1.2,
+    palKey: 'moderate' as PalKey,
     tef: 0,
     tdee: 0
   },
@@ -61,7 +68,8 @@ const initialCalc = {
     proteinPct: 0,
     carbPct: 0,
     fatPct: 0
-  }
+  },
+  macroGuidance: [] as GuidanceMessage[]
 };
 
 const initialUi = {
@@ -70,10 +78,48 @@ const initialUi = {
   guidance: [] as GuidanceMessage[]
 };
 
-function constructCGEInput(state: any): any {
-  // Construct the CGE input directly from the relevant parts of the state
-  // Adjust as needed based on actual requirements
-  return { user: state.user, calc: state.calc };
+function createInitialUser(): UserInput {
+  return {
+    ...initialUser,
+    allergies: Array.isArray(initialUser.allergies) ? [...initialUser.allergies] : []
+  };
+}
+
+function createInitialCalc() {
+  return {
+    derivedMetrics: { ...initialCalc.derivedMetrics },
+    macroPlan: { ...initialCalc.macroPlan },
+    macroGuidance: [...initialCalc.macroGuidance]
+  };
+}
+
+function constructCGEInput(state: StoreState): CGEInput | null {
+  const { user, calc } = state;
+
+  if (!calc?.derivedMetrics || calc.derivedMetrics.tdee <= 0) {
+    return null;
+  }
+
+  const palKey = calc.derivedMetrics.palKey ?? mapActivityLevelToPal(user.activityLevel);
+  const sex = user.sex === 'male' || user.sex === 'female' ? user.sex : 'male';
+  const goal: Goal = ['loss', 'gain', 'maintain'].includes(user.goal) ? user.goal : 'maintain';
+  const macros = macroPlanToMacroOutput(calc.macroPlan, calc.macroGuidance);
+
+  return {
+    macros,
+    tdee: calc.derivedMetrics.tdee,
+    pal: palKey,
+    dietStyle: toDietKey(user.dietStyle),
+    allergies: Array.isArray(user.allergies) ? user.allergies : [],
+    goal,
+    workoutTime: user.workoutTime,
+    sleepHours: user.sleepHours,
+    stressLevel: user.stressLevel,
+    weightKg: user.weightKg,
+    sex,
+    age: user.age,
+    bodyFatPct: user.bodyFatPct
+  };
 }
 
 // Utility to coerce dietStyle to DietKey
@@ -82,8 +128,22 @@ function toDietKey(val: any): typeof validDietKeys[number] {
   return validDietKeys.includes(val) ? val : 'balanced';
 }
 
+function mapActivityLevelToPal(activityLevel: unknown): PalKey {
+  if (typeof activityLevel === 'string' && activityLevel in PAL_VALUES) {
+    return activityLevel as PalKey;
+  }
+  if (typeof activityLevel === 'number') {
+    if (activityLevel <= 1.2) return 'sedentary';
+    if (activityLevel <= 1.375) return 'light';
+    if (activityLevel <= 1.55) return 'moderate';
+    if (activityLevel <= 1.725) return 'active';
+    return 'veryActive';
+  }
+  return 'moderate';
+}
+
 // Utility to map MacroPlan to MacroOutput
-function macroPlanToMacroOutput(plan: MacroPlan): any {
+function macroPlanToMacroOutput(plan: MacroPlan, guidance: GuidanceMessage[] = []): MacroOutput {
   return {
     proteinG: typeof plan.proteinG === 'number' ? plan.proteinG : 0,
     fatG: typeof plan.fatG === 'number' ? plan.fatG : 0,
@@ -91,7 +151,7 @@ function macroPlanToMacroOutput(plan: MacroPlan): any {
     proteinPct: typeof plan.proteinPct === 'number' ? plan.proteinPct : 0,
     fatPct: typeof plan.fatPct === 'number' ? plan.fatPct : 0,
     carbPct: typeof plan.carbPct === 'number' ? plan.carbPct : 0,
-    guidance: Array.isArray(plan.notes) ? plan.notes : [] // Store does not track guidance, so pass empty array or notes
+    guidance: [...guidance]
   };
 }
 
@@ -113,24 +173,31 @@ const loadPersistedState = () => {
     const saved = localStorage.getItem('dietCalculatorState');
     if (saved) {
       const parsed = JSON.parse(saved);
+      const calcFromStorage = parsed.calc ?? {};
       return {
         user: { ...initialUser, ...parsed.user },
-        calc: { ...initialCalc, ...parsed.calc }
+        calc: {
+          derivedMetrics: { ...initialCalc.derivedMetrics, ...(calcFromStorage.derivedMetrics ?? {}) },
+          macroPlan: { ...initialCalc.macroPlan, ...(calcFromStorage.macroPlan ?? {}) },
+          macroGuidance: Array.isArray(calcFromStorage.macroGuidance)
+            ? calcFromStorage.macroGuidance
+            : [...initialCalc.macroGuidance]
+        }
       };
     }
   } catch (e) {
     console.error('Failed to load persisted state:', e);
   }
-  return { user: initialUser, calc: initialCalc };
+  return { user: createInitialUser(), calc: createInitialCalc() };
 };
 
 const { user: persistedUser, calc: persistedCalc } = loadPersistedState();
 
 export const useStore = create<StoreState>()(
   immer((set, get) => ({
-    user: persistedUser,
-    calc: persistedCalc,
-    ui: initialUi,
+    user: persistedUser ?? createInitialUser(),
+    calc: persistedCalc ?? createInitialCalc(),
+    ui: { ...initialUi },
     cgeGuidance: [],
 
     updateUser: (userData: Partial<UserInput>) => set((state: any) => { Object.assign(state.user, userData); }),
@@ -149,19 +216,36 @@ export const useStore = create<StoreState>()(
         }
       });
     },
-    resetState: () => set(() => ({ user: initialUser, calc: initialCalc, ui: { ...initialUi } })),
+    resetState: () => set(() => ({
+      user: createInitialUser(),
+      calc: createInitialCalc(),
+      ui: { ...initialUi }
+    })),
 
     generateGuidance: () => {
-      const state = get() as any;
+      const state = get();
       const cgeInput = constructCGEInput(state);
-      if (!cgeInput) return set((draft: any) => { draft.ui.guidance = []; });
+      if (!cgeInput) {
+        return set((draft: StoreState) => {
+          draft.cgeGuidance = [];
+          draft.ui.guidance = [
+            {
+              key: 'guidance.missingMacros',
+              type: 'warn',
+              category: 'validation',
+              replacements: { text: 'Macronutrient data is incomplete or missing.' }
+            }
+          ];
+        });
+      }
       try {
         const contextual = generateContextualGuidance(cgeInput);
-        const validation = state.ui.guidance.filter((g: any) => g.category === 'validation');
-        const merged = mergeGuidance(validation, contextual);
-        if (JSON.stringify(merged) !== JSON.stringify(state.ui.guidance)) {
-          set((draft: any) => { draft.ui.guidance = merged; });
-        }
+        const macroGuidance = Array.isArray(state.calc.macroGuidance) ? state.calc.macroGuidance : [];
+        const merged = mergeGuidance(macroGuidance, contextual);
+        set((draft: StoreState) => {
+          draft.cgeGuidance = contextual;
+          draft.ui.guidance = merged;
+        });
       } catch (err) {
         console.error('CGE failure:', err);
       }
@@ -171,7 +255,9 @@ export const useStore = create<StoreState>()(
       set((state: any) => { Object.assign(state.user, userData); });
       scheduleGuidanceUpdate(get);
     },
-    refreshGuidance: () => scheduleGuidanceUpdate(get),
+    refreshGuidance: () => {
+      get().generateGuidance();
+    },
 
     recalcRmr: (formula?: string) => {
       const state = get() as any;
@@ -207,64 +293,94 @@ export const useStore = create<StoreState>()(
     },
 
     setTdee: (pal, goalPct) => {
+      const snapshot = get();
+
+      let palKey: PalKey;
+      let palFactorOverride: number | undefined;
+
+      if (typeof pal === 'string' && pal in PAL_VALUES) {
+        palKey = pal as PalKey;
+      } else if (typeof pal === 'number') {
+        palFactorOverride = pal;
+        const normalizedInput = Number(pal.toFixed(3));
+        const exactMatch = (Object.entries(PAL_VALUES) as [PalKey, number][]).find(
+          ([, value]) => Number(value.toFixed(3)) === normalizedInput
+        );
+        palKey = exactMatch ? exactMatch[0] : mapActivityLevelToPal(pal);
+      } else {
+        palKey = mapActivityLevelToPal(snapshot.user.activityLevel);
+      }
+
+      const dietStyle = toDietKey(snapshot.user.dietStyle);
+      const sex = snapshot.user.sex === 'male' || snapshot.user.sex === 'female' ? snapshot.user.sex : 'male';
+      const goal: Goal = ['loss', 'gain', 'maintain'].includes(snapshot.user.goal) ? snapshot.user.goal : 'maintain';
+
+      const tdeeResult = calcTdee({
+        rmr: snapshot.calc.derivedMetrics.rmr,
+        pal: palKey,
+        dietStyle,
+        goalPct,
+        sex,
+        bodyFatPct: snapshot.user.bodyFatPct
+      });
+
+      const resolvedPalFactor = palFactorOverride ?? PAL_VALUES[palKey];
+
+      const macroResult = allocateMacros({
+        targetKcal: tdeeResult.tdee,
+        weightKg: snapshot.user.weightKg,
+        dietStyle,
+        goal
+      });
+      const {
+        guidance: macroGuidance = [],
+        carbG,
+        ...macroRest
+      } = macroResult;
+
+      const macroPlanForGuidance: MacroPlan = {
+        ...snapshot.calc.macroPlan,
+        ...macroRest,
+        carbsG: carbG,
+        targetCalories: tdeeResult.tdee
+      };
+
+      const contextualGuidance = generateContextualGuidance({
+        macros: macroPlanToMacroOutput(macroPlanForGuidance, macroGuidance),
+        tdee: tdeeResult.tdee,
+        pal: palKey,
+        dietStyle,
+        allergies: snapshot.user.allergies || [],
+        goal,
+        workoutTime: snapshot.user.workoutTime,
+        sleepHours: snapshot.user.sleepHours,
+        stressLevel: snapshot.user.stressLevel,
+        weightKg: snapshot.user.weightKg,
+        sex,
+        age: snapshot.user.age,
+        bodyFatPct: snapshot.user.bodyFatPct
+      });
+
+      const mergedGuidance = mergeGuidance(macroGuidance, contextualGuidance);
+
       set((state) => {
-        // Ensure pal is a valid PalKey (string)
-        let palKey: keyof typeof PAL_VALUES = 'moderate';
-        if (typeof pal === 'string' && pal in PAL_VALUES) {
-          palKey = pal as keyof typeof PAL_VALUES;
-        }
-        // Ensure dietStyle is a valid DietKey
-        const dietStyle = toDietKey(state.user.dietStyle);
-        // Ensure sex is 'male' or 'female'
-        const sex = state.user.sex === 'male' || state.user.sex === 'female' ? state.user.sex : 'male';
-        console.log('[Store] setTdee input:', {
-          rmr: state.calc.derivedMetrics.rmr,
-          pal: palKey,
-          dietStyle,
-          goalPct,
-          sex,
-          bodyFatPct: state.user.bodyFatPct
-        });
-        const tdeeResult = calcTdee({
-          rmr: state.calc.derivedMetrics.rmr,
-          pal: palKey,
-          dietStyle,
-          goalPct,
-          sex,
-          bodyFatPct: state.user.bodyFatPct
-        });
-        console.log('[Store] setTdee output tdeeResult:', tdeeResult);
-        state.calc.derivedMetrics.palFactor = tdeeResult.palFactor;
+        state.calc.derivedMetrics.palFactor = resolvedPalFactor;
+        state.calc.derivedMetrics.palKey = palKey;
         state.calc.derivedMetrics.tef = tdeeResult.tef;
         state.calc.derivedMetrics.tdee = tdeeResult.tdee;
-        // Recalculate macros
-        const macros = allocateMacros({
-          targetKcal: tdeeResult.tdee,
-          weightKg: state.user.weightKg,
-          dietStyle,
-          goal: ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain',
-        });
-        console.log('[Store] setTdee output macros:', macros);
-        state.calc.macroPlan = { ...state.calc.macroPlan, ...macros, carbsG: macros.carbG };
-        // Update CGE guidance
-        state.cgeGuidance = generateContextualGuidance({
-          macros: macroPlanToMacroOutput(state.calc.macroPlan),
-          tdee: state.calc.derivedMetrics.tdee,
-          pal: palKey,
-          dietStyle,
-          allergies: state.user.allergies || [],
-          goal: ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain',
-          workoutTime: state.user.workoutTime,
-          sleepHours: state.user.sleepHours,
-          stressLevel: state.user.stressLevel,
-          weightKg: state.user.weightKg,
-          sex,
-          age: state.user.age,
-          bodyFatPct: state.user.bodyFatPct
-        });
-        console.log('[Store] setTdee set derivedMetrics.tdee:', state.calc.derivedMetrics.tdee);
-        persistState(get());
+
+        state.calc.macroPlan = {
+          ...state.calc.macroPlan,
+          ...macroRest,
+          carbsG: carbG,
+          targetCalories: tdeeResult.tdee
+        };
+        state.calc.macroGuidance = macroGuidance;
+        state.cgeGuidance = contextualGuidance;
+        state.ui.guidance = mergedGuidance;
       });
+
+      persistState(get());
     },
 
     setMacros: () => {
@@ -277,33 +393,37 @@ export const useStore = create<StoreState>()(
             dietStyle,
             goal: ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain',
           });
-          const macros = allocateMacros({
+          const macroResult = allocateMacros({
             targetKcal: state.calc.derivedMetrics.tdee,
             weightKg: state.user.weightKg,
             dietStyle,
             goal: ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain',
           });
-          console.log('[Store] setMacros output macros:', macros);
+          const {
+            guidance: macroGuidance = [],
+            carbG,
+            ...macroRest
+          } = macroResult;
+          console.log('[Store] setMacros output macros:', macroResult);
           state.calc.macroPlan = { 
             ...state.calc.macroPlan, 
-            ...macros, 
-            carbsG: macros.carbG,
+            ...macroRest, 
+            carbsG: carbG,
             // set targetCalories last so it is not overwritten
             targetCalories: state.calc.derivedMetrics.tdee
           };
+          state.calc.macroGuidance = macroGuidance;
           // Update CGE guidance
-          let palKey: keyof typeof PAL_VALUES = 'moderate';
-          if (typeof state.user.activityLevel === 'string' && state.user.activityLevel in PAL_VALUES) {
-            palKey = state.user.activityLevel as keyof typeof PAL_VALUES;
-          }
+          const palKey = state.calc.derivedMetrics.palKey ?? mapActivityLevelToPal(state.user.activityLevel);
           const sex = state.user.sex === 'male' || state.user.sex === 'female' ? state.user.sex : 'male';
-          state.cgeGuidance = generateContextualGuidance({
-            macros: macroPlanToMacroOutput(state.calc.macroPlan),
+          const goal: Goal = ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain';
+          const contextualGuidance = generateContextualGuidance({
+            macros: macroPlanToMacroOutput(state.calc.macroPlan, state.calc.macroGuidance),
             tdee: state.calc.derivedMetrics.tdee,
             pal: palKey,
             dietStyle,
             allergies: state.user.allergies || [],
-            goal: ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain',
+            goal,
             workoutTime: state.user.workoutTime,
             sleepHours: state.user.sleepHours,
             stressLevel: state.user.stressLevel,
@@ -312,6 +432,8 @@ export const useStore = create<StoreState>()(
             age: state.user.age,
             bodyFatPct: state.user.bodyFatPct
           });
+          state.cgeGuidance = contextualGuidance;
+          state.ui.guidance = mergeGuidance(state.calc.macroGuidance, contextualGuidance);
           console.log('[Store] setMacros set macroPlan.targetCalories:', state.calc.macroPlan.targetCalories);
           persistState(get());
         }
@@ -341,9 +463,10 @@ export const useStore = create<StoreState>()(
     },
     reset: () => {
       set((state) => {
-        state.user = initialUser;
-        state.calc = initialCalc;
+        state.user = createInitialUser();
+        state.calc = createInitialCalc();
         state.cgeGuidance = [];
+        state.ui = { ...initialUi };
         localStorage.removeItem('dietCalculatorState');
       });
     }

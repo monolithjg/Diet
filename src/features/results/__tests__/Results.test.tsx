@@ -60,10 +60,19 @@ describe('Results', () => {
     }
   };
 
+  const mockUseStore = (state: any) => {
+    vi.mocked(useStore).mockImplementation((selector?: any) => {
+      if (typeof selector === 'function') {
+        return selector(state);
+      }
+      return state;
+    });
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     mockLocation.search = '';
-    vi.mocked(useStore).mockReturnValue(mockStoreState);
+    mockUseStore(mockStoreState);
     vi.mocked(sharing.deserializeResults).mockReturnValue(null);
   });
 
@@ -103,7 +112,7 @@ describe('Results', () => {
       ui: { guidance: [] }
     };
 
-    vi.mocked(useStore).mockReturnValue(emptyState);
+    mockUseStore(emptyState);
 
     render(<MemoryRouter><Results /></MemoryRouter>);
 
@@ -135,7 +144,7 @@ describe('Results', () => {
       ui: { guidance: [] }
     };
 
-    vi.mocked(useStore).mockReturnValue(emptyState);
+    mockUseStore(emptyState);
 
     // Mock window.location.href setter
     const mockLocationSetter = vi.fn();

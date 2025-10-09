@@ -498,7 +498,8 @@ describe('Store CGE Integration', () => {
       
       testCases.forEach(({ expectedPal }) => {
         store.setTdee(expectedPal as any, 0); // Add goalPct parameter
-        expect(store.calc.derivedMetrics.palFactor).toBe(expectedPal);
+        const currentState = useStore.getState();
+        expect(currentState.calc.derivedMetrics.palFactor).toBe(expectedPal);
       });
     });
   });
