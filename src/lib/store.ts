@@ -32,7 +32,7 @@ interface StoreState {
   updateUserWithGuidance: (userData: Partial<UserInput>) => void;
   refreshGuidance: () => void;
   recalcRmr: (formula?: string) => void;
-  setTdee: (pal: string, goalPct: number) => void;
+  setTdee: (pal: string | number, goalPct: number) => void;
   setMacros: (dietStyle?: string, proteinTarget?: number) => void;
   setUser: (updates: Partial<UserInput>) => void;
   setRmr: (options?: any) => void;
