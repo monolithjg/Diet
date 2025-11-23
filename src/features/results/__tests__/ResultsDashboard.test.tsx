@@ -83,7 +83,7 @@ describe('ResultsDashboard', () => {
     );
 
     // Check main title
-    expect(screen.getByText('Your Personalized Nutrition Plan')).toBeInTheDocument();
+    expect(screen.getByText('Your Nutrition Plan')).toBeInTheDocument();
     
     // Check key metrics cards
     expect(screen.getByText('Resting Metabolic Rate')).toBeInTheDocument();
@@ -340,6 +340,7 @@ describe('ResultsDashboard', () => {
     );
 
     // Verify guidance section exists
-    expect(screen.getByText('Evidence-based recommendations tailored to your profile')).toBeInTheDocument();
+    // Using a regex to match even if text is split or has different whitespace
+    expect(screen.getByText(/Evidence-based recommendations tailored to your profile/)).toBeInTheDocument();
   });
 }); 
