@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+void React;
 import { cn } from '../../../lib/utils';
 
 interface HelpItem {

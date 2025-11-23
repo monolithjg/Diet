@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
+void React;
 
 // Lazy-loaded route components
 const Wizard  = lazy(() => import('./features/wizard'));

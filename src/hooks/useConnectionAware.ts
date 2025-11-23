@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+void React;
 
 interface NetworkInfo {
   effectiveType: '2g' | '3g' | '4g' | 'slow-2g' | 'unknown';

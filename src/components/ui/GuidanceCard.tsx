@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+void React;
 import { Card, CardContent, CardHeader } from './Card';
 import { cn } from '../../lib/utils';
 import type { GuidanceMessage } from '../../lib/macros';
@@ -40,10 +41,10 @@ const getMessageTypeConfig = (type: GuidanceMessage['type']) => {
     default:
       return {
         icon: 'ℹ️',
-        bgColor: 'bg-gray-50 border-gray-200',
-        textColor: 'text-gray-800',
-        borderColor: 'border-gray-300',
-        badgeColor: 'bg-gray-100 text-gray-800'
+        bgColor: 'bg-neutral-50 border-neutral-200',
+        textColor: 'text-slate-900',
+        borderColor: 'border-neutral-200',
+        badgeColor: 'bg-neutral-100 text-slate-800'
       };
   }
 };
@@ -108,6 +109,7 @@ export function GuidanceCard({
       "transition-all duration-200",
       config.bgColor,
       config.borderColor,
+      "overflow-hidden",
       !isDisclaimer && "hover:shadow-md cursor-pointer"
     )}>
       <CardHeader 
@@ -164,10 +166,10 @@ export function GuidanceCard({
       
       {(isExpanded || expanded) && !isDisclaimer && (
         <CardContent className="pt-0">
-          <div className={cn("text-xs", config.textColor, "opacity-75")}>
-            <p>💡 <strong>Why this matters:</strong></p>
-            <p className="mt-1">
-              This recommendation is based on your current inputs and evidence-based nutrition guidelines.
+            <div className={cn("text-sm", config.textColor, "opacity-85")}>
+            <p className="text-sm">💡 <strong>Why this matters:</strong></p>
+            <p className="mt-1 text-sm">
+              This recommendation is based on your inputs and evidence-based nutrition guidance.
             </p>
             {message.replacements && Object.keys(message.replacements).length > 0 && (
               <details className="mt-2">

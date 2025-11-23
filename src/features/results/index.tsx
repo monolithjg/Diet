@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+// ensure React module is initialized for runtime hook usage
+void React;
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { deserializeResults, type ShareableResults } from '../../lib/sharing';

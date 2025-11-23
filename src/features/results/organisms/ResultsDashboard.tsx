@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+void React;
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { GuidanceList } from '../../../components/ui/GuidanceList';

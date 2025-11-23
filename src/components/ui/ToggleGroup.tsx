@@ -105,15 +105,15 @@ export function ToggleGroupItem({
       disabled={isDisabled}
       className={`
         inline-flex items-center justify-center px-3 py-2 text-sm font-medium
-        border border-gray-300 bg-white text-gray-700
-        hover:bg-gray-50 hover:text-gray-900
-        focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+        border border-neutral-200 bg-white text-slate-700
+        hover:bg-neutral-50 hover:text-slate-900
+        focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1
         disabled:opacity-50 disabled:cursor-not-allowed
-        transition-all duration-200 touch-manipulation
+        transition-all duration-150 touch-manipulation
         min-h-[44px] min-w-[44px]
         ${isSelected 
-          ? 'bg-primary text-white border-primary hover:bg-primary/90 hover:text-white' 
-          : 'bg-white text-gray-700 border-gray-300'
+          ? 'bg-primary-600 text-white border-primary-600 hover:bg-primary-700' 
+          : 'bg-white text-slate-700 border-neutral-200'
         }
         ${className}
       `}

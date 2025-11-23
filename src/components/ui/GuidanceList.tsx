@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+void React;
 import { GuidanceCard } from './GuidanceCard';
 import { Button } from './Button';
 import { cn } from '../../lib/utils';

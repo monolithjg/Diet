@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+void React;
 import type { UnitSystem } from '../hooks/useUnitConversion';
 
 interface UnitToggleProps {
