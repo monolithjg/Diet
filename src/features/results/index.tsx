@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // ensure React module is initialized for runtime hook usage
 void React;
-import { useNavigate } from 'react-router-dom';
+// Navigation hooks can fail during certain dev pre-bundle states; use a safe history fallback
 import { useStore } from '../../lib/store';
 import { deserializeResults, type ShareableResults } from '../../lib/sharing';
 import { ResultsDashboard } from './organisms/ResultsDashboard';
@@ -10,7 +10,14 @@ import { ResultsDashboard } from './organisms/ResultsDashboard';
  * Enhanced Results component that displays comprehensive nutrition dashboard with CGE guidance
  */
 export default function Results() {
-  const navigate = useNavigate();
+  const navigateTo = (path: string) => {
+    try {
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch (e) {
+      window.location.href = path;
+    }
+  };
   const { derivedMetrics, macroPlan } = useStore(state => state.calc);
   const { guidance } = useStore(state => state.ui);
   const [sharedResults, setSharedResults] = useState<ShareableResults | null>(null);
@@ -52,7 +59,7 @@ export default function Results() {
           </p>
           <button
             onClick={() => {
-              navigate('/');
+              navigateTo('/');
               if (typeof window !== 'undefined' && import.meta.env.MODE === 'test') {
                 window.location.href = '/';
               }

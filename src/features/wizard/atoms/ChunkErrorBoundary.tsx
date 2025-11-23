@@ -1,5 +1,5 @@
 import React, { Component, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+// Avoid using router hook here; use safe history fallback for navigation
 import { cn } from '../../../lib/utils';
 
 interface ChunkErrorBoundaryState {
@@ -117,10 +117,17 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
 
 // Functional wrapper component that provides navigation
 export function ChunkErrorBoundary(props: Omit<ChunkErrorBoundaryProps, 'onNavigateHome'>) {
-  const navigate = useNavigate();
-  
+  const navigateTo = (path: string) => {
+    try {
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch (e) {
+      window.location.href = path;
+    }
+  };
+
   const handleNavigateHome = () => {
-    navigate('/');
+    navigateTo('/');
   };
 
   return (
@@ -129,4 +136,4 @@ export function ChunkErrorBoundary(props: Omit<ChunkErrorBoundaryProps, 'onNavig
       onNavigateHome={handleNavigateHome}
     />
   );
-} 
+}

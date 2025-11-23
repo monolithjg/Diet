@@ -56,88 +56,80 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
   };
 
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Main Distribution Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Macronutrient Distribution</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Pie Chart */}
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend 
-                    formatter={(value, entry: any) => (
-                      <span style={{ color: entry.color }}>{value}</span>
-                    )}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+    <Card className={cn(className)}>
+      <CardHeader>
+        <CardTitle>Macronutrient Distribution</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Pie Chart */}
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend 
+                  formatter={(value, entry: any) => (
+                    <span style={{ color: entry.color }}>{value}</span>
+                  )}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Detailed Breakdown */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">
+                {macroPlan.targetCalories}
+              </div>
+              <div className="text-sm text-gray-600">
+                Total Daily Calories
+              </div>
             </div>
 
-            {/* Detailed Breakdown */}
-            <div className="space-y-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">
-                  {macroPlan.targetCalories}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Total Daily Calories
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {pieData.map((macro) => (
-                  <div 
-                    key={macro.name}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div 
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: macro.color }}
-                      />
-                      <span className="font-medium">{macro.name}</span>
+            <div className="space-y-3">
+              {pieData.map((macro) => (
+                <div 
+                  key={macro.name}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div 
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: macro.color }}
+                    />
+                    <span className="font-medium">{macro.name}</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold">
+                      {Math.round(macro.grams)}g
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold">
-                        {Math.round(macro.grams)}g
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {macro.value}%
-                      </div>
+                    <div className="text-sm text-gray-600">
+                      {macro.value}%
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Individual Macro Rings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Daily Targets</CardTitle>
-        </CardHeader>
-        <CardContent>
+        {/* Daily Targets + Calorie Breakdown */}
+        <div className="mt-6 pt-6 border-t">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <MacroRing
               value={macroPlan.proteinG}
@@ -188,8 +180,8 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 } 

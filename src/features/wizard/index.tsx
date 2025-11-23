@@ -1,7 +1,6 @@
 // Cleaned-up Wizard component with correct Zustand selector, safe state updates, and logging
 
 import React, { Suspense, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { Button } from '../../components/ui/Button';
 import { GuidanceList } from '../../components/ui/GuidanceList';
@@ -49,7 +48,16 @@ export default function Wizard() {
 
   const userValidationData = { age, sex, weightKg, heightCm, activityLevel, goal };
 
-  const navigate = useNavigate();
+  // Safer navigation fallback: use history API instead of router hook
+  const navigateTo = (path: string) => {
+    try {
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch (e) {
+      // Fallback to full navigation if pushState fails
+      window.location.href = path;
+    }
+  };
   useChunkPreloader();
   useConnectionAware();
 
@@ -135,10 +143,10 @@ export default function Wizard() {
       setTdee(palKey, userGoal === 'loss' ? -0.2 : userGoal === 'gain' ? 0.15 : 0);
       setMacros();
       setTimeout(() => {
-        navigate('/results');
+        navigateTo('/results');
       }, 100); // Delay navigation to allow state to update
     }
-  }, [step, updateUi, navigate, recalcRmr, setTdee, setMacros, palKey, userGoal]);
+  }, [step, updateUi, navigateTo, recalcRmr, setTdee, setMacros, palKey, userGoal]);
 
   const handleBack = useCallback(() => {
     if (step > 1) updateUi({ step: step - 1 });

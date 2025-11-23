@@ -6,7 +6,7 @@ import { GuidanceList } from '../../../components/ui/GuidanceList';
 import { MacroVisualizer } from './MacroVisualizer';
 import { ActionPlan } from './ActionPlan';
 import { cn } from '../../../lib/utils';
-import { useNavigate } from 'react-router-dom';
+// Avoid direct react-router hooks to keep runtime resilient during dev pre-bundling
 import type { DerivedMetrics } from '../../../models/DerivedMetrics';
 import type { MacroPlan } from '../../../models/MacroPlan';
 import type { GuidanceMessage } from '../../../lib/macros';
@@ -28,7 +28,14 @@ export function ResultsDashboard({
   sharedTimestamp,
   className
 }: ResultsDashboardProps) {
-  const navigate = useNavigate();
+  const navigateTo = (path: string) => {
+    try {
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch (e) {
+      window.location.href = path;
+    }
+  };
   const sharedDateLabel = useMemo(() => {
     if (!sharedTimestamp) return null;
     const numericTimestamp = Number(sharedTimestamp);
@@ -71,7 +78,7 @@ export function ResultsDashboard({
   };
 
   const handleBackToCalculator = () => {
-    navigate('/');
+    navigateTo('/');
     if (typeof window !== 'undefined' && import.meta.env.MODE === 'test') {
       window.location.href = '/';
     }
@@ -89,13 +96,13 @@ export function ResultsDashboard({
   };
 
   return (
-    <div className={cn("space-y-8", className)}>
+    <div className={cn("space-y-8 max-w-7xl mx-auto px-4 lg:px-6", className)}>
       {/* Header Section */}
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Your Personalized Nutrition Plan
+        <h1 className="text-5xl font-extrabold text-gray-900 mb-2">
+          Your Nutrition Plan
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-base text-gray-600 max-w-2xl mx-auto">
           Complete macronutrient breakdown with personalized guidance
         </p>
         {isSharedResult && sharedDateLabel && (
@@ -108,11 +115,11 @@ export function ResultsDashboard({
       {/* Key Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Resting Metabolic Rate</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-sm text-gray-500">Resting Metabolic Rate</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary mb-1">
+            <div className="text-4xl font-bold text-gray-900 mb-1">
               {derivedMetrics.rmr}
             </div>
             <div className="text-sm text-gray-600">kcal/day</div>
@@ -123,11 +130,11 @@ export function ResultsDashboard({
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Total Daily Expenditure</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-sm text-gray-500">Total Daily Expenditure</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-600 mb-1">
+            <div className="text-4xl font-bold text-primary mb-1">
               {derivedMetrics.tdee}
             </div>
             <div className="text-sm text-gray-600">kcal/day</div>
@@ -138,11 +145,11 @@ export function ResultsDashboard({
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Target Calories</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-sm text-gray-500">Target Calories</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-600 mb-1">
+            <div className="text-4xl font-bold text-primary mb-1">
               {macroPlan.targetCalories.toLocaleString()}
             </div>
             <div className="text-sm text-gray-600">kcal/day</div>
