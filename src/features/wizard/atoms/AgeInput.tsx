@@ -13,17 +13,17 @@ interface AgeInputProps {
   useDebouncing?: boolean; // Flag to enable debounced store updates
 }
 
-export const AgeInput = React.memo(function AgeInput({ 
-  value, 
-  onChange, 
-  error, 
-  disabled = false, 
+export const AgeInput = React.memo(function AgeInput({
+  value,
+  onChange,
+  error,
+  disabled = false,
   required = true,
   useDebouncing = true
 }: AgeInputProps) {
   const [localValue, setLocalValue] = useState(value > 0 ? value.toString() : '');
   const [touched, setTouched] = useState(false);
-  
+
   // Use debounced store for better mobile performance
   const { debouncedUpdate, flushUpdates } = useTypingStore();
 
@@ -42,16 +42,16 @@ export const AgeInput = React.memo(function AgeInput({
     if (required && (!ageStr || ageStr.trim() === '')) {
       return 'Age is required';
     }
-    
+
     const age = parseInt(ageStr);
     if (isNaN(age)) {
       return 'Please enter a valid age';
     }
-    
+
     if (age < ValidationRanges.age.min || age > ValidationRanges.age.max) {
       return `Age must be between ${ValidationRanges.age.min} and ${ValidationRanges.age.max} years`;
     }
-    
+
     return undefined;
   }, [required]);
 
@@ -68,7 +68,7 @@ export const AgeInput = React.memo(function AgeInput({
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setLocalValue(newValue);
-    
+
     // Only validate and update if value is valid
     const validationError = validateAge(newValue);
     if (!validationError && newValue.trim() !== '') {
@@ -79,12 +79,12 @@ export const AgeInput = React.memo(function AgeInput({
 
   const handleBlur = useCallback(() => {
     setTouched(true);
-    
+
     // Flush any pending debounced updates on blur for immediate feedback
     if (useDebouncing) {
       flushUpdates();
     }
-    
+
     const validationError = validateAge(localValue);
     if (!validationError && localValue.trim() !== '') {
       const age = parseInt(localValue);
@@ -97,13 +97,13 @@ export const AgeInput = React.memo(function AgeInput({
 
   return (
     <div className="space-y-2">
-      <Label 
+      <Label
         htmlFor="age-input"
-        className={`block text-sm font-medium ${hasError ? 'text-red-600' : 'text-gray-700'}`}
+        className={`block text-sm font-medium ${hasError ? 'text-red-500' : 'text-foreground'}`}
       >
         Age {required && <span className="text-red-500">*</span>}
       </Label>
-      
+
       <div className="relative">
         <Input
           id="age-input"
@@ -118,23 +118,24 @@ export const AgeInput = React.memo(function AgeInput({
           min={ValidationRanges.age.min}
           max={ValidationRanges.age.max}
           className={`
-            w-full text-base
-            ${hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
-            ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+            w-full text-base pr-12 bg-surface border-border
+            focus:ring-2 focus:ring-primary/20 focus:border-primary
+            ${hasError ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
+            ${disabled ? 'bg-secondary opacity-50 cursor-not-allowed' : ''}
           `}
           aria-invalid={hasError}
           aria-describedby={hasError ? 'age-error' : undefined}
         />
-        
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
-          <span className="text-sm">years</span>
+
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <span className="text-sm text-muted">years</span>
         </div>
       </div>
-      
+
       {hasError && (
-        <p 
+        <p
           id="age-error"
-          className="text-sm text-red-600 flex items-center"
+          className="text-sm text-red-500 flex items-center animate-fade-in"
           role="alert"
           aria-live="polite"
         >

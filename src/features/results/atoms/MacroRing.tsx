@@ -10,13 +10,13 @@ interface MacroRingProps {
   className?: string;
 }
 
-export function MacroRing({ 
-  value, 
-  label, 
-  unit, 
-  color, 
-  percentage, 
-  className 
+export function MacroRing({
+  value,
+  label,
+  unit,
+  color,
+  percentage,
+  className
 }: MacroRingProps) {
   const data = [
     { name: 'value', value: percentage },
@@ -27,19 +27,20 @@ export function MacroRing({
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
-      <div className="relative w-24 h-24">
+      <div className="relative w-28 h-28">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={30}
-              outerRadius={40}
+              innerRadius={36}
+              outerRadius={48}
               startAngle={90}
               endAngle={-270}
               dataKey="value"
               stroke="none"
+              cornerRadius={4}
             >
               {data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index]} />
@@ -47,23 +48,23 @@ export function MacroRing({
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        
+
         {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="text-lg font-bold text-gray-900">
+          <div className="text-xl font-bold text-foreground">
             {Math.round(value)}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs font-medium text-muted uppercase tracking-wider">
             {unit}
           </div>
         </div>
       </div>
-      
-      <div className="mt-2 text-center">
-        <div className="text-sm font-medium text-gray-900">
+
+      <div className="mt-3 text-center">
+        <div className="text-sm font-semibold text-foreground">
           {label}
         </div>
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-muted mt-0.5">
           {percentage}% of calories
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { ActionItem } from '../atoms/ActionItem';
 import type { GuidanceMessage } from '../../../lib/macros';
+import { cn } from '../../../lib/utils';
 
 interface ActionPlanProps {
   guidance: GuidanceMessage[];
@@ -21,8 +22,8 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
     // Skip disclaimer messages in action plan
     if (message.key.includes('disclaimer')) return;
 
-    const priority = message.type === 'critical' ? 'high' : 
-                    message.type === 'warn' ? 'medium' : 'low';
+    const priority = message.type === 'critical' ? 'high' :
+      message.type === 'warn' ? 'medium' : 'low';
 
     // Meal timing actions
     if (message.category === 'mealTiming') {
@@ -136,7 +137,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
 
 export function ActionPlan({ guidance, className }: ActionPlanProps) {
   const actionItems = createActionItems(guidance);
-  
+
   // Group actions by category
   const actionsByCategory = actionItems.reduce((acc, action) => {
     if (!acc[action.category]) {
@@ -179,21 +180,21 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <span className="mr-2">🎯</span>
+    <Card className={cn("border-border bg-surface shadow-sm h-full flex flex-col", className)}>
+      <CardHeader className="border-b border-border/50 bg-secondary/30">
+        <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+          <span className="mr-2 text-xl">🎯</span>
           Your Action Plan
         </CardTitle>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-muted mt-1">
           Personalized recommendations based on your nutrition profile
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-8 p-6 flex-grow">
         {sortedCategories.map(([category, actions]) => (
-          <div key={category}>
-            <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+          <div key={category} className="animate-slide-up">
+            <h4 className="text-xs font-bold text-muted uppercase tracking-wider mb-4 flex items-center">
+              <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
               {category}
             </h4>
             <div className="space-y-3">
@@ -211,22 +212,22 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
         ))}
 
         {/* Summary */}
-        <div className="pt-4 border-t">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">
+        <div className="pt-6 border-t border-border mt-auto">
+          <div className="flex items-center justify-between text-xs font-medium text-muted">
+            <span>
               Total recommendations: {actionItems.length}
             </span>
             <div className="flex items-center space-x-4">
               <span className="flex items-center">
-                <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5"></div>
                 High: {actionItems.filter(a => a.priority === 'high').length}
               </span>
               <span className="flex items-center">
-                <div className="w-2 h-2 bg-amber-500 rounded-full mr-1"></div>
+                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></div>
                 Medium: {actionItems.filter(a => a.priority === 'medium').length}
               </span>
               <span className="flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></div>
                 Low: {actionItems.filter(a => a.priority === 'low').length}
               </span>
             </div>

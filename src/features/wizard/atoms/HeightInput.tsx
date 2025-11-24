@@ -14,21 +14,21 @@ interface HeightInputProps {
   required?: boolean;
 }
 
-export function HeightInput({ 
-  value, 
-  onChange, 
+export function HeightInput({
+  value,
+  onChange,
   unit,
-  error, 
-  disabled = false, 
-  required = true 
+  error,
+  disabled = false,
+  required = true
 }: HeightInputProps) {
-  const { 
-    convertHeight, 
-    parseHeightInput, 
-    formatHeightPlaceholder, 
-    getHeightRange 
+  const {
+    convertHeight,
+    parseHeightInput,
+    formatHeightPlaceholder,
+    getHeightRange
   } = useUnitConversion();
-  
+
   const [localValue, setLocalValue] = useState('');
   const [touched, setTouched] = useState(false);
 
@@ -47,17 +47,17 @@ export function HeightInput({
     if (required && (!inputStr || inputStr.trim() === '')) {
       return 'Height is required';
     }
-    
+
     if (!inputStr || inputStr.trim() === '') {
       return undefined; // Allow empty for optional fields
     }
-    
+
     const heightCm = parseHeightInput(inputStr, currentUnit);
-    
+
     if (isNaN(heightCm) || heightCm <= 0) {
       return 'Please enter a valid height';
     }
-    
+
     if (heightCm < ValidationRanges.heightCm.min || heightCm > ValidationRanges.heightCm.max) {
       const range = getHeightRange(currentUnit);
       if (currentUnit === 'metric') {
@@ -66,14 +66,14 @@ export function HeightInput({
         return `Height must be between ${range.min} and ${range.max}`;
       }
     }
-    
+
     return undefined;
   }, [required, parseHeightInput, getHeightRange]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setLocalValue(newValue);
-    
+
     // Only validate and update parent if value is valid
     const validationError = validateHeight(newValue, unit);
     if (!validationError && newValue.trim() !== '') {
@@ -87,7 +87,7 @@ export function HeightInput({
   const handleBlur = useCallback(() => {
     setTouched(true);
     const validationError = validateHeight(localValue, unit);
-    
+
     if (!validationError && localValue.trim() !== '') {
       const heightCm = parseHeightInput(localValue, unit);
       if (heightCm > 0) {
@@ -102,13 +102,13 @@ export function HeightInput({
 
   return (
     <div className="space-y-2">
-      <Label 
+      <Label
         htmlFor="height-input"
-        className={`block text-sm font-medium ${hasError ? 'text-red-600' : 'text-gray-700'}`}
+        className={`block text-sm font-medium ${hasError ? 'text-red-500' : 'text-foreground'}`}
       >
         Height {required && <span className="text-red-500">*</span>}
       </Label>
-      
+
       <div className="relative">
         <Input
           id="height-input"
@@ -120,31 +120,32 @@ export function HeightInput({
           disabled={disabled}
           placeholder={formatHeightPlaceholder(unit)}
           className={`
-            w-full text-base pr-12
-            ${hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
-            ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+            w-full text-base pr-12 bg-surface border-border
+            focus:ring-2 focus:ring-primary/20 focus:border-primary
+            ${hasError ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
+            ${disabled ? 'bg-secondary opacity-50 cursor-not-allowed' : ''}
           `}
           aria-invalid={hasError}
           aria-describedby={hasError ? 'height-error' : 'height-help'}
         />
-        
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
-          <span className="text-sm font-medium">{range.unit}</span>
+
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <span className="text-sm font-medium text-muted">{range.unit}</span>
         </div>
       </div>
-      
-      <div id="height-help" className="text-xs text-gray-500">
+
+      <div id="height-help" className="text-xs text-muted">
         {unit === 'metric' ? (
           <>Range: {range.min}-{range.max} {range.unit}</>
         ) : (
           <>Range: {range.min} to {range.max} (e.g., "5'9" or "5 9")</>
         )}
       </div>
-      
+
       {hasError && (
-        <p 
+        <p
           id="height-error"
-          className="text-sm text-red-600 flex items-center"
+          className="text-sm text-red-500 flex items-center animate-fade-in"
           role="alert"
           aria-live="polite"
         >

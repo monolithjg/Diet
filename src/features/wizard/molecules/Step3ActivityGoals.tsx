@@ -82,174 +82,162 @@ function Step3ActivityGoals() {
 
   return (
     <StepContainer>
-      <div className="space-y-6 sm:space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Activity & Goals</h2>
-          <p className="text-sm text-gray-600">
-            Help us understand your physical activity and what you aim to achieve.
-          </p>
-        </div>
+      <div className="space-y-8">
+        {/* Activity Level */}
+        <section className="space-y-4 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <Label className="text-lg font-semibold text-foreground">
+              Physical Activity Level
+            </Label>
+            <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+              PAL: {user.activityLevel.toFixed(2)}
+            </span>
+          </div>
 
-        {/* Activity Level - Enhanced for Mobile */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <Label htmlFor="activity-level-slider" className="block text-sm font-medium text-gray-700 mb-1">
-            Physical Activity Level
-          </Label>
-          <p className="text-xs text-gray-500 mb-4 sm:mb-3">
-            {currentActivityLevelDetails?.description || 'Select your typical activity level'}
-          </p>
-          
-          {/* Enhanced Slider for Mobile */}
-          <div className="px-2 py-1">
-            <Slider
-              id="activity-level-slider"
-              min={1.2}
-              max={2.5}
-              step={0.01}
-              value={[user.activityLevel || 1.2]}
-              onValueChange={handleActivityLevelChange}
-              className="w-full"
-              aria-label={`Activity Level: ${currentActivityLevelDetails?.name}`}
-            />
-          </div>
-          
-          {/* Mobile-optimized labels */}
-          <div className="flex justify-between text-xs text-gray-500 mt-3 px-1">
-            <span className="text-center w-16">Sedentary</span>
-            <span className="text-center w-16 hidden sm:block">Light</span>
-            <span className="text-center w-16">Moderate</span>
-            <span className="text-center w-16 hidden sm:block">Active</span>
-            <span className="text-center w-16">Very Active</span>
-          </div>
-          
-          <div className="mt-3 p-2 bg-white rounded border border-gray-200">
-            <p className="text-sm font-semibold text-primary text-center">
-              {currentActivityLevelDetails?.name} (PAL: {user.activityLevel.toFixed(2)})
+          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm space-y-6">
+            <p className="text-muted text-sm">
+              {currentActivityLevelDetails?.description || 'Select your typical activity level'}
             </p>
-          </div>
-        </div>
 
-        {/* Goal Selection - Mobile-First Responsive Layout */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <Label className="block text-sm font-medium text-gray-700 mb-3">
+            <div className="px-2">
+              <Slider
+                id="activity-level-slider"
+                min={1.2}
+                max={2.5}
+                step={0.01}
+                value={[user.activityLevel || 1.2]}
+                onValueChange={handleActivityLevelChange}
+                className="w-full py-4"
+                aria-label={`Activity Level: ${currentActivityLevelDetails?.name}`}
+              />
+            </div>
+
+            <div className="flex justify-between text-xs font-medium text-muted px-1">
+              <span>Sedentary</span>
+              <span className="hidden sm:block">Light</span>
+              <span>Moderate</span>
+              <span className="hidden sm:block">Active</span>
+              <span>Very Active</span>
+            </div>
+
+            <div className="text-center">
+              <span className="text-lg font-semibold text-foreground">
+                {currentActivityLevelDetails?.name}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* Goal Selection */}
+        <section className="space-y-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <Label className="text-lg font-semibold text-foreground">
             Primary Goal
           </Label>
+
           <ToggleGroup
             type="single"
             value={user.goal}
             onValueChange={handleGoalChange}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4"
             aria-label="Primary Goal"
           >
             {(Object.keys(goalDetails) as Goal[]).map((goalKey) => (
-              <ToggleGroupItem 
-                key={goalKey} 
-                value={goalKey} 
-                className="flex flex-col items-center justify-center h-auto py-4 px-4 min-h-[60px] data-[state=on]:bg-primary data-[state=on]:text-white hover:bg-primary/10 transition-colors rounded-lg border-2"
+              <ToggleGroupItem
+                key={goalKey}
+                value={goalKey}
+                className="flex flex-col items-center justify-center h-auto py-6 px-4 gap-3 bg-surface border-2 border-border hover:border-primary/50 hover:bg-secondary/50 data-[state=on]:border-primary data-[state=on]:bg-primary/5 data-[state=on]:text-foreground transition-all duration-200 rounded-2xl shadow-sm"
                 aria-label={goalDetails[goalKey].name}
               >
-                <span className="text-3xl mb-2">{goalDetails[goalKey].icon}</span>
-                <span className="text-sm font-medium text-center">{goalDetails[goalKey].name}</span>
-                <span className="text-xs text-center mt-1 opacity-75">{goalDetails[goalKey].description}</span>
+                <span className="text-4xl filter drop-shadow-sm">{goalDetails[goalKey].icon}</span>
+                <div className="text-center space-y-1">
+                  <span className="block font-semibold text-base">{goalDetails[goalKey].name}</span>
+                  <span className="block text-xs text-muted">{goalDetails[goalKey].description}</span>
+                </div>
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
-        </div>
+        </section>
 
-        {/* Workout Timing Selector */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <WorkoutTimingSelector
-            value={user.workoutTime}
-            onChange={handleWorkoutTimeChange}
-            helperText="This helps optimize your meal timing recommendations."
-          />
-        </div>
+        {/* Workout Timing */}
+        <section className="space-y-4 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+            <WorkoutTimingSelector
+              value={user.workoutTime}
+              onChange={handleWorkoutTimeChange}
+              helperText="This helps optimize your meal timing recommendations."
+            />
+          </div>
+        </section>
 
-        {/* Advanced Settings - Progressive Disclosure */}
+        {/* Advanced Settings */}
         {(user.goal === 'loss' || user.goal === 'gain') && (
-          <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-            {/* Advanced Settings Toggle */}
-            <button
-              type="button"
-              onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-              className="flex items-center justify-between w-full py-2 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-              aria-expanded={showAdvancedSettings}
-              aria-controls="advanced-settings-content"
-            >
-              <div>
-                <h3 className="text-sm font-medium text-gray-700">Advanced Settings</h3>
-                <p className="text-xs text-gray-500 mt-1">
-                  Customize your calorie target (optional)
-                </p>
-              </div>
-              <div className="flex items-center ml-4">
+          <section className="animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <div className="bg-secondary/30 border border-border rounded-2xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                className="flex items-center justify-between w-full p-4 sm:p-6 text-left hover:bg-secondary/50 transition-colors"
+                aria-expanded={showAdvancedSettings}
+                aria-controls="advanced-settings-content"
+              >
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Advanced Settings</h3>
+                  <p className="text-xs text-muted mt-1">
+                    Customize your calorie target (optional)
+                  </p>
+                </div>
                 <svg
-                  className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
-                    showAdvancedSettings ? 'rotate-180' : ''
-                  }`}
+                  className={`w-5 h-5 text-muted transition-transform duration-200 ${showAdvancedSettings ? 'rotate-180' : ''
+                    }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </div>
-            </button>
+              </button>
 
-            {/* Collapsible Advanced Content */}
-            <div
-              id="advanced-settings-content"
-              className={`overflow-hidden transition-all duration-300 ${
-                showAdvancedSettings ? 'max-h-48 opacity-100 mt-4' : 'max-h-0 opacity-0'
-              }`}
-            >
-              <div className="border-t border-gray-200 pt-4">
-                <Label htmlFor="deficit-surplus" className="text-sm font-medium text-gray-700 block mb-2">
-                  Custom Calorie Target (Optional)
-                </Label>
-                <p className="text-xs text-gray-500 mb-3">
-                  Adjust the default calorie target. Max ±40% of TDEE (approx).
-                </p>
-                
-                <div className="relative">
-                  <Input
-                    id="deficit-surplus"
-                    type="number"
-                    inputMode="numeric"
-                    value={localDeficitSurplusInput}
-                    onChange={handleDeficitSurplusInputChange}
-                    onBlur={handleDeficitSurplusBlur}
-                    placeholder={`e.g., ${user.goal === 'loss' ? '-500' : '+300'}`}
-                    className={`w-full pr-20 h-12 text-base ${deficitSurplusError ? 'border-red-500' : ''}`}
-                  />
-                  <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-sm text-gray-500 pointer-events-none">
-                    kcal / day
-                  </span>
-                </div>
-                
-                {deficitSurplusError && (
-                  <p className="text-sm text-red-500 mt-2 flex items-center">
-                    <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {deficitSurplusError}
+              <div
+                id="advanced-settings-content"
+                className={`transition-all duration-300 ease-in-out ${showAdvancedSettings ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+              >
+                <div className="p-4 sm:p-6 pt-0 border-t border-border/50">
+                  <Label htmlFor="deficit-surplus" className="text-sm font-medium text-foreground block mb-2">
+                    Custom Calorie Target
+                  </Label>
+                  <p className="text-xs text-muted mb-4">
+                    Adjust the default calorie target. Max ±40% of TDEE.
                   </p>
-                )}
+
+                  <div className="relative max-w-xs">
+                    <Input
+                      id="deficit-surplus"
+                      type="number"
+                      inputMode="numeric"
+                      value={localDeficitSurplusInput}
+                      onChange={handleDeficitSurplusInputChange}
+                      onBlur={handleDeficitSurplusBlur}
+                      placeholder={`e.g., ${user.goal === 'loss' ? '-500' : '+300'}`}
+                      className={`w-full pr-20 bg-surface ${deficitSurplusError ? 'border-red-500' : ''}`}
+                    />
+                    <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-sm text-muted pointer-events-none">
+                      kcal / day
+                    </span>
+                  </div>
+
+                  {deficitSurplusError && (
+                    <p className="text-sm text-red-500 mt-2 flex items-center animate-fade-in">
+                      <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {deficitSurplusError}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Development Info */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-3 bg-gray-100 rounded text-xs text-gray-600">
-            <strong>Debug Info:</strong><br />
-            Activity Level: {user.activityLevel.toFixed(2)} | Goal: {user.goal} <br />
-            Workout Time: {user.workoutTime ?? 'N/A'} <br />
-            Deficit/Surplus: {user.deficitSurplusKcal ?? 'Using default'} (Input: {localDeficitSurplusInput}) <br />
-            Advanced Settings: {showAdvancedSettings ? 'Open' : 'Closed'}
-          </div>
+          </section>
         )}
       </div>
     </StepContainer>

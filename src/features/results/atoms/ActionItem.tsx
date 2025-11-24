@@ -12,7 +12,7 @@ interface ActionItemProps {
 
 const priorityStyles = {
   high: 'border-red-200 bg-red-50',
-  medium: 'border-amber-200 bg-amber-50', 
+  medium: 'border-amber-200 bg-amber-50',
   low: 'border-blue-200 bg-blue-50'
 };
 
@@ -22,21 +22,21 @@ const priorityDots = {
   low: 'bg-blue-500'
 };
 
-export function ActionItem({ 
-  icon, 
-  title, 
-  description, 
-  priority, 
+export function ActionItem({
+  icon,
+  title,
+  description,
+  priority,
   completed = false,
   onClick,
-  className 
+  className
 }: ActionItemProps) {
   return (
-    <div 
+    <div
       className={cn(
-        "flex items-start space-x-4 p-4 rounded-lg border transition-all",
+        "flex items-start space-x-4 p-4 rounded-xl border transition-all duration-200 bg-surface hover:shadow-sm",
         priorityStyles[priority],
-        onClick && "cursor-pointer hover:shadow-sm",
+        onClick && "cursor-pointer active:scale-[0.99]",
         completed && "opacity-60",
         className
       )}
@@ -45,13 +45,13 @@ export function ActionItem({
       {/* Priority indicator */}
       <div className="flex-shrink-0 mt-1">
         <div className={cn(
-          "w-2 h-2 rounded-full",
+          "w-2 h-2 rounded-full ring-2 ring-offset-1 ring-offset-surface",
           priorityDots[priority]
         )} />
       </div>
 
       {/* Icon */}
-      <div className="flex-shrink-0 text-2xl">
+      <div className="flex-shrink-0 text-2xl filter drop-shadow-sm">
         {icon}
       </div>
 
@@ -59,34 +59,34 @@ export function ActionItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
           <h4 className={cn(
-            "text-sm font-medium",
-            completed && "line-through"
+            "text-sm font-semibold text-foreground",
+            completed && "line-through text-muted"
           )}>
             {title}
           </h4>
           {completed && (
-            <span className="text-green-600 text-sm">✓</span>
+            <span className="text-primary text-sm">✓</span>
           )}
         </div>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-muted mt-1 leading-relaxed">
           {description}
         </p>
       </div>
 
       {/* Action arrow */}
       {onClick && (
-        <div className="flex-shrink-0 text-gray-400">
-          <svg 
-            className="w-4 h-4" 
-            fill="none" 
-            stroke="currentColor" 
+        <div className="flex-shrink-0 text-muted">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M9 5l7 7-7 7" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
             />
           </svg>
         </div>

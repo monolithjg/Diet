@@ -1,9 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 import React, { lazy, Suspense } from 'react';
+import Layout from './components/Layout';
 void React;
 
 // Lazy-loaded route components
-const Wizard  = lazy(() => import('./features/wizard'));
+const Wizard = lazy(() => import('./features/wizard'));
 const Results = lazy(() => import('./features/results'));
 
 const LoadingFallback = () => (
@@ -15,20 +16,25 @@ const LoadingFallback = () => (
 // ───────────────────────── router definition ─────────────────────────
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <Wizard />
-      </Suspense>
-    ),
+    element: <Layout />,
+    children: [
+      {
+        path: '/',
+        element: (
+          <Suspense fallback={<LoadingFallback />}>
+            <Wizard />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'results',
+        element: (
+          <Suspense fallback={<LoadingFallback />}>
+            <Results />
+          </Suspense>
+        ),
+      },
+      { path: '*', element: <div>Page not found.</div> },
+    ],
   },
-  {
-    path: 'results',
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <Results />
-      </Suspense>
-    ),
-  },
-  { path: '*', element: <div>Page not found.</div> },
 ]);

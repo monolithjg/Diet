@@ -10,6 +10,7 @@ import { ResultsDashboard } from './organisms/ResultsDashboard';
  * Enhanced Results component that displays comprehensive nutrition dashboard with CGE guidance
  */
 export default function Results() {
+  console.log('Results component rendered - cache cleared');
   const navigateTo = (path: string) => {
     try {
       window.history.pushState({}, '', path);
@@ -26,7 +27,7 @@ export default function Results() {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const shared = searchParams.get('d');
-    
+
     if (shared) {
       const results = deserializeResults(shared);
       if (results) {
@@ -38,7 +39,7 @@ export default function Results() {
   // Use shared results if available, otherwise use from store
   const metrics = sharedResults?.derivedMetrics || derivedMetrics;
   const macros = sharedResults?.macroPlan || macroPlan;
-  
+
   // For shared results, we don't have guidance data, so we'll show empty guidance
   // In a future enhancement, we could serialize guidance with the results
   const displayGuidance = sharedResults ? [] : guidance;

@@ -74,7 +74,7 @@ function Step4DietPreferences() {
     const newAllergies = currentAllergies.includes(allergy)
       ? currentAllergies.filter(a => a !== allergy)
       : [...currentAllergies, allergy];
-    
+
     updateUserWithGuidance({ allergies: newAllergies });
   };
 
@@ -88,33 +88,22 @@ function Step4DietPreferences() {
 
   return (
     <StepContainer>
-      <div className="space-y-6 sm:space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Diet & Lifestyle Preferences
-          </h2>
-          <p className="text-sm text-gray-600">
-            Choose your diet style and share lifestyle factors that affect your nutrition.
-          </p>
-        </div>
-
-        {/* Diet Style Selection - Mobile-First Enhancement */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <Label className="block text-sm font-medium text-gray-700 mb-3">
-            What diet style do you prefer?
+      <div className="space-y-8">
+        {/* Diet Style Selection */}
+        <section className="space-y-4 animate-fade-in">
+          <Label className="text-lg font-semibold text-foreground">
+            Diet Style
           </Label>
-          
-          {/* Mobile-First Grid Layout */}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {dietStyles.map((diet) => (
               <Card
                 key={diet.value}
                 className={cn(
-                  "cursor-pointer transition-all hover:shadow-md touch-manipulation min-h-[120px]",
-                  user.dietStyle === diet.value 
-                    ? "ring-2 ring-primary bg-primary/5 border-primary" 
-                    : "hover:bg-accent/5 border-gray-200"
+                  "cursor-pointer transition-all duration-200 touch-manipulation min-h-[140px] border-2",
+                  user.dietStyle === diet.value
+                    ? "ring-2 ring-primary ring-offset-2 border-primary bg-primary/5 shadow-md"
+                    : "hover:border-primary/50 hover:bg-secondary/50 border-border shadow-sm"
                 )}
                 onClick={() => handleDietStyleChange(diet.value)}
                 role="button"
@@ -128,145 +117,109 @@ function Step4DietPreferences() {
                   }
                 }}
               >
-                <CardContent className="flex flex-col items-center justify-center p-4 text-center h-full">
-                  <div className="text-3xl mb-3">{diet.icon}</div>
-                  <div className="font-semibold mb-2 text-sm">{diet.title}</div>
-                  <div className="text-xs text-muted-foreground mb-2 leading-relaxed">
+                <CardContent className="flex flex-col items-center justify-center p-5 text-center h-full gap-2">
+                  <div className="text-4xl mb-1 filter drop-shadow-sm">{diet.icon}</div>
+                  <div className="font-bold text-foreground">{diet.title}</div>
+                  <div className="text-xs text-muted leading-relaxed line-clamp-2">
                     {diet.description}
                   </div>
-                  <div className="text-xs text-muted-foreground font-mono bg-gray-100 px-2 py-1 rounded">
+                  <div className="mt-2 text-[10px] font-mono text-primary bg-primary/10 px-2 py-1 rounded-full">
                     {diet.macros}
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-          
-          {/* Selection Feedback */}
-          {user.dietStyle && (
-            <div className="mt-4 p-3 bg-white rounded border border-gray-200">
-              <p className="text-sm text-primary font-medium text-center">
-                ✓ Selected: {dietStyles.find(d => d.value === user.dietStyle)?.title}
-              </p>
-            </div>
-          )}
-        </div>
+        </section>
 
-        {/* Allergies Selection - Enhanced Mobile Touch Targets */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <Label className="block text-sm font-medium text-gray-700 mb-2">
-            Do you have any food allergies? (Optional)
-          </Label>
-          <p className="text-sm text-muted-foreground mb-4">
-            Select any allergies to receive alternative food recommendations
-          </p>
-          
-          {/* Enhanced Mobile Touch Targets */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {/* Allergies Selection */}
+        <section className="space-y-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <div className="flex items-center justify-between">
+            <Label className="text-lg font-semibold text-foreground">
+              Food Allergies
+            </Label>
+            <span className="text-xs text-muted uppercase tracking-wider font-medium">Optional</span>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
             {commonAllergies.map((allergy) => {
               const isSelected = (user.allergies || []).includes(allergy);
-              
+
               return (
                 <button
                   key={allergy}
                   onClick={() => handleAllergyToggle(allergy)}
                   className={cn(
-                    "px-4 py-3 rounded-lg text-sm font-medium transition-colors touch-manipulation min-h-[48px] flex items-center justify-center text-center",
-                    isSelected 
-                      ? "bg-primary text-primary-foreground shadow-md" 
-                      : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                    "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 touch-manipulation flex items-center gap-2 border",
+                    isSelected
+                      ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                      : "bg-surface text-foreground border-border hover:border-primary/50 hover:bg-secondary"
                   )}
                   aria-pressed={isSelected}
                   aria-label={`${isSelected ? 'Remove' : 'Add'} ${allergy} allergy`}
                 >
-                  <span className="flex items-center">
-                    {isSelected && (
-                      <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    {allergy.charAt(0).toUpperCase() + allergy.slice(1)}
-                  </span>
+                  {isSelected && (
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                  {allergy.charAt(0).toUpperCase() + allergy.slice(1)}
                 </button>
               );
             })}
           </div>
-          
-          {/* Selection Summary */}
-          {user.allergies && user.allergies.length > 0 && (
-            <div className="mt-4 p-3 bg-white rounded border border-gray-200">
-              <p className="text-sm text-gray-700">
-                <span className="font-medium">Selected allergies:</span> {user.allergies.join(', ')}
-              </p>
-            </div>
-          )}
+        </section>
+
+        {/* Sleep & Stress */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <section className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+            <SleepHoursInput
+              value={user.sleepHours}
+              onChange={handleSleepHoursChange}
+            />
+          </section>
+
+          <section className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+            <StressLevelScale
+              value={user.stressLevel}
+              onChange={handleStressLevelChange}
+            />
+          </section>
         </div>
 
-        {/* Sleep Hours Input - Enhanced Mobile Container */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <SleepHoursInput
-            value={user.sleepHours}
-            onChange={handleSleepHoursChange}
-          />
-        </div>
-
-        {/* Stress Level Scale - Enhanced Mobile Container */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-sm">
-          <StressLevelScale
-            value={user.stressLevel}
-            onChange={handleStressLevelChange}
-          />
-        </div>
-
-        {/* Lifestyle Tips Card - Mobile Optimized */}
-        <Card className="bg-blue-50 border-blue-200 shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-blue-800 text-base flex items-center">
-              <span className="text-lg mr-2">💡</span>
-              Why We Ask About Lifestyle
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-sm text-blue-700 space-y-3">
-              <div className="flex items-start space-x-3">
-                <span className="text-base flex-shrink-0">😴</span>
-                <div>
-                  <strong className="block">Sleep:</strong>
-                  <span className="text-xs leading-relaxed">
-                    Affects hunger hormones (ghrelin & leptin), metabolism, and recovery.
-                    Poor sleep can make weight management more challenging.
-                  </span>
+        {/* Lifestyle Tips */}
+        <section className="animate-fade-in" style={{ animationDelay: '300ms' }}>
+          <Card className="bg-secondary/30 border-none shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-semibold flex items-center gap-2 text-foreground">
+                <span className="text-xl">💡</span>
+                Why We Ask About Lifestyle
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted">
+                <div className="flex gap-3">
+                  <span className="text-lg flex-shrink-0">😴</span>
+                  <div>
+                    <strong className="block text-foreground mb-1">Sleep</strong>
+                    <span className="text-xs leading-relaxed">
+                      Affects hunger hormones and recovery. Poor sleep can hinder weight management.
+                    </span>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <span className="text-lg flex-shrink-0">😰</span>
+                  <div>
+                    <strong className="block text-foreground mb-1">Stress</strong>
+                    <span className="text-xs leading-relaxed">
+                      Elevates cortisol, which can increase appetite and promote fat storage.
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-base flex-shrink-0">😰</span>
-                <div>
-                  <strong className="block">Stress:</strong>
-                  <span className="text-xs leading-relaxed">
-                    Elevates cortisol, which can increase appetite and promote fat storage,
-                    especially around the midsection.
-                  </span>
-                </div>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-lg mt-3">
-                <p className="text-xs font-medium">
-                  We use this information to provide personalized recommendations for optimizing your results.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Development Info */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-3 bg-gray-100 rounded text-xs text-gray-600">
-            <strong>Debug Info:</strong><br />
-            Diet Style: {user.dietStyle} <br />
-            Allergies: [{(user.allergies || []).join(', ')}] ({(user.allergies || []).length} selected)<br />
-            Sleep Hours: {user.sleepHours ?? 'N/A'} <br />
-            Stress Level: {user.stressLevel ?? 'N/A'}
-          </div>
-        )}
+            </CardContent>
+          </Card>
+        </section>
       </div>
     </StepContainer>
   );
