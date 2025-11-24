@@ -3,7 +3,6 @@ import { LazyMobileHelpGuidance } from '../atoms/LazyMobileHelpGuidance';
 
 interface MobileWizardLayoutProps {
   step: number;
-  totalSteps?: number;
   stepTitle: string;
   stepDescription: string;
   stepContent: React.ReactNode;
@@ -14,7 +13,6 @@ interface MobileWizardLayoutProps {
 
 export function MobileWizardLayout({
   step,
-  totalSteps = 4,
   stepTitle,
   stepDescription,
   stepContent,
@@ -111,6 +109,9 @@ export function MobileWizardLayout({
 
         {/* Guidance Panel (Sidebar) */}
         <aside className="lg:col-span-4 space-y-6">
+          {/* Render passed guidance panel */}
+          {guidancePanel}
+
           {/* Desktop Help Panel */}
           {stepHelp && (
             <div className="hidden lg:block bg-surface shadow-card rounded-2xl border border-border p-6 sticky top-24">

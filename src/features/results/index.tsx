@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-// ensure React module is initialized for runtime hook usage
-void React;
-// Navigation hooks can fail during certain dev pre-bundle states; use a safe history fallback
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { deserializeResults, type ShareableResults } from '../../lib/sharing';
 import { ResultsDashboard } from './organisms/ResultsDashboard';
@@ -11,13 +9,9 @@ import { ResultsDashboard } from './organisms/ResultsDashboard';
  */
 export default function Results() {
   console.log('Results component rendered - cache cleared');
+  const navigate = useNavigate();
   const navigateTo = (path: string) => {
-    try {
-      window.history.pushState({}, '', path);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    } catch (e) {
-      window.location.href = path;
-    }
+    navigate(path);
   };
   const { derivedMetrics, macroPlan } = useStore(state => state.calc);
   const { guidance } = useStore(state => state.ui);

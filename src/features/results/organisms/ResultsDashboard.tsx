@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-void React;
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { GuidanceList } from '../../../components/ui/GuidanceList';
@@ -28,13 +28,9 @@ export function ResultsDashboard({
   sharedTimestamp,
   className
 }: ResultsDashboardProps) {
+  const navigate = useNavigate();
   const navigateTo = (path: string) => {
-    try {
-      window.history.pushState({}, '', path);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    } catch (e) {
-      window.location.href = path;
-    }
+    navigate(path);
   };
   const sharedDateLabel = useMemo(() => {
     if (!sharedTimestamp) return null;

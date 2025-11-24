@@ -1,6 +1,5 @@
-// Cleaned-up Wizard component with correct Zustand selector, safe state updates, and logging
-
 import React, { Suspense, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { Button } from '../../components/ui/Button';
 import { GuidanceList } from '../../components/ui/GuidanceList';
@@ -33,6 +32,7 @@ type UserValidationData = {
 
 export default function Wizard() {
   console.count('Wizard render');
+  const navigate = useNavigate();
 
   const step = useStore(state => state.ui.step);
   const guidance = useStore(state => state.ui.guidance);
@@ -48,15 +48,8 @@ export default function Wizard() {
 
   const userValidationData = { age, sex, weightKg, heightCm, activityLevel, goal };
 
-  // Safer navigation fallback: use history API instead of router hook
   const navigateTo = (path: string) => {
-    try {
-      window.history.pushState({}, '', path);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    } catch (e) {
-      // Fallback to full navigation if pushState fails
-      window.location.href = path;
-    }
+    navigate(path);
   };
   useChunkPreloader();
   useConnectionAware();
