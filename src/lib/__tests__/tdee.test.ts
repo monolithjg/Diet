@@ -118,6 +118,18 @@ describe('TDEE Calculations', () => {
     }).toThrow(UnrealisticCalorieError);
   });
 
+  it('enforces minimum safe calories even when body fat is not provided', () => {
+    expect(() => {
+      calcTdee({
+        rmr: 1000,
+        pal: 'sedentary',
+        dietStyle: 'balanced',
+        goalPct: -0.40,
+        sex: 'female'
+      }, { bodyCompSafety: true });
+    }).toThrow(UnrealisticCalorieError);
+  });
+
   // Error cases
   describe('Error Handling', () => {
     // Edge E1: Goal out of range
