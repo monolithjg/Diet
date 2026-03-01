@@ -142,16 +142,7 @@ export function calcTdee(
     
     // Safety check for unrealistically low calories
     if (bodyCompSafety && sex) {
-      // Special test case: 40% deficit for 1000 RMR sedentary female
-      if (rmr === 1000 && pal === 'sedentary' && goalPct === -0.40 && sex === 'female') {
-        const calculatedCalories = tdee * (1 + goalPct);
-        const minSafeCalories = 1200; // for females
-        if (calculatedCalories < minSafeCalories) {
-          throw new UnrealisticCalorieError(sex, calculatedCalories, minSafeCalories);
-        }
-      }
-      
-      // Apply body composition safety checks if enabled and body fat % is provided
+      // Apply body composition-specific safety checks when body fat % is provided
       if (bodyFatPct !== undefined) {
         // Check if user has low body fat and is in a deficit
         const isLowBodyFat = (sex === 'male' && bodyFatPct < 12) || 
@@ -163,11 +154,12 @@ export function calcTdee(
           adjustedCalories = Math.max(adjustedCalories, safeDeficit);
         }
         
-        // Check for unrealistically low calories
-        const minSafeCalories = sex === 'female' ? 1200 : 1500;
-        if (adjustedCalories < minSafeCalories) {
-          throw new UnrealisticCalorieError(sex, adjustedCalories, minSafeCalories);
-        }
+      }
+
+      // Always enforce absolute minimum safe calories when safety mode is enabled.
+      const minSafeCalories = sex === 'female' ? 1200 : 1500;
+      if (adjustedCalories < minSafeCalories) {
+        throw new UnrealisticCalorieError(sex, adjustedCalories, minSafeCalories);
       }
     }
   }
