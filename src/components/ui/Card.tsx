@@ -11,10 +11,9 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          "rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100",
-          "border bg-clip-padding",
-          "border-slate-200 dark:border-slate-700",
-          "soft-card",
+          "rounded-xl bg-surface text-foreground",
+          "border border-border",
+          "shadow-soft",
           className
         )}
         {...props}
@@ -30,7 +29,7 @@ const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-    <div
+  <div
     ref={ref}
     className={cn("flex flex-col space-y-1 p-6", className)}
     {...props}
@@ -42,7 +41,7 @@ const CardTitle = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-    <div
+  <div
     ref={ref}
     className={cn("text-xl font-semibold leading-tight tracking-tight", className)}
     {...props}

@@ -95,10 +95,7 @@ export function ResultsDashboard({
     <div className={cn("space-y-8 max-w-7xl mx-auto px-4 lg:px-6 animate-fade-in", className)}>
       {/* Header Section */}
       <div className="text-center space-y-4 py-8">
-        <div className="inline-block p-3 bg-primary/10 rounded-full mb-2">
-          <span className="text-4xl">📊</span>
-        </div>
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+        <h1 className="text-4xl font-normal text-foreground tracking-tight">
           Your Nutrition Plan
         </h1>
         <p className="text-lg text-muted max-w-2xl mx-auto">

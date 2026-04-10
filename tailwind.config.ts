@@ -27,19 +27,19 @@ export default {
         foreground: "var(--fg)",
         muted: "var(--muted)",
         primary: {
-          DEFAULT: "var(--primary)",
+          DEFAULT: "#1a73e8", // Google Blue
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#f1f5f9", // slate-100
-          foreground: "#0f172a", // slate-900
+          DEFAULT: "#f1f3f4", // Google Light Gray
+          foreground: "#202124", // Google Dark Gray
         },
         accent: {
-          DEFAULT: "#f8fafc", // slate-50
-          foreground: "#0f172a",
+          DEFAULT: "#e8f0fe", // Google Blue 50
+          foreground: "#1967d2", // Google Blue 700
         },
         border: "var(--card-border)",
-        ring: "var(--ring)",
+        ring: "rgba(26, 115, 232, 0.4)", // Google Blue Ring
       },
       boxShadow: {
         'soft': '0 2px 10px rgba(0, 0, 0, 0.03), 0 10px 25px rgba(0, 0, 0, 0.04)',
