@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+void React;
 import { Card, CardContent, CardHeader } from './Card';
 import { cn } from '../../lib/utils';
 import type { GuidanceMessage } from '../../lib/macros';
@@ -15,35 +16,39 @@ const getMessageTypeConfig = (type: GuidanceMessage['type']) => {
   switch (type) {
     case 'critical':
       return {
-        icon: '🚨',
-        bgColor: 'bg-red-50 border-red-200',
+        icon: '!',
+        bgColor: 'bg-red-50',
         textColor: 'text-red-800',
-        borderColor: 'border-red-300',
-        badgeColor: 'bg-red-100 text-red-800'
+        borderColor: 'border-red-200',
+        badgeColor: 'bg-red-100 text-red-800',
+        ring: 'ring-red-100'
       };
     case 'warn':
       return {
-        icon: '⚠️',
-        bgColor: 'bg-amber-50 border-amber-200',
+        icon: '!',
+        bgColor: 'bg-amber-50',
         textColor: 'text-amber-800',
-        borderColor: 'border-amber-300',
-        badgeColor: 'bg-amber-100 text-amber-800'
+        borderColor: 'border-amber-200',
+        badgeColor: 'bg-amber-100 text-amber-800',
+        ring: 'ring-amber-100'
       };
     case 'info':
       return {
-        icon: '💡',
-        bgColor: 'bg-blue-50 border-blue-200',
+        icon: 'i',
+        bgColor: 'bg-blue-50',
         textColor: 'text-blue-800',
-        borderColor: 'border-blue-300',
-        badgeColor: 'bg-blue-100 text-blue-800'
+        borderColor: 'border-blue-200',
+        badgeColor: 'bg-blue-100 text-blue-800',
+        ring: 'ring-blue-100'
       };
     default:
       return {
-        icon: 'ℹ️',
-        bgColor: 'bg-gray-50 border-gray-200',
-        textColor: 'text-gray-800',
-        borderColor: 'border-gray-300',
-        badgeColor: 'bg-gray-100 text-gray-800'
+        icon: 'i',
+        bgColor: 'bg-neutral-50',
+        textColor: 'text-slate-900',
+        borderColor: 'border-neutral-200',
+        badgeColor: 'bg-neutral-100 text-slate-800',
+        ring: 'ring-neutral-100'
       };
   }
 };
@@ -108,6 +113,7 @@ export function GuidanceCard({
       "transition-all duration-200",
       config.bgColor,
       config.borderColor,
+      "overflow-hidden",
       !isDisclaimer && "hover:shadow-md cursor-pointer"
     )}>
       <CardHeader 
@@ -125,15 +131,17 @@ export function GuidanceCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-1">
                 {showCategory && !isDisclaimer && (
-                  <span className={cn(
-                    "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium",
-                    config.badgeColor
-                  )}>
-                    {getCategoryDisplayName(message.category)}
-                  </span>
+                    <span className={cn(
+                      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+                      "bg-white/60 border border-transparent",
+                      config.badgeColor
+                    )}>
+                      {getCategoryDisplayName(message.category)}
+                    </span>
                 )}
                 <span className={cn(
-                  "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium capitalize",
+                  "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize",
+                  "bg-white/40 border border-transparent",
                   config.badgeColor
                 )}>
                   {message.type}
@@ -151,12 +159,14 @@ export function GuidanceCard({
           {!isDisclaimer && (
             <button
               type="button"
+              aria-expanded={isExpanded || expanded}
               className={cn(
-                "flex-shrink-0 ml-2 text-xs opacity-50 hover:opacity-100 transition-opacity",
+                "flex-shrink-0 ml-2 text-sm opacity-75 hover:opacity-100 transition-transform transform",
+                (isExpanded || expanded) ? 'rotate-180' : 'rotate-0',
                 config.textColor
               )}
             >
-              {isExpanded || expanded ? '▼' : '▶'}
+              ▾
             </button>
           )}
         </div>
@@ -164,10 +174,10 @@ export function GuidanceCard({
       
       {(isExpanded || expanded) && !isDisclaimer && (
         <CardContent className="pt-0">
-          <div className={cn("text-xs", config.textColor, "opacity-75")}>
-            <p>💡 <strong>Why this matters:</strong></p>
-            <p className="mt-1">
-              This recommendation is based on your current inputs and evidence-based nutrition guidelines.
+            <div className={cn("text-sm", config.textColor, "opacity-85")}>
+            <p className="text-sm"><strong>Why this matters:</strong></p>
+            <p className="mt-1 text-sm">
+              This recommendation is based on your inputs and evidence-based nutrition guidance.
             </p>
             {message.replacements && Object.keys(message.replacements).length > 0 && (
               <details className="mt-2">

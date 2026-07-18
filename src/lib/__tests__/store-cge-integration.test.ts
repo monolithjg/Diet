@@ -41,7 +41,6 @@ describe('Store CGE Integration', () => {
       
       // Check that guidance was generated
       const state = useStore.getState();
-      console.log('Generated guidance:', state.ui.guidance);
       expect(state.ui.guidance.length).toBeGreaterThan(0);
       
       // Should have medical disclaimer

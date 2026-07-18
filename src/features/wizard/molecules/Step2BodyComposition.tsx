@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+void React;
 import { useStore } from '../../../lib/store';
 import { LazyAdvancedSettings } from '../atoms/LazyAdvancedSettings';
 import { StepContainer } from './StepContainer';

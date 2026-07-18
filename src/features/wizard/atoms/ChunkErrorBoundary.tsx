@@ -118,9 +118,12 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
 // Functional wrapper component that provides navigation
 export function ChunkErrorBoundary(props: Omit<ChunkErrorBoundaryProps, 'onNavigateHome'>) {
   const navigate = useNavigate();
-  
+  const navigateTo = (path: string) => {
+    navigate(path);
+  };
+
   const handleNavigateHome = () => {
-    navigate('/');
+    navigateTo('/');
   };
 
   return (
@@ -129,4 +132,4 @@ export function ChunkErrorBoundary(props: Omit<ChunkErrorBoundaryProps, 'onNavig
       onNavigateHome={handleNavigateHome}
     />
   );
-} 
+}

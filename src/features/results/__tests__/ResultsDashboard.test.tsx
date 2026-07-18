@@ -240,6 +240,7 @@ describe('ResultsDashboard', () => {
   it('handles share functionality error gracefully', async () => {
     // Mock clipboard to throw an error
     vi.mocked(navigator.clipboard.writeText).mockRejectedValueOnce(new Error('Clipboard error'));
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     
     // Mock alert
     window.alert = vi.fn();
@@ -260,6 +261,8 @@ describe('ResultsDashboard', () => {
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith('Failed to copy link to clipboard');
     });
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('displays activity factor with correct precision', () => {

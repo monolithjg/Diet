@@ -9,27 +9,36 @@ import { ResultsDashboard } from './organisms/ResultsDashboard';
  */
 export default function Results() {
   const navigate = useNavigate();
+  const navigateTo = (path: string) => {
+    navigate(path);
+  };
   const { derivedMetrics, macroPlan } = useStore(state => state.calc);
   const { guidance } = useStore(state => state.ui);
-  const [sharedResults, setSharedResults] = useState<ShareableResults | null>(null);
+  const getSharedResultsFromLocation = (): ShareableResults | null => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
 
-  // Check for shared results in URL
-  useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const shared = searchParams.get('d');
-    
-    if (shared) {
-      const results = deserializeResults(shared);
-      if (results) {
-        setSharedResults(results);
-      }
+
+    if (!shared) {
+      return null;
     }
+
+    return deserializeResults(shared);
+  };
+
+  const [sharedResults, setSharedResults] = useState<ShareableResults | null>(() => getSharedResultsFromLocation());
+
+  useEffect(() => {
+    setSharedResults(getSharedResultsFromLocation());
   }, []);
 
   // Use shared results if available, otherwise use from store
   const metrics = sharedResults?.derivedMetrics || derivedMetrics;
   const macros = sharedResults?.macroPlan || macroPlan;
-  
+
   // For shared results, we don't have guidance data, so we'll show empty guidance
   // In a future enhancement, we could serialize guidance with the results
   const displayGuidance = sharedResults ? [] : guidance;
@@ -50,7 +59,7 @@ export default function Results() {
           </p>
           <button
             onClick={() => {
-              navigate('/');
+              navigateTo('/');
               if (typeof window !== 'undefined' && import.meta.env.MODE === 'test') {
                 window.location.href = '/';
               }

@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+void React;
 import type { UnitSystem } from '../hooks/useUnitConversion';
 
 interface UnitToggleProps {
@@ -8,52 +9,47 @@ interface UnitToggleProps {
   className?: string;
 }
 
-export function UnitToggle({ 
-  value, 
-  onChange, 
+export function UnitToggle({
+  value,
+  onChange,
   disabled = false,
-  className = '' 
+  className = ''
 }: UnitToggleProps) {
-  const handleToggle = useCallback(() => {
-    const newUnit = value === 'metric' ? 'imperial' : 'metric';
-    onChange(newUnit);
-  }, [value, onChange]);
 
   return (
-    <div className={`flex items-center space-x-3 ${className}`}>
-      <span className="text-sm font-medium text-gray-700">Units:</span>
-      
-      <button
-        type="button"
-        onClick={handleToggle}
-        disabled={disabled}
-        className={`
-          relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent 
-          transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-          ${value === 'metric' ? 'bg-primary' : 'bg-gray-200'}
-          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-        `}
-        role="switch"
-        aria-checked={value === 'metric'}
-        aria-label={`Switch to ${value === 'metric' ? 'imperial' : 'metric'} units`}
-      >
-        <span
+    <div className={`flex items-center gap-3 ${className}`}>
+      <span className="text-sm font-medium text-muted">Units:</span>
+      <div className="relative inline-flex bg-secondary p-1 rounded-lg border border-border">
+        <button
+          type="button"
+          onClick={() => onChange('metric')}
+          disabled={disabled}
           className={`
-            pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 
-            transition duration-200 ease-in-out
-            ${value === 'metric' ? 'translate-x-5' : 'translate-x-0'}
+            relative z-10 px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200
+            ${value === 'metric'
+              ? 'bg-surface text-primary shadow-sm'
+              : 'text-muted hover:text-foreground'
+            }
+            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
-        />
-      </button>
-      
-      <div className="flex items-center space-x-2 text-sm">
-        <span className={`${value === 'metric' ? 'text-primary font-medium' : 'text-gray-500'}`}>
+        >
           Metric
-        </span>
-        <span className="text-gray-300">|</span>
-        <span className={`${value === 'imperial' ? 'text-primary font-medium' : 'text-gray-500'}`}>
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange('imperial')}
+          disabled={disabled}
+          className={`
+            relative z-10 px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200
+            ${value === 'imperial'
+              ? 'bg-surface text-primary shadow-sm'
+              : 'text-muted hover:text-foreground'
+            }
+            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          `}
+        >
           Imperial
-        </span>
+        </button>
       </div>
     </div>
   );
@@ -62,11 +58,11 @@ export function UnitToggle({
 /**
  * Alternative card-based unit selector for more prominent placement
  */
-export function UnitSelector({ 
-  value, 
-  onChange, 
+export function UnitSelector({
+  value,
+  onChange,
   disabled = false,
-  className = '' 
+  className = ''
 }: UnitToggleProps) {
   const handleSelect = useCallback((unit: UnitSystem) => {
     onChange(unit);
@@ -92,7 +88,7 @@ export function UnitSelector({
       <div className="text-sm font-medium text-gray-700 mb-2">
         Preferred Units
       </div>
-      
+
       <div className="grid grid-cols-2 gap-3">
         {options.map((option) => (
           <button
@@ -102,8 +98,8 @@ export function UnitSelector({
             disabled={disabled}
             className={`
               relative p-3 rounded-lg border-2 text-left transition-all duration-200
-              ${value === option.value 
-                ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
+              ${value === option.value
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
                 : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -118,7 +114,7 @@ export function UnitSelector({
                 <div className="text-xs text-gray-500">{option.description}</div>
               </div>
             </div>
-            
+
             {value === option.value && (
               <div className="absolute top-2 right-2">
                 <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">

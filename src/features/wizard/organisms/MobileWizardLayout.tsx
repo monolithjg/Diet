@@ -3,7 +3,6 @@ import { LazyMobileHelpGuidance } from '../atoms/LazyMobileHelpGuidance';
 
 interface MobileWizardLayoutProps {
   step: number;
-  totalSteps?: number;
   stepTitle: string;
   stepDescription: string;
   stepContent: React.ReactNode;
@@ -14,7 +13,6 @@ interface MobileWizardLayoutProps {
 
 export function MobileWizardLayout({
   step,
-  totalSteps = 4,
   stepTitle,
   stepDescription,
   stepContent,
@@ -40,43 +38,45 @@ export function MobileWizardLayout({
   const stepHelp = getStepHelp();
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl min-h-screen flex flex-col">
-      {/* Header Section: Title, Progress Bar */}
-      <header className="mb-6">
-        <div className="mb-4">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 text-gray-800">
-            Diet & Macronutrient Calculator
+    <div className="flex flex-col gap-8 animate-slide-up">
+      {/* Header Section */}
+      <header className="text-center space-y-4">
+        <div className="space-y-2">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+            Diet Calculator
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-muted text-lg max-w-2xl mx-auto">
             Get personalized nutrition recommendations based on your goals and lifestyle.
           </p>
         </div>
-        {progressBar}
+        <div className="max-w-xl mx-auto">
+          {progressBar}
+        </div>
       </header>
 
-      <div className="flex-1 min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
-        {/* Main Content Area: Step Title, Description, Form */}
-        <main className="lg:col-span-2 bg-white shadow-lg sm:shadow-xl rounded-lg flex-1 flex flex-col h-full w-full overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Main Content Card */}
+        <main className="lg:col-span-8 bg-surface shadow-soft rounded-3xl border border-border overflow-hidden transition-all duration-300 hover:shadow-card-hover">
           {/* Step Header */}
-          <div className="p-4 sm:p-6 border-b border-gray-200">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-700">
+          <div className="p-6 md:p-8 border-b border-border bg-secondary/30">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">
                   {stepTitle}
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-muted mt-2 text-base">
                   {stepDescription}
                 </p>
               </div>
-              
-              {/* Mobile Help Button */}
+
+              {/* Mobile Help Toggle */}
               {stepHelp && (
                 <button
                   onClick={() => setShowMobileHelp(!showMobileHelp)}
-                  className="ml-4 p-2 text-gray-400 hover:text-gray-600 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 lg:hidden"
+                  className="lg:hidden p-2 text-muted hover:text-primary transition-colors rounded-full hover:bg-secondary"
                   aria-label="Toggle help"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </button>
@@ -84,10 +84,10 @@ export function MobileWizardLayout({
             </div>
           </div>
 
-          {/* Mobile Help Panel (Collapsible) - Now Lazy Loaded */}
+          {/* Mobile Help Panel (Collapsible) */}
           {stepHelp && showMobileHelp && (
-            <div className="border-b border-gray-200 bg-gray-50 lg:hidden">
-              <div className="p-4">
+            <div className="border-b border-border bg-secondary/20 lg:hidden animate-fade-in">
+              <div className="p-6">
                 <LazyMobileHelpGuidance
                   title={stepHelp.title}
                   helpType={stepHelp.helpType}
@@ -97,28 +97,24 @@ export function MobileWizardLayout({
           )}
 
           {/* Step Content (Form) */}
-          <div className="flex-grow p-4 sm:p-6 overflow-y-auto flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center h-full">
-              {stepContent}
-            </div>
+          <div className="p-6 md:p-10 min-h-[400px] flex flex-col justify-center">
+            {stepContent}
           </div>
 
           {/* Step Navigation */}
-          <div className="p-4 sm:p-6 border-t border-gray-200 bg-gray-50">
+          <div className="p-6 md:p-8 border-t border-border bg-secondary/10">
             {navigationControls}
           </div>
         </main>
 
-        {/* Guidance Panel Area (Sidebar on larger screens) */}
-        <aside className="lg:col-span-1 space-y-4">
-          {/* Main Guidance Panel */}
-          <div className="hidden lg:block">
-            {guidancePanel}
-          </div>
+        {/* Guidance Panel (Sidebar) */}
+        <aside className="lg:col-span-4 space-y-6">
+          {/* Render passed guidance panel */}
+          {guidancePanel}
 
-          {/* Desktop Help Panel - Now Lazy Loaded */}
+          {/* Desktop Help Panel */}
           {stepHelp && (
-            <div className="hidden lg:block">
+            <div className="hidden lg:block bg-surface shadow-card rounded-2xl border border-border p-6 sticky top-24">
               <LazyMobileHelpGuidance
                 title={stepHelp.title}
                 helpType={stepHelp.helpType}
@@ -126,13 +122,13 @@ export function MobileWizardLayout({
             </div>
           )}
 
-          {/* Mobile Guidance Panel (Simplified) */}
-          <div className="lg:hidden bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-            <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center">
-              <span className="text-lg mr-2">✨</span>
+          {/* Quick Tips Card */}
+          <div className="bg-surface/50 border border-border rounded-2xl p-6">
+            <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="text-xl">✨</span>
               Quick Tips
             </h3>
-            <div className="space-y-2 text-sm text-gray-600">
+            <div className="space-y-3 text-sm text-muted">
               {step === 1 && (
                 <>
                   <p>• Use your most recent accurate measurements</p>
@@ -165,29 +161,6 @@ export function MobileWizardLayout({
           </div>
         </aside>
       </div>
-      
-      {/* Mobile Progress Indicator - Fixed Bottom */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-10">
-        <div className="container mx-auto px-1">
-          <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
-            <span>Step {step} of {totalSteps}</span>
-            <div className="flex space-x-1">
-              {Array.from({ length: totalSteps }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full ${
-                    index + 1 === step ? 'bg-primary' : 
-                    index + 1 < step ? 'bg-primary/60' : 'bg-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Padding for Fixed Element */}
-      <div className="lg:hidden h-16" />
     </div>
   );
 } 

@@ -1,37 +1,12 @@
 import type { Config } from 'tailwindcss'
 
-const config: Config = {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
-      colors: {
-        primary: {
-          DEFAULT: '#1e88e5',
-          50: '#e3f2fd',
-          100: '#bbdefb',
-          200: '#90caf9',
-          300: '#64b5f6',
-          400: '#42a5f5',
-          500: '#1e88e5',
-          600: '#1976d2',
-          700: '#1565c0',
-          800: '#0d47a1',
-          900: '#0a2351',
-        },
-        secondary: {
-          DEFAULT: '#424242',
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#eeeeee',
-          300: '#e0e0e0',
-          400: '#bdbdbd',
-          500: '#9e9e9e',
-          600: '#757575',
-          700: '#616161',
-          800: '#424242',
-          900: '#212121',
-        },
-      },
       fontFamily: {
         sans: [
           'Inter',
@@ -41,23 +16,56 @@ const config: Config = {
           'BlinkMacSystemFont',
           '"Segoe UI"',
           'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
           'sans-serif',
         ],
       },
-      borderRadius: {
-        DEFAULT: '0.375rem',
-        sm: '0.25rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem',
-        '2xl': '1rem',
+      colors: {
+        background: "var(--bg)",
+        surface: "var(--surface)",
+        foreground: "var(--fg)",
+        muted: "var(--muted)",
+        primary: {
+          DEFAULT: "#1a73e8", // Google Blue
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "#f1f3f4", // Google Light Gray
+          foreground: "#202124", // Google Dark Gray
+        },
+        accent: {
+          DEFAULT: "#e8f0fe", // Google Blue 50
+          foreground: "#1967d2", // Google Blue 700
+        },
+        border: "var(--card-border)",
+        ring: "rgba(26, 115, 232, 0.4)", // Google Blue Ring
       },
-      spacing: {
-        '128': '32rem',
+      boxShadow: {
+        'soft': '0 2px 10px rgba(0, 0, 0, 0.03), 0 10px 25px rgba(0, 0, 0, 0.04)',
+        'card': '0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)',
+        'card-hover': '0 0 0 1px rgba(0,0,0,0.03), 0 8px 16px rgba(0,0,0,0.06)',
+      },
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'slide-up': 'slideUp 0.5s ease-out forwards',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },
   plugins: [],
-}
-
-export default config 
+} satisfies Config

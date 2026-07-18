@@ -1,4 +1,5 @@
-import { useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
+void React;
 import { useStore } from '../lib/store';
 import type { UserInput } from '../models/UserInput';
 

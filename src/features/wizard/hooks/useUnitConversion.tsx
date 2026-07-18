@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+void React;
 import { kgToLbs, lbsToKg, cmToFeetInches, feetInchesToCm } from '../../../lib/units';
 
 export type UnitSystem = 'metric' | 'imperial';

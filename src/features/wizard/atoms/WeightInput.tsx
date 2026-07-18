@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+void React;
 import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { ValidationRanges } from '../../../lib/errors';
@@ -13,21 +14,21 @@ interface WeightInputProps {
   required?: boolean;
 }
 
-export function WeightInput({ 
-  value, 
-  onChange, 
+export function WeightInput({
+  value,
+  onChange,
   unit,
-  error, 
-  disabled = false, 
-  required = true 
+  error,
+  disabled = false,
+  required = true
 }: WeightInputProps) {
-  const { 
-    convertWeight, 
-    parseWeightInput, 
-    formatWeightPlaceholder, 
-    getWeightRange 
+  const {
+    convertWeight,
+    parseWeightInput,
+    formatWeightPlaceholder,
+    getWeightRange
   } = useUnitConversion();
-  
+
   const [localValue, setLocalValue] = useState('');
   const [touched, setTouched] = useState(false);
 
@@ -46,29 +47,29 @@ export function WeightInput({
     if (required && (!inputStr || inputStr.trim() === '')) {
       return 'Weight is required';
     }
-    
+
     if (!inputStr || inputStr.trim() === '') {
       return undefined; // Allow empty for optional fields
     }
-    
+
     const weightKg = parseWeightInput(inputStr, currentUnit);
-    
+
     if (isNaN(weightKg) || weightKg <= 0) {
       return 'Please enter a valid weight';
     }
-    
+
     if (weightKg < ValidationRanges.weightKg.min || weightKg > ValidationRanges.weightKg.max) {
       const range = getWeightRange(currentUnit);
       return `Weight must be between ${range.min} and ${range.max} ${range.unit}`;
     }
-    
+
     return undefined;
   }, [required, parseWeightInput, getWeightRange]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setLocalValue(newValue);
-    
+
     // Only validate and update parent if value is valid
     const validationError = validateWeight(newValue, unit);
     if (!validationError && newValue.trim() !== '') {
@@ -82,7 +83,7 @@ export function WeightInput({
   const handleBlur = useCallback(() => {
     setTouched(true);
     const validationError = validateWeight(localValue, unit);
-    
+
     if (!validationError && localValue.trim() !== '') {
       const weightKg = parseWeightInput(localValue, unit);
       if (weightKg > 0) {
@@ -97,13 +98,13 @@ export function WeightInput({
 
   return (
     <div className="space-y-2">
-      <Label 
+      <Label
         htmlFor="weight-input"
-        className={`block text-sm font-medium ${hasError ? 'text-red-600' : 'text-gray-700'}`}
+        className={`block text-sm font-medium ${hasError ? 'text-red-500' : 'text-foreground'}`}
       >
         Weight {required && <span className="text-red-500">*</span>}
       </Label>
-      
+
       <div className="relative">
         <Input
           id="weight-input"
@@ -118,27 +119,28 @@ export function WeightInput({
           max={range.max}
           step={unit === 'metric' ? '0.1' : '0.1'}
           className={`
-            w-full text-base pr-12
-            ${hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
-            ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+            w-full text-base pr-12 bg-surface border-border
+            focus:ring-2 focus:ring-primary/20 focus:border-primary
+            ${hasError ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
+            ${disabled ? 'bg-secondary opacity-50 cursor-not-allowed' : ''}
           `}
           aria-invalid={hasError}
           aria-describedby={hasError ? 'weight-error' : 'weight-help'}
         />
-        
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
-          <span className="text-sm font-medium">{range.unit}</span>
+
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <span className="text-sm font-medium text-muted">{range.unit}</span>
         </div>
       </div>
-      
-      <div id="weight-help" className="text-xs text-gray-500">
+
+      <div id="weight-help" className="text-xs text-muted">
         Range: {range.min}-{range.max} {range.unit}
       </div>
-      
+
       {hasError && (
-        <p 
+        <p
           id="weight-error"
-          className="text-sm text-red-600 flex items-center"
+          className="text-sm text-red-500 flex items-center animate-fade-in"
           role="alert"
           aria-live="polite"
         >

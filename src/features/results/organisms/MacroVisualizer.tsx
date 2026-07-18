@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
 import { MacroRing } from '../atoms/MacroRing';
 import { cn } from '../../../lib/utils';
@@ -24,14 +24,14 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
       color: MACRO_COLORS.protein
     },
     {
-      name: 'Carbs', 
+      name: 'Carbs',
       value: macroPlan.carbPct,
       grams: macroPlan.carbsG,
       color: MACRO_COLORS.carbs
     },
     {
       name: 'Fat',
-      value: macroPlan.fatPct, 
+      value: macroPlan.fatPct,
       grams: macroPlan.fatG,
       color: MACRO_COLORS.fat
     }
@@ -56,88 +56,78 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
   };
 
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Main Distribution Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Macronutrient Distribution</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Pie Chart */}
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend 
-                    formatter={(value, entry: any) => (
-                      <span style={{ color: entry.color }}>{value}</span>
-                    )}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Detailed Breakdown */}
-            <div className="space-y-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">
-                  {macroPlan.targetCalories}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Total Daily Calories
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {pieData.map((macro) => (
-                  <div 
-                    key={macro.name}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div 
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: macro.color }}
-                      />
-                      <span className="font-medium">{macro.name}</span>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold">
-                        {Math.round(macro.grams)}g
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {macro.value}%
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+    <Card className={cn("border-border bg-surface shadow-sm", className)}>
+      <CardHeader className="border-b border-border/50 bg-secondary/30">
+        <CardTitle className="text-lg font-semibold text-foreground">Macronutrient Distribution</CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          {/* Pie Chart */}
+          <div className="h-64 relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={4}
+                  dataKey="value"
+                  stroke="none"
+                  cornerRadius={4}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+            {/* Center Text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-2xl font-bold text-foreground">{macroPlan.targetCalories}</span>
+              <span className="text-xs text-muted uppercase tracking-wider">kcal</span>
+              <span className="text-[10px] text-muted uppercase tracking-[0.2em] mt-1">
+                Total Daily Calories
+              </span>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Individual Macro Rings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Daily Targets</CardTitle>
-        </CardHeader>
-        <CardContent>
+          {/* Detailed Breakdown */}
+          <div className="space-y-6">
+            <div className="space-y-3">
+              {pieData.map((macro) => (
+                <div
+                  key={macro.name}
+                  className="flex items-center justify-between p-4 bg-secondary/50 rounded-xl border border-border/50 hover:border-border transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className="w-3 h-3 rounded-full ring-2 ring-offset-2 ring-offset-surface"
+                      style={{ backgroundColor: macro.color, '--tw-ring-color': macro.color } as any}
+                    />
+                    <span className="font-medium text-foreground">{macro.name}</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-foreground">
+                      {Math.round(macro.grams)}g
+                    </div>
+                    <div className="text-xs text-muted font-medium">
+                      {macro.value}%
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Daily Targets + Calorie Breakdown */}
+        <div className="mt-8 pt-8 border-t border-border">
+          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6 text-center">
+            Daily Targets
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <MacroRing
               value={macroPlan.proteinG}
@@ -163,33 +153,33 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
           </div>
 
           {/* Calorie Breakdown */}
-          <div className="mt-6 pt-6 border-t">
-            <h4 className="text-sm font-medium text-gray-900 mb-3">
+          <div className="mt-8 pt-6 border-t border-border/50">
+            <h4 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4 text-center">
               Calorie Breakdown
             </h4>
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-lg font-semibold text-blue-600">
+              <div className="p-3 rounded-lg bg-blue-50/50">
+                <div className="text-lg font-bold text-blue-600">
                   {Math.round(macroPlan.proteinG * 4)}
                 </div>
-                <div className="text-xs text-gray-600">kcal from protein</div>
+                <div className="text-[10px] uppercase tracking-wide text-blue-600/70 font-medium">kcal from protein</div>
               </div>
-              <div>
-                <div className="text-lg font-semibold text-green-600">
+              <div className="p-3 rounded-lg bg-green-50/50">
+                <div className="text-lg font-bold text-green-600">
                   {Math.round(macroPlan.carbsG * 4)}
                 </div>
-                <div className="text-xs text-gray-600">kcal from carbs</div>
+                <div className="text-[10px] uppercase tracking-wide text-green-600/70 font-medium">kcal from carbs</div>
               </div>
-              <div>
-                <div className="text-lg font-semibold text-amber-600">
+              <div className="p-3 rounded-lg bg-amber-50/50">
+                <div className="text-lg font-bold text-amber-600">
                   {Math.round(macroPlan.fatG * 9)}
                 </div>
-                <div className="text-xs text-gray-600">kcal from fat</div>
+                <div className="text-[10px] uppercase tracking-wide text-amber-600/70 font-medium">kcal from fat</div>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 } 

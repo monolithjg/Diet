@@ -1,5 +1,3 @@
-// Cleaned-up Wizard component with correct Zustand selector, safe state updates, and logging
-
 import React, { Suspense, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
@@ -33,7 +31,7 @@ type UserValidationData = {
 };
 
 export default function Wizard() {
-  console.count('Wizard render');
+  const navigate = useNavigate();
 
   const step = useStore(state => state.ui.step);
   const guidance = useStore(state => state.ui.guidance);
@@ -49,7 +47,9 @@ export default function Wizard() {
 
   const userValidationData = { age, sex, weightKg, heightCm, activityLevel, goal };
 
-  const navigate = useNavigate();
+  const navigateTo = (path: string) => {
+    navigate(path);
+  };
   useChunkPreloader();
   useConnectionAware();
 
@@ -116,29 +116,22 @@ export default function Wizard() {
   const userGoal = useStore(state => state.user.goal);
 
   const handleNext = useCallback(() => {
-    console.log('[Wizard] handleNext called, current step:', step);
     updateUi((prev: any) => {
-      console.log('[Wizard] updateUi called in handleNext, prev.step:', prev.step);
       if (prev.step >= WIZARD_STEP_TITLES.length) {
-        console.log('[Wizard] updateUi: already at last step, returning prev');
         return prev;
       }
-      console.log('[Wizard] updateUi: advancing to step', prev.step + 1);
       return { ...prev, step: prev.step + 1 };
     });
     if (step >= WIZARD_STEP_TITLES.length) {
-      console.log('[Wizard] handleNext: triggering calculations before navigating to /results');
-      const userData = useStore.getState().user;
-      console.log('[Wizard] User data at calculation:', userData);
       recalcRmr();
       // Use user's actual PAL key and goal for setTdee
       setTdee(palKey, userGoal === 'loss' ? -0.2 : userGoal === 'gain' ? 0.15 : 0);
       setMacros();
       setTimeout(() => {
-        navigate('/results');
+        navigateTo('/results');
       }, 100); // Delay navigation to allow state to update
     }
-  }, [step, updateUi, navigate, recalcRmr, setTdee, setMacros, palKey, userGoal]);
+  }, [step, updateUi, navigateTo, recalcRmr, setTdee, setMacros, palKey, userGoal]);
 
   const handleBack = useCallback(() => {
     if (step > 1) updateUi({ step: step - 1 });

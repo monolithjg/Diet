@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+void React;
 import type { Sex } from '../../../models/UserInput';
 
 interface SexSelectorProps {
@@ -10,29 +11,29 @@ interface SexSelectorProps {
 }
 
 const sexOptions: { value: Sex; label: string; description: string }[] = [
-  { 
-    value: 'male', 
-    label: 'Male', 
-    description: 'Assigned male at birth' 
+  {
+    value: 'male',
+    label: 'Male',
+    description: 'Assigned male at birth'
   },
-  { 
-    value: 'female', 
-    label: 'Female', 
-    description: 'Assigned female at birth' 
+  {
+    value: 'female',
+    label: 'Female',
+    description: 'Assigned female at birth'
   },
-  { 
-    value: 'other', 
-    label: 'Other/Prefer not to say', 
-    description: 'Non-binary or prefer not to specify' 
+  {
+    value: 'other',
+    label: 'Other/Prefer not to say',
+    description: 'Non-binary or prefer not to specify'
   }
 ];
 
-export function SexSelector({ 
-  value, 
-  onChange, 
-  error, 
-  disabled = false, 
-  required = true 
+export function SexSelector({
+  value,
+  onChange,
+  error,
+  disabled = false,
+  required = true
 }: SexSelectorProps) {
   const handleChange = useCallback((selectedSex: Sex) => {
     onChange(selectedSex);
@@ -41,27 +42,27 @@ export function SexSelector({
   const hasError = !!error;
 
   return (
-    <fieldset className="space-y-2">
-      <legend className={`block text-sm font-medium ${hasError ? 'text-red-600' : 'text-gray-700'}`}>
+    <fieldset className="space-y-3">
+      <legend className="block text-sm font-medium text-foreground mb-1">
         Biological Sex {required && <span className="text-red-500">*</span>}
       </legend>
-      
-      <p className="text-xs text-gray-500 mb-3">
+
+      <p className="text-xs text-muted mb-4">
         Used for accurate metabolic calculations
       </p>
-      
-      <div className="space-y-3" role="radiogroup" aria-invalid={hasError}>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" role="radiogroup" aria-invalid={hasError}>
         {sexOptions.map((option) => (
           <label
             key={option.value}
             className={`
-              relative flex items-start p-4 border-2 rounded-lg cursor-pointer
+              relative flex flex-col p-4 rounded-xl border-2 cursor-pointer
               transition-all duration-200 ease-in-out
-              ${value === option.value 
-                ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
-                : 'border-gray-200 hover:border-gray-300'
+              ${value === option.value
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-sm'
+                : 'border-border hover:border-primary/50 hover:bg-secondary/50'
               }
-              ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}
+              ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
               ${hasError ? 'border-red-200' : ''}
             `}
           >
@@ -75,52 +76,51 @@ export function SexSelector({
               className="sr-only"
               aria-describedby={`sex-${option.value}-description`}
             />
-            
-            <div className="flex items-start flex-1 min-w-0">
+
+            <div className="flex items-center justify-between mb-2">
               <div className={`
-                flex-shrink-0 w-5 h-5 rounded-full border-2 mr-3 mt-0.5
-                flex items-center justify-center
+                w-5 h-5 rounded-full border-2 flex items-center justify-center
                 transition-colors duration-200
-                ${value === option.value 
-                  ? 'border-primary bg-primary' 
-                  : 'border-gray-300'
+                ${value === option.value
+                  ? 'border-primary bg-primary'
+                  : 'border-muted'
                 }
               `}>
                 {value === option.value && (
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 )}
               </div>
-              
-              <div className="flex-1 min-w-0">
-                <div className={`
-                  text-base font-medium
-                  ${value === option.value ? 'text-primary' : 'text-gray-900'}
-                `}>
-                  {option.label}
+              {value === option.value && (
+                <div className="w-5 h-5 flex-shrink-0">
+                  <svg
+                    className="w-full h-full text-primary"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    width="20"
+                    height="20"
+                  >
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
                 </div>
-                <div 
-                  id={`sex-${option.value}-description`}
-                  className="text-sm text-gray-500 mt-1"
-                >
-                  {option.description}
-                </div>
-              </div>
+              )}
             </div>
-            
-            {value === option.value && (
-              <div className="flex-shrink-0 ml-2">
-                <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-            )}
+
+            <div className={`font-semibold text-base mb-1 ${value === option.value ? 'text-primary' : 'text-foreground'}`}>
+              {option.label}
+            </div>
+            <div
+              id={`sex-${option.value}-description`}
+              className="text-xs text-muted"
+            >
+              {option.description}
+            </div>
           </label>
         ))}
       </div>
-      
+
       {hasError && (
-        <p 
-          className="text-sm text-red-600 flex items-center mt-2"
+        <p
+          className="text-sm text-red-500 flex items-center mt-2 animate-fade-in"
           role="alert"
           aria-live="polite"
         >

@@ -206,7 +206,6 @@ export const useStore = create<StoreState>()(
       if (calcData.macroPlan) Object.assign(state.calc.macroPlan, calcData.macroPlan);
     }),
     updateUi: (uiData: Partial<typeof initialUi> | ((prev: typeof initialUi) => Partial<typeof initialUi>)) => {
-      console.log('[updateUi called]', uiData, new Error().stack);
       set((state: any) => {
         if (typeof uiData === 'function') {
           const updated = uiData(state.ui);
@@ -265,7 +264,6 @@ export const useStore = create<StoreState>()(
       const { user } = state;
       let rmrValue = 0;
       try {
-        console.log('[Store] recalcRmr input user:', user, 'formula:', selected);
         switch (selected) {
           case 'manual':
             rmrValue = user.rmrManual !== undefined ? manualRmr(user.rmrManual).rmr : mifflinStJeor(user).rmr;
@@ -279,7 +277,6 @@ export const useStore = create<StoreState>()(
           default:
             rmrValue = mifflinStJeor(user).rmr;
         }
-        console.log('[Store] recalcRmr output rmrValue:', rmrValue);
       } catch (err) {
         console.error('RMR calculation failed:', err);
         return;
@@ -287,7 +284,6 @@ export const useStore = create<StoreState>()(
       set((draft: any) => {
         draft.calc.derivedMetrics.rmr = rmrValue;
         draft.calc.derivedMetrics.formulaUsed = selected;
-        console.log('[Store] recalcRmr set derivedMetrics.rmr:', draft.calc.derivedMetrics.rmr);
       });
       scheduleGuidanceUpdate(get);
     },
@@ -387,12 +383,6 @@ export const useStore = create<StoreState>()(
       set((state) => {
         if (state.calc.derivedMetrics.tdee > 0) {
           const dietStyle = toDietKey(state.user.dietStyle);
-          console.log('[Store] setMacros input:', {
-            targetKcal: state.calc.derivedMetrics.tdee,
-            weightKg: state.user.weightKg,
-            dietStyle,
-            goal: ['loss', 'gain', 'maintain'].includes(state.user.goal) ? state.user.goal : 'maintain',
-          });
           const macroResult = allocateMacros({
             targetKcal: state.calc.derivedMetrics.tdee,
             weightKg: state.user.weightKg,
@@ -404,7 +394,6 @@ export const useStore = create<StoreState>()(
             carbG,
             ...macroRest
           } = macroResult;
-          console.log('[Store] setMacros output macros:', macroResult);
           state.calc.macroPlan = { 
             ...state.calc.macroPlan, 
             ...macroRest, 
@@ -434,7 +423,6 @@ export const useStore = create<StoreState>()(
           });
           state.cgeGuidance = contextualGuidance;
           state.ui.guidance = mergeGuidance(state.calc.macroGuidance, contextualGuidance);
-          console.log('[Store] setMacros set macroPlan.targetCalories:', state.calc.macroPlan.targetCalories);
           persistState(get());
         }
       });
