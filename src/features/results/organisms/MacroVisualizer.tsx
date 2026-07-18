@@ -88,6 +88,9 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-2xl font-bold text-foreground">{macroPlan.targetCalories}</span>
               <span className="text-xs text-muted uppercase tracking-wider">kcal</span>
+              <span className="text-[10px] text-muted uppercase tracking-[0.2em] mt-1">
+                Total Daily Calories
+              </span>
             </div>
           </div>
 
@@ -122,6 +125,9 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
 
         {/* Daily Targets + Calorie Breakdown */}
         <div className="mt-8 pt-8 border-t border-border">
+          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6 text-center">
+            Daily Targets
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <MacroRing
               value={macroPlan.proteinG}
@@ -149,7 +155,7 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
           {/* Calorie Breakdown */}
           <div className="mt-8 pt-6 border-t border-border/50">
             <h4 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4 text-center">
-              Calorie Source Breakdown
+              Calorie Breakdown
             </h4>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="p-3 rounded-lg bg-blue-50/50">

@@ -31,7 +31,6 @@ type UserValidationData = {
 };
 
 export default function Wizard() {
-  console.count('Wizard render');
   const navigate = useNavigate();
 
   const step = useStore(state => state.ui.step);
@@ -117,20 +116,13 @@ export default function Wizard() {
   const userGoal = useStore(state => state.user.goal);
 
   const handleNext = useCallback(() => {
-    console.log('[Wizard] handleNext called, current step:', step);
     updateUi((prev: any) => {
-      console.log('[Wizard] updateUi called in handleNext, prev.step:', prev.step);
       if (prev.step >= WIZARD_STEP_TITLES.length) {
-        console.log('[Wizard] updateUi: already at last step, returning prev');
         return prev;
       }
-      console.log('[Wizard] updateUi: advancing to step', prev.step + 1);
       return { ...prev, step: prev.step + 1 };
     });
     if (step >= WIZARD_STEP_TITLES.length) {
-      console.log('[Wizard] handleNext: triggering calculations before navigating to /results');
-      const userData = useStore.getState().user;
-      console.log('[Wizard] User data at calculation:', userData);
       recalcRmr();
       // Use user's actual PAL key and goal for setTdee
       setTdee(palKey, userGoal === 'loss' ? -0.2 : userGoal === 'gain' ? 0.15 : 0);

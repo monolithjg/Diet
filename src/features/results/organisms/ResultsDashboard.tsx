@@ -96,7 +96,7 @@ export function ResultsDashboard({
       {/* Header Section */}
       <div className="text-center space-y-4 py-8">
         <h1 className="text-4xl font-normal text-foreground tracking-tight">
-          Your Nutrition Plan
+          Your Personalized Nutrition Plan
         </h1>
         <p className="text-lg text-muted max-w-2xl mx-auto">
           Complete macronutrient breakdown with personalized guidance
