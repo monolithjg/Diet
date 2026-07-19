@@ -2,10 +2,20 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes'; 
 import { onCLS, onFCP, onLCP, onTTFB, onINP } from 'web-vitals'
+import type { Metric } from 'web-vitals'
 import './index.css'
 
-// Register service worker for caching and performance
-if ('serviceWorker' in navigator) {
+// Production owns its cache lifecycle. In development, remove any registration
+// left by an older build so HMR and stylesheet changes always come from Vite.
+if (import.meta.env.DEV && 'serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    const registrations = await navigator.serviceWorker.getRegistrations()
+    await Promise.all(registrations.map((registration) => registration.unregister()))
+  })
+}
+
+// Register service worker for production caching and performance
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js', {
@@ -40,7 +50,7 @@ if ('serviceWorker' in navigator) {
 // Initialize performance monitoring
 function initializePerformanceMonitoring() {
   // Web Vitals monitoring with reporting
-  const reportWebVital = (metric: any) => {
+  const reportWebVital = (metric: Metric) => {
     console.log('Web Vital:', metric)
     
     // Send to service worker for batching

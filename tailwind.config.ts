@@ -9,7 +9,6 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          'Inter',
           'ui-sans-serif',
           'system-ui',
           '-apple-system',
@@ -26,9 +25,15 @@ export default {
         surface: "var(--surface)",
         foreground: "var(--fg)",
         muted: "var(--muted)",
+        "muted-foreground": "var(--muted)",
         primary: {
-          DEFAULT: "#1a73e8", // Google Blue
+          50: "#e8f0fe",
+          400: "#669df6",
+          600: "#1967d2",
+          700: "#185abc",
+          DEFAULT: "var(--primary)",
           foreground: "#ffffff",
+          light: "#8ab4f8",
         },
         secondary: {
           DEFAULT: "#f1f3f4", // Google Light Gray
@@ -39,7 +44,9 @@ export default {
           foreground: "#1967d2", // Google Blue 700
         },
         border: "var(--card-border)",
-        ring: "rgba(26, 115, 232, 0.4)", // Google Blue Ring
+        ring: "var(--ring)",
+        danger: "#d93025",
+        destructive: "#d93025",
       },
       boxShadow: {
         'soft': '0 2px 10px rgba(0, 0, 0, 0.03), 0 10px 25px rgba(0, 0, 0, 0.04)',

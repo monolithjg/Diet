@@ -9,7 +9,7 @@ const Layout: React.FC = () => {
         <div className="min-h-screen flex flex-col font-sans text-foreground bg-background transition-colors duration-300">
             {/* Header */}
             <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-surface/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface/60">
-                <div className="container flex h-16 max-w-screen-xl items-center justify-between px-4 md:px-8">
+                <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 md:px-8">
                     <div className="flex items-center gap-2">
                         <Link to="/" className="flex items-center gap-2 font-bold text-xl tracking-tight hover:opacity-80 transition-opacity">
                             <span className="text-primary">Diet</span>Calculator

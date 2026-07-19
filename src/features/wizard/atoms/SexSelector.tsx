@@ -10,21 +10,18 @@ interface SexSelectorProps {
   required?: boolean;
 }
 
-const sexOptions: { value: Sex; label: string; description: string }[] = [
+const sexOptions: { value: Sex; label: string }[] = [
   {
     value: 'male',
-    label: 'Male',
-    description: 'Assigned male at birth'
+    label: 'Male'
   },
   {
     value: 'female',
-    label: 'Female',
-    description: 'Assigned female at birth'
+    label: 'Female'
   },
   {
     value: 'other',
-    label: 'Other/Prefer not to say',
-    description: 'Non-binary or prefer not to specify'
+    label: 'Other/Prefer not to say'
   }
 ];
 
@@ -74,7 +71,6 @@ export function SexSelector({
               onChange={() => handleChange(option.value)}
               disabled={disabled}
               className="sr-only"
-              aria-describedby={`sex-${option.value}-description`}
             />
 
             <div className="flex items-center justify-between mb-2">
@@ -105,14 +101,8 @@ export function SexSelector({
               )}
             </div>
 
-            <div className={`font-semibold text-base mb-1 ${value === option.value ? 'text-primary' : 'text-foreground'}`}>
+            <div className={`font-semibold text-base ${value === option.value ? 'text-primary' : 'text-foreground'}`}>
               {option.label}
-            </div>
-            <div
-              id={`sex-${option.value}-description`}
-              className="text-xs text-muted"
-            >
-              {option.description}
             </div>
           </label>
         ))}
