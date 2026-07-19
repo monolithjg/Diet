@@ -51,10 +51,10 @@ export default function Results() {
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-md mx-auto">
           <div className="text-6xl mb-6">📊</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
             No Results Available
           </h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-muted mb-8">
             Complete the nutrition calculator to see your personalized results and recommendations.
           </p>
           <button
@@ -64,7 +64,7 @@ export default function Results() {
                 window.location.href = '/';
               }
             }}
-            className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary-hover transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -77,7 +77,7 @@ export default function Results() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <ResultsDashboard
           derivedMetrics={metrics}
@@ -89,4 +89,4 @@ export default function Results() {
       </div>
     </div>
   );
-} 
+}

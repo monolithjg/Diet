@@ -15,7 +15,7 @@ const stressLevels = [
     label: 'Low Stress',
     description: 'Generally calm and relaxed',
     emoji: '😌',
-    color: 'text-green-600'
+    color: 'text-success'
   },
   {
     value: 2 as const,
@@ -29,15 +29,15 @@ const stressLevels = [
     label: 'High Stress',
     description: 'Frequently feeling overwhelmed',
     emoji: '😰',
-    color: 'text-red-600'
+    color: 'text-error'
   }
 ];
 
-export function StressLevelScale({ 
-  value, 
-  onChange, 
-  error, 
-  helperText 
+export function StressLevelScale({
+  value,
+  onChange,
+  error,
+  helperText
 }: StressLevelScaleProps) {
   const getStressFeedback = (level?: 1 | 2 | 3) => {
     if (!level) return '';
@@ -54,10 +54,10 @@ export function StressLevelScale({
       <Label className={error ? "text-destructive" : ""}>
         How would you rate your current stress level?
       </Label>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {stressLevels.map((level) => (
-          <Card 
+          <Card
             key={level.value}
             className={cn(
               "cursor-pointer transition-all hover:shadow-md",
@@ -76,7 +76,7 @@ export function StressLevelScale({
           </Card>
         ))}
       </div>
-      
+
       <div className="flex justify-center">
         <button
           type="button"
@@ -89,12 +89,12 @@ export function StressLevelScale({
           Clear selection
         </button>
       </div>
-      
+
       {displayHelperText && (
         <p className={cn(
           "text-sm",
-          error ? "text-destructive" : 
-          value === 3 ? "text-amber-600" :
+          error ? "text-destructive" :
+          value === 3 ? "text-warning" :
           "text-muted-foreground"
         )}>
           {displayHelperText}
@@ -106,4 +106,4 @@ export function StressLevelScale({
       </div>
     </div>
   );
-} 
+}

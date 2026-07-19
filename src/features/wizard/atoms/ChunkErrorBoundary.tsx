@@ -58,18 +58,18 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
       return (
         <div className={cn("min-h-[400px] flex flex-col items-center justify-center p-8 text-center", this.props.className)}>
           {/* Error Icon */}
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
-            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 bg-error-soft rounded-full flex items-center justify-center mb-6">
+            <svg className="w-8 h-8 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
 
           {/* Error Content */}
           <div className="max-w-md">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               Unable to Load {this.props.stepName || 'Step'}
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted mb-6">
               There was a problem loading this section. This might be due to a network issue or temporary problem.
             </p>
 
@@ -77,13 +77,13 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleRetry}
-                className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors touch-manipulation min-h-[44px]"
+                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary-hover transition-colors touch-manipulation min-h-[44px]"
               >
                 Try Again
               </button>
               <button
                 onClick={this.handleGoHome}
-                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors touch-manipulation min-h-[44px]"
+                className="px-6 py-3 bg-secondary text-foreground rounded-lg font-medium hover:bg-surface-overlay transition-colors touch-manipulation min-h-[44px]"
               >
                 Go Home
               </button>
@@ -92,10 +92,10 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
             {/* Technical Details (Development Only) */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                <summary className="cursor-pointer text-sm text-muted hover:text-foreground">
                   Technical Details
                 </summary>
-                <pre className="mt-2 p-3 bg-gray-100 rounded text-xs text-gray-600 overflow-auto">
+                <pre className="mt-2 p-3 bg-secondary rounded text-xs text-muted overflow-auto">
                   {this.state.error.message}
                   {this.state.error.stack && '\n\n' + this.state.error.stack}
                 </pre>
@@ -104,7 +104,7 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
           </div>
 
           {/* Help Text */}
-          <div className="mt-8 text-sm text-gray-500">
+          <div className="mt-8 text-sm text-muted">
             💡 If this problem persists, try refreshing the page or check your internet connection
           </div>
         </div>

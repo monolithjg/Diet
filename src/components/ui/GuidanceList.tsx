@@ -23,13 +23,13 @@ const typeOrder: Record<GuidanceMessage['type'], number> = {
   info: 3
 };
 
-export function GuidanceList({ 
-  guidance, 
-  loading = false, 
+export function GuidanceList({
+  guidance,
+  loading = false,
   title = "Personalized Guidance",
   showFilters = true,
   maxItems,
-  className 
+  className
 }: GuidanceListProps) {
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [filterCategory, setFilterCategory] = useState<FilterCategory>('all');
@@ -41,11 +41,11 @@ export function GuidanceList({
       // Disclaimer always last
       if (a.key.includes('disclaimer')) return 1;
       if (b.key.includes('disclaimer')) return -1;
-      
+
       // Sort by type priority
       return typeOrder[a.type] - typeOrder[b.type];
     });
-    
+
     return maxItems ? sorted.slice(0, maxItems) : sorted;
   }, [guidance, maxItems]);
 
@@ -82,7 +82,7 @@ export function GuidanceList({
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
             <div key={i} className="animate-pulse">
-              <div className="h-20 bg-gray-200 rounded-lg"></div>
+              <div className="h-20 bg-border rounded-lg"></div>
             </div>
           ))}
         </div>
@@ -94,7 +94,7 @@ export function GuidanceList({
     return (
       <div className={cn("text-center py-8", className)}>
         <div className="text-4xl mb-4">✨</div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="text-lg font-medium text-foreground mb-2">
           No guidance available yet
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -114,7 +114,7 @@ export function GuidanceList({
             ({filteredGuidance.length} {filteredGuidance.length === 1 ? 'recommendation' : 'recommendations'})
           </span>
         </h3>
-        
+
         {filteredGuidance.length > 0 && (
           <Button
             variant="outline"
@@ -131,14 +131,14 @@ export function GuidanceList({
         <div className="space-y-3">
           {/* Type Filter */}
           <div className="flex flex-wrap gap-2">
-            <span className="text-sm font-medium text-gray-700">Filter by priority:</span>
+            <span className="text-sm font-medium text-foreground">Filter by priority:</span>
             <button
               onClick={() => setFilterType('all')}
               className={cn(
                 "px-3 py-1 rounded-full text-xs font-medium transition-colors",
-                filterType === 'all' 
-                  ? "bg-primary text-primary-foreground" 
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                filterType === 'all'
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-foreground hover:bg-surface-overlay"
               )}
             >
               All ({guidance.length})
@@ -146,16 +146,16 @@ export function GuidanceList({
             {(['critical', 'warn', 'info'] as const).map(type => {
               const count = typeCounts[type] || 0;
               if (count === 0) return null;
-              
+
               return (
                 <button
                   key={type}
                   onClick={() => setFilterType(type)}
                   className={cn(
                     "px-3 py-1 rounded-full text-xs font-medium transition-colors capitalize",
-                    filterType === type 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    filterType === type
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-foreground hover:bg-surface-overlay"
                   )}
                 >
                   {type} ({count})
@@ -167,14 +167,14 @@ export function GuidanceList({
           {/* Category Filter */}
           {availableCategories.length > 1 && (
             <div className="flex flex-wrap gap-2">
-              <span className="text-sm font-medium text-gray-700">Filter by category:</span>
+              <span className="text-sm font-medium text-foreground">Filter by category:</span>
               <button
                 onClick={() => setFilterCategory('all')}
                 className={cn(
                   "px-3 py-1 rounded-full text-xs font-medium transition-colors",
-                  filterCategory === 'all' 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  filterCategory === 'all'
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-foreground hover:bg-surface-overlay"
                 )}
               >
                 All Categories
@@ -185,9 +185,9 @@ export function GuidanceList({
                   onClick={() => setFilterCategory(category as FilterCategory)}
                   className={cn(
                     "px-3 py-1 rounded-full text-xs font-medium transition-colors",
-                    filterCategory === category 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    filterCategory === category
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-foreground hover:bg-surface-overlay"
                   )}
                 >
                   {category === 'mealTiming' ? 'Meal Timing' :
@@ -216,7 +216,7 @@ export function GuidanceList({
       {/* Footer message if filtered */}
       {filteredGuidance.length < guidance.length && (
         <p className="text-xs text-muted-foreground text-center">
-          Showing {filteredGuidance.length} of {guidance.length} recommendations. 
+          Showing {filteredGuidance.length} of {guidance.length} recommendations.
           Adjust filters to see more.
         </p>
       )}

@@ -13,7 +13,7 @@ interface ManualRmrInputProps {
   disabled?: boolean;
 }
 
-function ManualRmrInput({ 
+function ManualRmrInput({
   value,
   onChange,
   showManualRmrInput,
@@ -27,16 +27,16 @@ function ManualRmrInput({
     if (!rmrStr || rmrStr.trim() === '') {
       return undefined; // Optional field
     }
-    
+
     const rmr = parseInt(rmrStr);
     if (isNaN(rmr)) {
       return 'Please enter a valid RMR value';
     }
-    
+
     if (rmr < ValidationRanges.manualRmr.min || rmr > ValidationRanges.manualRmr.max) {
       return `Manual RMR must be between ${ValidationRanges.manualRmr.min} and ${ValidationRanges.manualRmr.max} kcal`;
     }
-    
+
     return undefined;
   }, []);
 
@@ -64,21 +64,21 @@ function ManualRmrInput({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <Label className="text-sm font-medium text-gray-700">
+          <Label className="text-sm font-medium text-foreground">
             Manual RMR Override (Advanced)
           </Label>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-muted mt-1">
             If you know your Resting Metabolic Rate from medical testing.
           </p>
         </div>
-        
+
         <button
           type="button"
           onClick={onToggleShow}
           disabled={disabled}
           className={`
             text-sm font-medium transition-colors duration-200
-            ${showManualRmrInput ? 'text-primary hover:text-primary/80' : 'text-gray-500 hover:text-gray-700'}
+            ${showManualRmrInput ? 'text-primary hover:text-primary-hover' : 'text-muted hover:text-foreground'}
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
         >
@@ -88,15 +88,15 @@ function ManualRmrInput({
 
       {showManualRmrInput && (
         <div className="space-y-3">
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <div className="bg-warning-soft border border-warning/30 rounded-lg p-3">
             <div className="flex items-start">
-              <svg className="w-5 h-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-warning mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
               <div>
-                <p className="text-sm font-medium text-amber-800">Advanced Setting Warning</p>
-                <p className="text-xs text-amber-700 mt-1">
-                  Only use this if you have your RMR from professional testing. 
+                <p className="text-sm font-medium text-warning-foreground">Advanced Setting Warning</p>
+                <p className="text-xs text-warning-foreground mt-1">
+                  Only use this if you have your RMR from professional testing.
                   This will override all formula-based calculations and may lead to inaccurate recommendations if misused.
                 </p>
               </div>
@@ -117,26 +117,26 @@ function ManualRmrInput({
               step="1"
               className={`
                 w-full text-base pr-16
-                ${hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
-                ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+                ${hasError ? 'border-error focus:border-error focus:ring-error/30' : ''}
+                ${disabled ? 'bg-secondary cursor-not-allowed' : ''}
               `}
               aria-invalid={hasError}
               aria-describedby={hasError ? 'rmr-error' : 'rmr-help'}
             />
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-subtle">
               <span className="text-sm font-medium">kcal/day</span>
             </div>
           </div>
 
-          <div id="rmr-help" className="text-xs text-gray-500">
-            Range: {ValidationRanges.manualRmr.min} - {ValidationRanges.manualRmr.max} kcal/day. 
+          <div id="rmr-help" className="text-xs text-muted">
+            Range: {ValidationRanges.manualRmr.min} - {ValidationRanges.manualRmr.max} kcal/day.
             Current: {value ? `${value} kcal` : 'Not set'}
           </div>
 
           {hasError && (
-            <p 
+            <p
               id="rmr-error"
-              className="text-sm text-red-600 flex items-center"
+              className="text-sm text-error flex items-center"
               role="alert"
               aria-live="polite"
             >
@@ -152,4 +152,4 @@ function ManualRmrInput({
   );
 }
 
-export default ManualRmrInput; 
+export default ManualRmrInput;

@@ -85,7 +85,7 @@ export function UnitSelector({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <div className="text-sm font-medium text-gray-700 mb-2">
+      <div className="text-sm font-medium text-foreground mb-2">
         Preferred Units
       </div>
 
@@ -100,7 +100,7 @@ export function UnitSelector({
               relative p-3 rounded-lg border-2 text-left transition-all duration-200
               ${value === option.value
                 ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                : 'border-border hover:border-border-strong hover:bg-surface-subtle'
               }
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
@@ -108,10 +108,10 @@ export function UnitSelector({
             <div className="flex items-center space-x-2">
               <span className="text-lg">{option.icon}</span>
               <div>
-                <div className={`font-medium text-sm ${value === option.value ? 'text-primary' : 'text-gray-900'}`}>
+                <div className={`font-medium text-sm ${value === option.value ? 'text-primary' : 'text-foreground'}`}>
                   {option.label}
                 </div>
-                <div className="text-xs text-gray-500">{option.description}</div>
+                <div className="text-xs text-muted">{option.description}</div>
               </div>
             </div>
 
@@ -127,4 +127,4 @@ export function UnitSelector({
       </div>
     </div>
   );
-} 
+}

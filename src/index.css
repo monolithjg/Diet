@@ -4,29 +4,114 @@
 @source "./";
 
 :root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
 
-  /* Light Mode (Default) */
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --muted: #5f6368;
-  /* Google Gray 700 */
-  --fg: #202124;
-  /* Google Gray 900 */
-  --card-border: #dadce0;
-  /* Google Gray 300 */
-  --primary: #1a73e8;
-  /* Google Blue */
-  --ring: rgba(26, 115, 232, 0.5);
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --line-height-xs: 1rem;
+  --line-height-sm: 1.25rem;
+  --line-height-base: 1.5rem;
+  --line-height-lg: 1.75rem;
+  --line-height-xl: 1.75rem;
+  --line-height-2xl: 2rem;
+  --line-height-3xl: 2.25rem;
+  --line-height-4xl: 2.5rem;
+
+  /* Spacing: 4px base unit */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Border radii */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+
+  /* Page and surface colors */
+  --color-page: #f7f9fc;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f0f3f8;
+  --color-surface-raised: #ffffff;
+  --color-surface-overlay: #ffffff;
+  --color-control: #ffffff;
+
+  /* Primary accent */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
+  --color-primary-soft: #eaf1ff;
+  --color-on-primary: #ffffff;
+
+  /* Text */
+  --color-text: #172033;
+  --color-text-muted: #667085;
+  --color-text-subtle: #8a94a6;
+  --color-text-inverse: #ffffff;
+
+  /* Feedback */
+  --color-success: #16803c;
+  --color-success-soft: #ecfdf3;
+  --color-on-success: #0d542b;
+  --color-warning: #b54708;
+  --color-warning-soft: #fffaeb;
+  --color-on-warning: #7a2e0e;
+  --color-error: #b42318;
+  --color-error-soft: #fef3f2;
+  --color-on-error: #8a1c13;
+
+  /* Borders use contrast by hierarchy, not white opacity. */
+  --color-border-subtle: #e8edf3;
+  --color-border: #d5dce7;
+  --color-border-strong: #adb8c8;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06);
+  --shadow-md: 0 2px 4px rgb(16 24 40 / 0.06), 0 8px 18px rgb(16 24 40 / 0.07);
+  --shadow-lg: 0 4px 8px rgb(16 24 40 / 0.06), 0 18px 36px rgb(16 24 40 / 0.10);
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.04), 0 5px 14px rgb(16 24 40 / 0.05);
+  --shadow-card-hover: 0 2px 4px rgb(16 24 40 / 0.05), 0 12px 24px rgb(16 24 40 / 0.09);
+
+  /* Keyboard focus */
+  --focus-ring-color: rgb(37 99 235 / 0.42);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --focus-ring-offset-color: var(--color-page);
+
+  /* Backwards-compatible aliases for existing semantic utilities. */
+  --bg: var(--color-page);
+  --surface: var(--color-surface);
+  --muted: var(--color-text-muted);
+  --fg: var(--color-text);
+  --card-border: var(--color-border);
+  --primary: var(--color-primary);
+  --ring: var(--focus-ring-color);
 
   font-family: var(--font-sans);
-  line-height: 1.5;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
   font-weight: 400;
-
-  color-scheme: light;
-  color: var(--fg);
-  background-color: var(--bg);
-
+  color: var(--color-text);
+  background-color: var(--color-page);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -35,20 +120,54 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #202124;
-    /* Google Dark Background */
-    --surface: #303134;
-    /* Google Dark Surface */
-    --muted: #9aa0a6;
-    /* Google Gray 400 */
-    --fg: #e8eaed;
-    /* Google Gray 100 */
-    --card-border: #5f6368;
-    /* Google Gray 700 */
-    --primary: #8ab4f8;
-    /* Google Blue Light */
-    --ring: rgba(138, 180, 248, 0.5);
+    color-scheme: dark;
+
+    --color-page: #101217;
+    --color-surface: #171a21;
+    --color-surface-subtle: #1e222b;
+    --color-surface-raised: #20252e;
+    --color-surface-overlay: #252a34;
+    --color-control: #1b1f27;
+
+    --color-primary: #8ab4f8;
+    --color-primary-hover: #a8c7fa;
+    --color-primary-active: #c2d7fb;
+    --color-primary-soft: #1c2a42;
+    --color-on-primary: #10213f;
+
+    --color-text: #f0f2f5;
+    --color-text-muted: #a7afbc;
+    --color-text-subtle: #7f8998;
+    --color-text-inverse: #12151b;
+
+    --color-success: #75d596;
+    --color-success-soft: #152a20;
+    --color-on-success: #a6e8bb;
+    --color-warning: #f5c451;
+    --color-warning-soft: #302713;
+    --color-on-warning: #f9d97f;
+    --color-error: #ff8a80;
+    --color-error-soft: #321d1d;
+    --color-on-error: #ffb4ad;
+
+    /* Deliberately neutral dark borders: no pure-white strokes. */
+    --color-border-subtle: #262b34;
+    --color-border: #353b46;
+    --color-border-strong: #4a5361;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.28);
+    --shadow-md: 0 2px 5px rgb(0 0 0 / 0.28), 0 10px 22px rgb(0 0 0 / 0.20);
+    --shadow-lg: 0 4px 10px rgb(0 0 0 / 0.30), 0 20px 44px rgb(0 0 0 / 0.25);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.22), 0 7px 18px rgb(0 0 0 / 0.16);
+    --shadow-card-hover: 0 2px 5px rgb(0 0 0 / 0.25), 0 14px 30px rgb(0 0 0 / 0.22);
+
+    --focus-ring-color: rgb(138 180 248 / 0.55);
+    --focus-ring-offset-color: var(--color-page);
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -56,12 +175,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: var(--font-sans);
-  background-color: var(--bg);
-  color: var(--fg);
+  background-color: var(--color-page);
+  color: var(--color-text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Keep native controls and navigation consistent with the application shell. */
 button,
 input,
 optgroup,
@@ -85,12 +203,11 @@ h6 {
   letter-spacing: -0.025em;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+::selection {
+  background: var(--color-primary-soft);
+  color: var(--color-text);
 }
 
-/* Custom scrollbar for Webkit */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -100,11 +217,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--muted);
-  border-radius: 4px;
-  opacity: 0.5;
+  background: var(--color-text-subtle);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--fg);
+  background: var(--color-text-muted);
 }

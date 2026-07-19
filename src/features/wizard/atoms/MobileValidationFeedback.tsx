@@ -52,35 +52,35 @@ export function MobileValidationFeedback({
     switch (type) {
       case 'error':
         return {
-          container: 'bg-red-50 border-red-200',
-          icon: 'text-red-500',
-          text: 'text-red-800',
-          details: 'text-red-600',
-          button: 'bg-red-100 text-red-800 hover:bg-red-200'
+          container: 'bg-error-soft border-error/30',
+          icon: 'text-error',
+          text: 'text-error-foreground',
+          details: 'text-error-foreground',
+          button: 'bg-error-soft text-error-foreground hover:bg-error/15'
         };
       case 'warning':
         return {
-          container: 'bg-amber-50 border-amber-200',
-          icon: 'text-amber-500',
-          text: 'text-amber-800',
-          details: 'text-amber-600',
-          button: 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+          container: 'bg-warning-soft border-warning/30',
+          icon: 'text-warning',
+          text: 'text-warning-foreground',
+          details: 'text-warning-foreground',
+          button: 'bg-warning-soft text-warning-foreground hover:bg-warning/15'
         };
       case 'success':
         return {
-          container: 'bg-green-50 border-green-200',
-          icon: 'text-green-500',
-          text: 'text-green-800',
-          details: 'text-green-600',
-          button: 'bg-green-100 text-green-800 hover:bg-green-200'
+          container: 'bg-success-soft border-success/30',
+          icon: 'text-success',
+          text: 'text-success-foreground',
+          details: 'text-success-foreground',
+          button: 'bg-success-soft text-success-foreground hover:bg-success/15'
         };
       case 'info':
         return {
-          container: 'bg-blue-50 border-blue-200',
-          icon: 'text-blue-500',
-          text: 'text-blue-800',
-          details: 'text-blue-600',
-          button: 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+          container: 'bg-primary-soft border-primary/25',
+          icon: 'text-primary',
+          text: 'text-primary',
+          details: 'text-primary',
+          button: 'bg-primary-soft text-primary hover:bg-primary/15'
         };
     }
   };
@@ -157,4 +157,4 @@ export function MobileValidationFeedback({
       </div>
     </div>
   );
-} 
+}

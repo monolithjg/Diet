@@ -38,7 +38,7 @@ export function HeightInput({
       const converted = convertHeight(value, unit);
       setLocalValue(converted.displayValue);
     } else {
-      // Handle initialization: if store has 0, show empty (not "0") 
+      // Handle initialization: if store has 0, show empty (not "0")
       setLocalValue('');
     }
   }, [value, unit, convertHeight]);
@@ -104,9 +104,9 @@ export function HeightInput({
     <div className="space-y-2">
       <Label
         htmlFor="height-input"
-        className={`block text-sm font-medium ${hasError ? 'text-red-500' : 'text-foreground'}`}
+        className={`block text-sm font-medium ${hasError ? 'text-error' : 'text-foreground'}`}
       >
-        Height {required && <span className="text-red-500">*</span>}
+        Height {required && <span className="text-error">*</span>}
       </Label>
 
       <div className="relative">
@@ -122,7 +122,7 @@ export function HeightInput({
           className={`
             w-full text-base pr-12 bg-surface border-border
             focus:ring-2 focus:ring-primary/20 focus:border-primary
-            ${hasError ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
+            ${hasError ? 'border-error focus:ring-error/30 focus:border-error' : ''}
             ${disabled ? 'bg-secondary opacity-50 cursor-not-allowed' : ''}
           `}
           aria-invalid={hasError}
@@ -145,7 +145,7 @@ export function HeightInput({
       {hasError && (
         <p
           id="height-error"
-          className="text-sm text-red-500 flex items-center animate-fade-in"
+          className="text-sm text-error flex items-center animate-fade-in"
           role="alert"
           aria-live="polite"
         >
@@ -157,4 +157,4 @@ export function HeightInput({
       )}
     </div>
   );
-} 
+}

@@ -11,15 +11,15 @@ interface ActionItemProps {
 }
 
 const priorityStyles = {
-  high: 'border-red-200 bg-red-50',
-  medium: 'border-amber-200 bg-amber-50',
-  low: 'border-blue-200 bg-blue-50'
+  high: 'border-error/30 bg-error-soft',
+  medium: 'border-warning/30 bg-warning-soft',
+  low: 'border-primary/25 bg-primary-soft'
 };
 
 const priorityDots = {
-  high: 'bg-red-500',
-  medium: 'bg-amber-500',
-  low: 'bg-blue-500'
+  high: 'bg-error',
+  medium: 'bg-warning',
+  low: 'bg-primary'
 };
 
 export function ActionItem({
@@ -93,4 +93,4 @@ export function ActionItem({
       )}
     </div>
   );
-} 
+}

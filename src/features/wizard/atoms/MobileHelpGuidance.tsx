@@ -48,13 +48,13 @@ export function MobileHelpGuidance({
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case 'basic':
-        return 'text-blue-600';
+        return 'text-primary';
       case 'advanced':
         return 'text-purple-600';
       case 'troubleshooting':
-        return 'text-amber-600';
+        return 'text-warning';
       default:
-        return 'text-gray-600';
+        return 'text-muted';
     }
   };
 
@@ -65,11 +65,11 @@ export function MobileHelpGuidance({
   const visibleItems = showAllCategories ? categorizedItems : basicItems;
 
   return (
-    <div className={cn("bg-white border border-gray-200 rounded-lg shadow-sm", className)}>
+    <div className={cn("bg-surface border border-border rounded-lg shadow-sm", className)}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-border-subtle">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold text-gray-900 flex items-center">
+          <h3 className="text-base font-semibold text-foreground flex items-center">
             <span className="text-lg mr-2">💡</span>
             {title}
           </h3>
@@ -85,10 +85,10 @@ export function MobileHelpGuidance({
       </div>
 
       {/* Help Items */}
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-border-subtle">
         {visibleItems.map((item) => {
           const isExpanded = expandedItems.has(item.index);
-          
+
           return (
             <div key={item.index} className="p-4">
               <button
@@ -100,11 +100,11 @@ export function MobileHelpGuidance({
                   <span className="text-base flex-shrink-0">
                     {getCategoryIcon(item.category)}
                   </span>
-                  <span className="text-sm font-medium text-gray-700 leading-relaxed">
+                  <span className="text-sm font-medium text-foreground leading-relaxed">
                     {item.question}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   {item.category && item.category !== 'basic' && (
                     <span className={cn("text-xs font-medium", getCategoryColor(item.category))}>
@@ -113,7 +113,7 @@ export function MobileHelpGuidance({
                   )}
                   <svg
                     className={cn(
-                      "w-5 h-5 text-gray-400 transition-transform duration-200 flex-shrink-0",
+                      "w-5 h-5 text-subtle transition-transform duration-200 flex-shrink-0",
                       isExpanded && "rotate-180"
                     )}
                     fill="none"
@@ -124,10 +124,10 @@ export function MobileHelpGuidance({
                   </svg>
                 </div>
               </button>
-              
+
               {isExpanded && (
                 <div className="mt-3 pl-8 pr-2">
-                  <div className="text-sm text-gray-600 leading-relaxed">
+                  <div className="text-sm text-muted leading-relaxed">
                     {item.answer}
                   </div>
                 </div>
@@ -138,8 +138,8 @@ export function MobileHelpGuidance({
       </div>
 
       {/* Footer Tip */}
-      <div className="p-4 bg-gray-50 rounded-b-lg border-t border-gray-200">
-        <div className="text-xs text-gray-500 text-center">
+      <div className="p-4 bg-surface-subtle rounded-b-lg border-t border-border-subtle">
+        <div className="text-xs text-muted text-center">
           📱 Tap any question above for detailed help
         </div>
       </div>
@@ -215,4 +215,4 @@ export const dietPreferencesHelp: HelpItem[] = [
     answer: "You can update your preferences anytime in your results. The system will recalculate your recommendations based on your new choices.",
     category: "troubleshooting"
   }
-]; 
+];

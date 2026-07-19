@@ -12,12 +12,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+          "inline-flex items-center justify-center rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-[length:var(--focus-ring-width)] focus-visible:ring-ring focus-visible:ring-offset-[length:var(--focus-ring-offset)] disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
           {
-              "bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-2 focus-visible:ring-primary-400 shadow-sm hover:shadow-md": variant === 'primary',
-              "bg-neutral-100 text-slate-900 hover:bg-neutral-200": variant === 'secondary',
-              "border border-neutral-200 bg-transparent text-primary-600 hover:bg-primary-50": variant === 'outline',
-              "bg-transparent text-slate-700 hover:bg-neutral-100": variant === 'ghost',
+              "bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-active shadow-sm hover:shadow-md": variant === 'primary',
+              "bg-secondary text-secondary-foreground hover:bg-surface-overlay": variant === 'secondary',
+              "border border-border bg-transparent text-primary hover:bg-primary-soft": variant === 'outline',
+              "bg-transparent text-foreground hover:bg-secondary": variant === 'ghost',
           },
           {
             "h-8 px-3 text-sm": size === 'sm',
@@ -35,4 +35,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button };
-export type { ButtonProps }; 
+export type { ButtonProps };

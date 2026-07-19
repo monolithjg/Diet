@@ -41,7 +41,7 @@ export function SexSelector({
   return (
     <fieldset className="space-y-3">
       <legend className="block text-sm font-medium text-foreground mb-1">
-        Biological Sex {required && <span className="text-red-500">*</span>}
+        Biological Sex {required && <span className="text-error">*</span>}
       </legend>
 
       <p className="text-xs text-muted mb-4">
@@ -60,7 +60,7 @@ export function SexSelector({
                 : 'border-border hover:border-primary/50 hover:bg-secondary/50'
               }
               ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-              ${hasError ? 'border-red-200' : ''}
+              ${hasError ? 'border-error/40' : ''}
             `}
           >
             <input
@@ -83,7 +83,7 @@ export function SexSelector({
                 }
               `}>
                 {value === option.value && (
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                  <div className="w-2 h-2 bg-primary-foreground rounded-full"></div>
                 )}
               </div>
               {value === option.value && (
@@ -110,7 +110,7 @@ export function SexSelector({
 
       {hasError && (
         <p
-          className="text-sm text-red-500 flex items-center mt-2 animate-fade-in"
+          className="text-sm text-error flex items-center mt-2 animate-fade-in"
           role="alert"
           aria-live="polite"
         >
@@ -122,4 +122,4 @@ export function SexSelector({
       )}
     </fieldset>
   );
-} 
+}

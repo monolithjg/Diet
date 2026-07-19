@@ -13,10 +13,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            "flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm placeholder:text-neutral-400",
-            "text-slate-900 border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary-600",
+            "flex h-10 w-full rounded-md border bg-control px-3 py-2 text-sm placeholder:text-subtle",
+            "text-foreground border-border focus-visible:outline-none focus-visible:ring-[length:var(--focus-ring-width)] focus-visible:ring-ring focus-visible:ring-offset-[length:var(--focus-ring-offset)] focus-visible:border-primary ring-offset-background",
             "disabled:cursor-not-allowed disabled:opacity-50",
-            error && "border-danger text-danger",
+            error && "border-error text-error focus-visible:border-error focus-visible:ring-error/30",
             className
           )}
           ref={ref}
@@ -25,7 +25,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {helperText && (
           <p className={cn(
             "text-sm mt-1",
-            error ? "text-danger" : "text-neutral-500"
+            error ? "text-error" : "text-muted"
           )}>
             {helperText}
           </p>
@@ -37,4 +37,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input };
-export type { InputProps }; 
+export type { InputProps };

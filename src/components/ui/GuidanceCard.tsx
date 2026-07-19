@@ -17,45 +17,45 @@ const getMessageTypeConfig = (type: GuidanceMessage['type']) => {
     case 'critical':
       return {
         icon: '!',
-        bgColor: 'bg-red-50',
-        textColor: 'text-red-800',
-        borderColor: 'border-red-200',
-        badgeColor: 'bg-red-100 text-red-800',
-        ring: 'ring-red-100'
+        bgColor: 'bg-error-soft',
+        textColor: 'text-error-foreground',
+        borderColor: 'border-error/30',
+        badgeColor: 'bg-error-soft text-error-foreground',
+        ring: 'ring-error/30'
       };
     case 'warn':
       return {
         icon: '!',
-        bgColor: 'bg-amber-50',
-        textColor: 'text-amber-800',
-        borderColor: 'border-amber-200',
-        badgeColor: 'bg-amber-100 text-amber-800',
-        ring: 'ring-amber-100'
+        bgColor: 'bg-warning-soft',
+        textColor: 'text-warning-foreground',
+        borderColor: 'border-warning/30',
+        badgeColor: 'bg-warning-soft text-warning-foreground',
+        ring: 'ring-warning/30'
       };
     case 'info':
       return {
         icon: 'i',
-        bgColor: 'bg-blue-50',
-        textColor: 'text-blue-800',
-        borderColor: 'border-blue-200',
-        badgeColor: 'bg-blue-100 text-blue-800',
-        ring: 'ring-blue-100'
+        bgColor: 'bg-primary-soft',
+        textColor: 'text-primary',
+        borderColor: 'border-primary/25',
+        badgeColor: 'bg-primary-soft text-primary',
+        ring: 'ring-primary/25'
       };
     default:
       return {
         icon: 'i',
-        bgColor: 'bg-neutral-50',
-        textColor: 'text-slate-900',
-        borderColor: 'border-neutral-200',
-        badgeColor: 'bg-neutral-100 text-slate-800',
-        ring: 'ring-neutral-100'
+        bgColor: 'bg-surface-subtle',
+        textColor: 'text-foreground',
+        borderColor: 'border-border',
+        badgeColor: 'bg-surface-raised text-foreground',
+        ring: 'ring-ring'
       };
   }
 };
 
 const getCategoryDisplayName = (category: string) => {
   const locale = getCurrentLocale();
-  
+
   // Category display names with i18n support
   const categoryNames: Record<string, Record<string, string>> = {
     en: {
@@ -75,7 +75,7 @@ const getCategoryDisplayName = (category: string) => {
       validation: 'Validación'
     }
   };
-  
+
   return categoryNames[locale]?.[category] || category;
 };
 
@@ -84,20 +84,20 @@ const getDisplayMessage = (message: GuidanceMessage): string => {
   if (message.category === 'validation' || message.key.includes('disclaimer')) {
     return translateValidationMessage(message.key, message.replacements);
   }
-  
+
   return translateGuidanceMessage(message);
 };
 
-export function GuidanceCard({ 
-  message, 
-  expanded = false, 
+export function GuidanceCard({
+  message,
+  expanded = false,
   onToggle,
-  showCategory = true 
+  showCategory = true
 }: GuidanceCardProps) {
   const [isExpanded, setIsExpanded] = useState(expanded);
   const config = getMessageTypeConfig(message.type);
   const displayMessage = getDisplayMessage(message);
-  
+
   const handleToggle = () => {
     if (onToggle) {
       onToggle();
@@ -105,9 +105,9 @@ export function GuidanceCard({
       setIsExpanded(!isExpanded);
     }
   };
-  
+
   const isDisclaimer = message.key.includes('disclaimer');
-  
+
   return (
     <Card className={cn(
       "transition-all duration-200",
@@ -116,7 +116,7 @@ export function GuidanceCard({
       "overflow-hidden",
       !isDisclaimer && "hover:shadow-md cursor-pointer"
     )}>
-      <CardHeader 
+      <CardHeader
         className={cn(
           "pb-3",
           !isDisclaimer && "cursor-pointer"
@@ -133,7 +133,7 @@ export function GuidanceCard({
                 {showCategory && !isDisclaimer && (
                     <span className={cn(
                       "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-                      "bg-white/60 border border-transparent",
+                      "bg-surface-raised/60 border border-transparent",
                       config.badgeColor
                     )}>
                       {getCategoryDisplayName(message.category)}
@@ -141,7 +141,7 @@ export function GuidanceCard({
                 )}
                 <span className={cn(
                   "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize",
-                  "bg-white/40 border border-transparent",
+                  "bg-surface-raised/40 border border-transparent",
                   config.badgeColor
                 )}>
                   {message.type}
@@ -155,7 +155,7 @@ export function GuidanceCard({
               </p>
             </div>
           </div>
-          
+
           {!isDisclaimer && (
             <button
               type="button"
@@ -171,7 +171,7 @@ export function GuidanceCard({
           )}
         </div>
       </CardHeader>
-      
+
       {(isExpanded || expanded) && !isDisclaimer && (
         <CardContent className="pt-0">
             <div className={cn("text-sm", config.textColor, "opacity-85")}>
@@ -184,7 +184,7 @@ export function GuidanceCard({
                 <summary className="cursor-pointer hover:opacity-100">
                   View calculation details
                 </summary>
-                <pre className="mt-1 text-xs bg-white/50 p-2 rounded">
+                <pre className="mt-1 text-xs bg-surface-raised/50 p-2 rounded">
                   {JSON.stringify(message.replacements, null, 2)}
                 </pre>
               </details>
@@ -194,4 +194,4 @@ export function GuidanceCard({
       )}
     </Card>
   );
-} 
+}

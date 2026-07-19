@@ -10,11 +10,11 @@ interface SleepHoursInputProps {
   helperText?: string;
 }
 
-export function SleepHoursInput({ 
-  value, 
-  onChange, 
-  error, 
-  helperText 
+export function SleepHoursInput({
+  value,
+  onChange,
+  error,
+  helperText
 }: SleepHoursInputProps) {
   const [inputValue, setInputValue] = useState(value?.toString() || '');
   const [localError, setLocalError] = useState(false);
@@ -34,7 +34,7 @@ export function SleepHoursInput({
     }
 
     const numValue = parseFloat(newValue);
-    
+
     // Validate range (3-12 hours is reasonable)
     if (isNaN(numValue) || numValue < 3 || numValue > 12) {
       setLocalError(true);
@@ -55,7 +55,7 @@ export function SleepHoursInput({
 
   const isError = error || localError;
   const feedback = getSleepFeedback(value);
-  const displayHelperText = helperText || 
+  const displayHelperText = helperText ||
     (localError ? 'Please enter a value between 3 and 12 hours' : feedback);
 
   return (
@@ -63,7 +63,7 @@ export function SleepHoursInput({
       <Label htmlFor="sleep-hours" className={isError ? "text-destructive" : ""}>
         How many hours do you typically sleep per night?
       </Label>
-      
+
       <div className="relative">
         <Input
           id="sleep-hours"
@@ -85,8 +85,8 @@ export function SleepHoursInput({
       {displayHelperText && (
         <p className={cn(
           "text-sm",
-          isError ? "text-destructive" : 
-          value && value < 6 ? "text-amber-600" :
+          isError ? "text-destructive" :
+          value && value < 6 ? "text-warning" :
           "text-muted-foreground"
         )}>
           {displayHelperText}
@@ -98,4 +98,4 @@ export function SleepHoursInput({
       </div>
     </div>
   );
-} 
+}

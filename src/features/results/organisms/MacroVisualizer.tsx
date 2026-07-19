@@ -11,7 +11,7 @@ interface MacroVisualizerProps {
 
 const MACRO_COLORS = {
   protein: '#3b82f6', // blue
-  carbs: '#10b981',   // green  
+  carbs: '#10b981',   // green
   fat: '#f59e0b'      // amber
 };
 
@@ -41,12 +41,12 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-3 border rounded-lg shadow-lg">
+        <div className="bg-surface-overlay p-3 border border-border rounded-lg shadow-lg">
           <p className="font-medium">{data.name}</p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted">
             {Math.round(data.grams)}g ({data.value}%)
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted">
             {Math.round(data.grams * (data.name === 'Fat' ? 9 : 4))} kcal
           </p>
         </div>
@@ -158,23 +158,23 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
               Calorie Breakdown
             </h4>
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="p-3 rounded-lg bg-blue-50/50">
-                <div className="text-lg font-bold text-blue-600">
+              <div className="p-3 rounded-lg bg-primary-soft/50">
+                <div className="text-lg font-bold text-primary">
                   {Math.round(macroPlan.proteinG * 4)}
                 </div>
-                <div className="text-[10px] uppercase tracking-wide text-blue-600/70 font-medium">kcal from protein</div>
+                <div className="text-[10px] uppercase tracking-wide text-primary/70 font-medium">kcal from protein</div>
               </div>
-              <div className="p-3 rounded-lg bg-green-50/50">
-                <div className="text-lg font-bold text-green-600">
+              <div className="p-3 rounded-lg bg-success-soft/50">
+                <div className="text-lg font-bold text-success">
                   {Math.round(macroPlan.carbsG * 4)}
                 </div>
-                <div className="text-[10px] uppercase tracking-wide text-green-600/70 font-medium">kcal from carbs</div>
+                <div className="text-[10px] uppercase tracking-wide text-success/70 font-medium">kcal from carbs</div>
               </div>
-              <div className="p-3 rounded-lg bg-amber-50/50">
-                <div className="text-lg font-bold text-amber-600">
+              <div className="p-3 rounded-lg bg-warning-soft/50">
+                <div className="text-lg font-bold text-warning">
                   {Math.round(macroPlan.fatG * 9)}
                 </div>
-                <div className="text-[10px] uppercase tracking-wide text-amber-600/70 font-medium">kcal from fat</div>
+                <div className="text-[10px] uppercase tracking-wide text-warning/70 font-medium">kcal from fat</div>
               </div>
             </div>
           </div>
@@ -182,4 +182,4 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
       </CardContent>
     </Card>
   );
-} 
+}

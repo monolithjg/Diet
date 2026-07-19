@@ -167,10 +167,10 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
         <CardContent>
           <div className="text-center py-8">
             <div className="text-4xl mb-4">🎯</div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-foreground mb-2">
               Great job!
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted">
               Your nutrition plan looks well-balanced. Continue following your current approach.
             </p>
           </div>
@@ -219,15 +219,15 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
             </span>
             <div className="flex items-center space-x-4">
               <span className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5"></div>
+                <div className="w-1.5 h-1.5 bg-error rounded-full mr-1.5"></div>
                 High: {actionItems.filter(a => a.priority === 'high').length}
               </span>
               <span className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></div>
+                <div className="w-1.5 h-1.5 bg-warning rounded-full mr-1.5"></div>
                 Medium: {actionItems.filter(a => a.priority === 'medium').length}
               </span>
               <span className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></div>
+                <div className="w-1.5 h-1.5 bg-primary rounded-full mr-1.5"></div>
                 Low: {actionItems.filter(a => a.priority === 'low').length}
               </span>
             </div>
@@ -236,4 +236,4 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
       </CardContent>
     </Card>
   );
-} 
+}

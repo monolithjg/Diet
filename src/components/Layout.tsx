@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col font-sans text-foreground bg-background transition-colors duration-300">
             {/* Header */}
-            <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-surface/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface/60">
+            <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-surface/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface/60">
                 <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 md:px-8">
                     <div className="flex items-center gap-2">
                         <Link to="/" className="flex items-center gap-2 font-bold text-xl tracking-tight hover:opacity-80 transition-opacity">
@@ -34,7 +34,7 @@ const Layout: React.FC = () => {
             </main>
 
             {/* Footer */}
-            <footer className="border-t border-border/40 bg-surface/50 py-8">
+            <footer className="border-t border-border-subtle bg-surface/50 py-8">
                 <div className="container max-w-screen-xl mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted">
                     <p>© {new Date().getFullYear()} Diet Calculator. All rights reserved.</p>
                     <div className="flex gap-4">

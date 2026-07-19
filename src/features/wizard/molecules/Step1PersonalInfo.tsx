@@ -14,7 +14,7 @@ import { StepContainer } from './StepContainer';
 export function Step1PersonalInfo() {
   const { user } = useStore(state => state);
   const { updateUserWithGuidance } = useStore(state => state);
-  
+
   // Map store unit preference to UnitSystem
   const currentUnit: UnitSystem = user.unitPreference;
 
@@ -77,7 +77,7 @@ export function Step1PersonalInfo() {
       helpText: 'Used to calculate age-adjusted metabolic formulas'
     },
     {
-      label: 'Biological Sex', 
+      label: 'Biological Sex',
       isValid: isSexValid,
       errorMessage: !isSexValid ? 'Please select your biological sex' : undefined,
       helpText: 'Affects metabolic rate calculations'
@@ -101,16 +101,16 @@ export function Step1PersonalInfo() {
       <div className="space-y-6 sm:space-y-8 sm:flex sm:flex-col sm:justify-center sm:min-h-[70vh]">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-foreground mb-2">
             Personal Information
           </h2>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted">
             This information helps us calculate your baseline metabolic needs accurately
           </p>
         </div>
 
         {/* Unit Selector - Prominent placement at top */}
-        <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
+        <div className="bg-surface-subtle rounded-lg p-4 shadow-sm">
           <UnitSelector
             value={currentUnit}
             onChange={handleUnitChange}
@@ -141,7 +141,7 @@ export function Step1PersonalInfo() {
               unit={currentUnit}
               required
             />
-            
+
             <HeightInput
               value={user.heightCm}
               onChange={handleHeightChange}
@@ -162,7 +162,7 @@ export function Step1PersonalInfo() {
 
         {/* Quick Unit Toggle for mobile - Sticky bottom */}
         <div className="sm:hidden fixed bottom-4 left-4 right-4 z-20 md:bottom-6 md:left-6 md:right-6">
-          <div className="bg-white border border-gray-300 rounded-xl shadow-xl p-3">
+          <div className="bg-surface-raised border border-border rounded-xl shadow-lg p-3">
             <UnitToggle
               value={currentUnit}
               onChange={handleUnitChange}
@@ -173,7 +173,7 @@ export function Step1PersonalInfo() {
 
         {/* Development Info - Remove in production */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-3 bg-gray-100 rounded text-xs text-gray-600">
+          <div className="mt-8 p-3 bg-secondary rounded text-xs text-muted">
             <strong>Debug Info:</strong><br />
             Age: {user.age} (valid: {isAgeValid.toString()}) | Sex: {user.sex} (valid: {isSexValid.toString()}) <br />
             Weight: {user.weightKg} kg (valid: {isWeightValid.toString()}) | Height: {user.heightCm} cm (valid: {isHeightValid.toString()}) <br />
@@ -183,4 +183,4 @@ export function Step1PersonalInfo() {
       </div>
     </StepContainer>
   );
-} 
+}

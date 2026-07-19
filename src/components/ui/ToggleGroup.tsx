@@ -57,16 +57,16 @@ export function ToggleGroupItem({
   'aria-label': ariaLabel,
 }: ToggleGroupItemProps) {
   const context = useContext(ToggleGroupContext);
-  
+
   if (!context) {
     throw new Error('ToggleGroupItem must be used within a ToggleGroup');
   }
 
   const { value: groupValue, onValueChange, type, disabled: groupDisabled } = context;
   const isDisabled = disabled || groupDisabled;
-  
+
   // Determine if this item is selected
-  const isSelected = type === 'single' 
+  const isSelected = type === 'single'
     ? groupValue === value
     : Array.isArray(groupValue) && groupValue.includes(value);
 
@@ -105,15 +105,15 @@ export function ToggleGroupItem({
       disabled={isDisabled}
       className={`
         inline-flex items-center justify-center px-3 py-2 text-sm font-medium
-        border border-neutral-200 bg-white text-slate-700
-        hover:bg-neutral-50 hover:text-slate-900
-        focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1
+        border border-border bg-control text-foreground
+        hover:bg-secondary hover:text-foreground
+        focus-visible:outline-none focus-visible:ring-[length:var(--focus-ring-width)] focus-visible:ring-ring focus-visible:ring-offset-[length:var(--focus-ring-offset)] ring-offset-background
         disabled:opacity-50 disabled:cursor-not-allowed
         transition-all duration-150 touch-manipulation
         min-h-[44px] min-w-[44px]
-        ${isSelected 
-          ? 'bg-primary-600 text-white border-primary-600 hover:bg-primary-700' 
-          : 'bg-white text-slate-700 border-neutral-200'
+        ${isSelected
+          ? 'bg-primary text-primary-foreground border-primary hover:bg-primary-hover'
+          : 'bg-control text-foreground border-border'
         }
         ${className}
       `}
@@ -123,4 +123,4 @@ export function ToggleGroupItem({
       {children}
     </button>
   );
-} 
+}

@@ -120,7 +120,7 @@ export function ResultsDashboard({
               <span className="text-sm text-muted">kcal/day</span>
             </div>
             <div className="text-xs text-muted mt-3 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+              <span className="w-2 h-2 rounded-full bg-primary"></span>
               Formula: {getFormulaDisplayName(derivedMetrics.formulaUsed)}
             </div>
           </CardContent>
@@ -136,7 +136,7 @@ export function ResultsDashboard({
               <span className="text-sm text-muted">kcal/day</span>
             </div>
             <div className="text-xs text-muted mt-3 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-green-400"></span>
+              <span className="w-2 h-2 rounded-full bg-success"></span>
               Activity factor: {derivedMetrics.palFactor.toFixed(2)}x
             </div>
           </CardContent>
@@ -246,4 +246,4 @@ export function ResultsDashboard({
       </div>
     </div>
   );
-} 
+}
