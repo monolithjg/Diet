@@ -48,7 +48,8 @@ export interface UserInput {
   goal: Goal;
   /** Positive for surplus, negative for deficit (kcal/day). */
   deficitSurplusKcal?: number;
-  dietStyle: DietStyle;
+  /** Required before a nutrition plan can be calculated. */
+  dietStyle?: DietStyle;
   /** Free-text allergens or restrictions (lower-case). */
   allergies: string[];
   /** Optional custom macro overrides in grams. */
@@ -61,4 +62,4 @@ export interface UserInput {
   sleepHours?: number;
   /** Stress level on 1-3 scale for lifestyle guidance. */
   stressLevel?: 1 | 2 | 3;
-} 
+}

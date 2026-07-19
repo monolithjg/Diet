@@ -29,7 +29,7 @@ export function MobileWizardLayout({
       case 3:
         return { title: "Activity & Goals Help", helpType: 'activityGoals' as const };
       case 4:
-        return { title: "Diet Preferences Help", helpType: 'dietPreferences' as const };
+        return { title: "Eating Style Help", helpType: 'dietPreferences' as const };
       default:
         return null;
     }
@@ -56,9 +56,9 @@ export function MobileWizardLayout({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Main Content Card */}
-        <main className="lg:col-span-8 bg-surface shadow-soft rounded-3xl border border-border overflow-hidden transition-all duration-300 hover:shadow-card-hover">
+        <main className="lg:col-span-8 bg-surface shadow-soft rounded-3xl border border-border transition-all duration-300 hover:shadow-card-hover">
           {/* Step Header */}
-          <div className="p-6 md:p-8 border-b border-border bg-secondary/30">
+          <div className="p-6 md:p-8 border-b border-border bg-secondary/30 rounded-t-3xl">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-foreground">
@@ -102,7 +102,7 @@ export function MobileWizardLayout({
           </div>
 
           {/* Step Navigation */}
-          <div className="p-6 md:p-8 border-t border-border bg-secondary/10">
+          <div className="sticky bottom-0 z-20 p-4 md:p-6 border-t border-border bg-surface/95 backdrop-blur shadow-[0_-8px_24px_rgb(16_24_40_/_0.08)] rounded-b-3xl">
             {navigationControls}
           </div>
         </main>

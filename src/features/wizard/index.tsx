@@ -18,7 +18,7 @@ const WIZARD_STEP_TITLES = [
   "Personal Information",
   "Body Composition",
   "Activity & Goals",
-  "Diet & Lifestyle Preferences"
+  "Choose your eating style"
 ] as const;
 
 type UserValidationData = {
@@ -28,6 +28,7 @@ type UserValidationData = {
   heightCm: number;
   activityLevel: number;
   goal: string;
+  dietStyle?: string;
 };
 
 export default function Wizard() {
@@ -44,12 +45,8 @@ export default function Wizard() {
   const heightCm = useStore(state => state.user.heightCm);
   const activityLevel = useStore(state => state.user.activityLevel);
   const goal = useStore(state => state.user.goal);
+  const dietStyle = useStore(state => state.user.dietStyle);
 
-  const userValidationData = { age, sex, weightKg, heightCm, activityLevel, goal };
-
-  const navigateTo = (path: string) => {
-    navigate(path);
-  };
   useChunkPreloader();
   useConnectionAware();
 
@@ -62,7 +59,7 @@ export default function Wizard() {
 
   const getStepValidationInfo = useCallback((stepNumber: number, userData: UserValidationData) => {
     switch (stepNumber) {
-      case 1:
+      case 1: {
         const ageValid = userData.age >= 13 && userData.age <= 120;
         const sexValid = ['male', 'female', 'other'].includes(userData.sex);
         const weightValid = userData.weightKg >= 30 && userData.weightKg <= 300;
@@ -77,9 +74,10 @@ export default function Wizard() {
           message: missing.length > 0 ? `Please provide your ${missing.join(', ')}` : 'All personal information complete',
           helpText: missing.length > 0 ? 'This information is required to calculate your baseline metabolic needs accurately.' : undefined
         };
+      }
       case 2:
         return { isComplete: true, message: 'Body composition information is optional', helpText: undefined };
-      case 3:
+      case 3: {
         const activityValid = userData.activityLevel > 1.2;
         const goalValid = ['loss', 'maintain', 'gain'].includes(userData.goal);
         const missingStep3 = [];
@@ -90,14 +88,22 @@ export default function Wizard() {
           message: missingStep3.length > 0 ? `Please select your ${missingStep3.join(' and ')}` : 'Activity and goals complete',
           helpText: missingStep3.length > 0 ? 'We need this information to calculate your daily calorie needs.' : undefined
         };
+      }
       case 4:
-        return { isComplete: true, message: 'Diet preferences complete', helpText: undefined };
+        return {
+          isComplete: Boolean(userData.dietStyle),
+          message: "We'll use this to shape your macro targets and meal suggestions.",
+          helpText: userData.dietStyle ? undefined : 'Choose one eating style to calculate your plan.'
+        };
       default:
         return { isComplete: false, message: 'Unknown step', helpText: undefined };
     }
   }, []);
 
-  const stepValidation = useMemo(() => getStepValidationInfo(step, userValidationData), [step, userValidationData, getStepValidationInfo]);
+  const stepValidation = useMemo(
+    () => getStepValidationInfo(step, { age, sex, weightKg, heightCm, activityLevel, goal, dietStyle }),
+    [step, age, sex, weightKg, heightCm, activityLevel, goal, dietStyle, getStepValidationInfo]
+  );
   const canProceed = stepValidation.isComplete;
 
   // Add calculation triggers before navigating to results
@@ -116,7 +122,7 @@ export default function Wizard() {
   const userGoal = useStore(state => state.user.goal);
 
   const handleNext = useCallback(() => {
-    updateUi((prev: any) => {
+    updateUi((prev) => {
       if (prev.step >= WIZARD_STEP_TITLES.length) {
         return prev;
       }
@@ -128,10 +134,10 @@ export default function Wizard() {
       setTdee(palKey, userGoal === 'loss' ? -0.2 : userGoal === 'gain' ? 0.15 : 0);
       setMacros();
       setTimeout(() => {
-        navigateTo('/results');
+        navigate('/results');
       }, 100); // Delay navigation to allow state to update
     }
-  }, [step, updateUi, navigateTo, recalcRmr, setTdee, setMacros, palKey, userGoal]);
+  }, [step, updateUi, navigate, recalcRmr, setTdee, setMacros, palKey, userGoal]);
 
   const handleBack = useCallback(() => {
     if (step > 1) updateUi({ step: step - 1 });
@@ -155,8 +161,8 @@ export default function Wizard() {
             </ChunkErrorBoundary>
           )}
           {step === 4 && (
-            <ChunkErrorBoundary stepName="Diet & Lifestyle Preferences">
-              <Suspense fallback={<StepLoadingFallback stepName="Diet & Lifestyle Preferences" />}>
+            <ChunkErrorBoundary stepName="Eating Style">
+              <Suspense fallback={<StepLoadingFallback stepName="Eating Style" />}>
                 <Step4DietPreferences />
               </Suspense>
             </ChunkErrorBoundary>
@@ -164,11 +170,32 @@ export default function Wizard() {
         </>
       }
       navigationControls={
-        <div className="flex gap-4 justify-between">
-          <Button onClick={handleBack} disabled={step === 1} variant="secondary">Back</Button>
-          <Button onClick={handleNext} disabled={!canProceed} variant="primary">
-            {step < WIZARD_STEP_TITLES.length ? 'Continue' : 'See Results'}
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+          <Button onClick={handleBack} disabled={step === 1} variant="secondary" className="sm:min-w-28">
+            Back
           </Button>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end">
+            {step === WIZARD_STEP_TITLES.length && (
+              <p
+                id="diet-style-validation"
+                className={`text-sm sm:max-w-56 sm:text-right ${canProceed ? 'text-success' : 'text-muted'}`}
+                aria-live="polite"
+              >
+                {canProceed
+                  ? 'Eating style selected. Ready to calculate.'
+                  : 'Choose an eating style to calculate your plan.'}
+              </p>
+            )}
+            <Button
+              onClick={handleNext}
+              disabled={!canProceed}
+              variant="primary"
+              className="w-full sm:w-auto sm:min-w-44"
+              aria-describedby={step === WIZARD_STEP_TITLES.length ? 'diet-style-validation' : undefined}
+            >
+              {step < WIZARD_STEP_TITLES.length ? 'Continue' : 'Calculate my plan'}
+            </Button>
+          </div>
         </div>
       }
       guidancePanel={<GuidanceList guidance={guidance} />}

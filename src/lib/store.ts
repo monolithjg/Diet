@@ -46,7 +46,6 @@ const initialUser: UserInput = {
   weightKg: 70,
   activityLevel: 1.55,
   goal: 'maintain' as Goal,
-  dietStyle: 'balanced',
   allergies: [],
   unitPreference: 'metric'
 };
