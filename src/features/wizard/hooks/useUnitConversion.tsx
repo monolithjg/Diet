@@ -33,6 +33,9 @@ export function useUnitConversion() {
 
   const convertHeight = useCallback((cm: number, targetUnit: UnitSystem): HeightConversion => {
     const { feet, inches } = cmToFeetInches(cm);
+    const roundedTotalInches = Math.round(cm / 2.54);
+    const displayFeet = Math.floor(roundedTotalInches / 12);
+    const displayInches = roundedTotalInches % 12;
     
     return {
       cm,
@@ -40,7 +43,7 @@ export function useUnitConversion() {
       inches,
       displayValue: targetUnit === 'metric' 
         ? `${cm.toFixed(0)}` 
-        : `${feet}'${inches.toFixed(0)}"`,
+        : `${displayFeet}'${displayInches}"`,
       unit: targetUnit === 'metric' ? 'cm' : 'ft/in'
     };
   }, []);
@@ -103,8 +106,10 @@ export function useUnitConversion() {
       return { min: 30, max: 300, unit: 'kg' };
     } else {
       return { 
-        min: Math.round(kgToLbs(30)), 
-        max: Math.round(kgToLbs(300)), 
+        // Round inward so every advertised boundary remains valid after
+        // converting back to the metric validation range.
+        min: Math.ceil(kgToLbs(30) * 10) / 10,
+        max: Math.floor(kgToLbs(300) * 10) / 10,
         unit: 'lbs' 
       };
     }
@@ -115,11 +120,13 @@ export function useUnitConversion() {
     if (unit === 'metric') {
       return { min: 100, max: 272, unit: 'cm' };
     } else {
-      const minFeet = cmToFeetInches(100);
-      const maxFeet = cmToFeetInches(272);
+      const minTotalInches = Math.ceil(100 / 2.54);
+      const maxTotalInches = Math.floor(272 / 2.54);
+      const formatFeetInches = (totalInches: number) =>
+        `${Math.floor(totalInches / 12)}'${totalInches % 12}"`;
       return { 
-        min: `${minFeet.feet}'${Math.round(minFeet.inches)}"`, 
-        max: `${maxFeet.feet}'${Math.round(maxFeet.inches)}"`, 
+        min: formatFeetInches(minTotalInches),
+        max: formatFeetInches(maxTotalInches),
         unit: 'ft/in' 
       };
     }
@@ -135,4 +142,4 @@ export function useUnitConversion() {
     getWeightRange,
     getHeightRange
   };
-} 
+}

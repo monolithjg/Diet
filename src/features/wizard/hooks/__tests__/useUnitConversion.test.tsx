@@ -40,8 +40,8 @@ describe('useUnitConversion', () => {
       expect(metricRange).toEqual({ min: 30, max: 300, unit: 'kg' });
 
       const imperialRange = getWeightRange('imperial');
-      expect(imperialRange.min).toBe(66); // Math.round(30 * 2.20462)
-      expect(imperialRange.max).toBe(661); // Math.round(300 * 2.20462)
+      expect(imperialRange.min).toBe(66.2);
+      expect(imperialRange.max).toBe(661.3);
       expect(imperialRange.unit).toBe('lbs');
     });
   });
@@ -58,6 +58,12 @@ describe('useUnitConversion', () => {
       expect(imperialResult.inches).toBeCloseTo(8.9, 1);
       expect(imperialResult.displayValue).toBe("5'9\"");
       expect(imperialResult.unit).toBe('ft/in');
+    });
+
+    it('should carry rounded inches into the feet display', () => {
+      const imperialResult = convertHeight(182, 'imperial');
+
+      expect(imperialResult.displayValue).toBe("6'0\"");
     });
 
     it('should parse imperial height inputs correctly - standard formats', () => {
@@ -97,7 +103,7 @@ describe('useUnitConversion', () => {
       expect(metricRange).toEqual({ min: 100, max: 272, unit: 'cm' });
 
       const imperialRange = getHeightRange('imperial');
-      expect(imperialRange.min).toBe("3'3\""); // 100cm
+      expect(imperialRange.min).toBe("3'4\"");
       expect(imperialRange.max).toBe("8'11\""); // 272cm
       expect(imperialRange.unit).toBe('ft/in');
     });
@@ -122,6 +128,16 @@ describe('useUnitConversion', () => {
       // Maximum values
       expect(parseWeightInput('300', 'metric')).toBe(300);
       expect(parseWeightInput('661', 'imperial')).toBeCloseTo(299.82, 0.1);
+    });
+
+    it('should advertise imperial boundaries that convert within metric limits', () => {
+      const weightRange = getWeightRange('imperial');
+      const heightRange = getHeightRange('imperial');
+
+      expect(parseWeightInput(String(weightRange.min), 'imperial')).toBeGreaterThanOrEqual(30);
+      expect(parseWeightInput(String(weightRange.max), 'imperial')).toBeLessThanOrEqual(300);
+      expect(parseHeightInput(String(heightRange.min), 'imperial')).toBeGreaterThanOrEqual(100);
+      expect(parseHeightInput(String(heightRange.max), 'imperial')).toBeLessThanOrEqual(272);
     });
 
     it('should handle minimum and maximum height values', () => {
@@ -150,4 +166,4 @@ describe('useUnitConversion', () => {
       expect(parseHeightInput('6.25', 'imperial')).toBeCloseTo(190.5, 0.1); // 6'3"
     });
   });
-}); 
+});
