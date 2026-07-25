@@ -50,7 +50,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'meal',
           title: 'Meal Frequency',
-          description: `Use ${message.replacements?.meals || 'a repeatable meal schedule'} that supports ${message.replacements?.reason || 'adherence and training'}.`,
+          description: `Use ${message.replacements?.meals || 'a repeatable meal schedule'} as a flexible starting pattern; adjust it for appetite, schedule, and training.`,
           priority,
           category: 'Meal Timing'
         });
@@ -90,13 +90,40 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
 
     // Hydration actions
     if (message.category === 'hydration') {
-      actions.push({
-        icon: 'water',
-        title: 'Daily Hydration Target',
-        description: `Use ${message.replacements?.target || 'a personalized range'} as a starting point, then adjust for thirst, climate, workout duration, and measured sweat loss.`,
-        priority,
-        category: 'Hydration'
-      });
+      if (
+        message.key.includes('dailyTarget')
+        || message.key.includes('highActivity')
+        || message.key.endsWith('.base')
+      ) {
+        actions.push({
+          icon: 'water',
+          title: 'Daily Hydration Target',
+          description: `Use ${message.replacements?.target || 'a personalized range'} as a starting point, then adjust for thirst, climate, workout duration, and measured sweat loss.`,
+          priority,
+          category: 'Hydration'
+        });
+      }
+      if (message.key.includes('trainingExtra')) {
+        const trainingAmount = message.replacements?.amount
+          ? `up to ${message.replacements.amount}ml extra fluid`
+          : 'additional fluid';
+        actions.push({
+          icon: 'water',
+          title: 'Training-Day Fluids',
+          description: `For longer, hotter, or sweatier sessions, consider ${trainingAmount} based on your measured needs.`,
+          priority,
+          category: 'Hydration'
+        });
+      }
+      if (message.key.includes('electrolytes')) {
+        actions.push({
+          icon: 'info',
+          title: 'Electrolytes for Demanding Sessions',
+          description: 'Consider electrolyte replacement for long, hot, or high-sweat training rather than as an automatic daily supplement.',
+          priority,
+          category: 'Hydration'
+        });
+      }
     }
 
     // Lifestyle actions

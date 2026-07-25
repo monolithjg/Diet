@@ -15,6 +15,7 @@ export default function Results() {
   };
   const { derivedMetrics, macroPlan } = useStore(state => state.calc);
   const { guidance } = useStore(state => state.ui);
+  const { goal, weightKg, unitPreference } = useStore(state => state.user);
   const refreshGuidance = useStore(state => state.refreshGuidance);
   const getSharedResultsFromLocation = (): ShareableResults | null => {
     if (typeof window === 'undefined') {
@@ -91,6 +92,9 @@ export default function Results() {
           guidance={displayGuidance}
           isSharedResult={!!sharedResults}
           sharedTimestamp={sharedResults?.timestamp?.toString()}
+          goal={sharedResults ? undefined : goal}
+          currentWeightKg={sharedResults ? undefined : weightKg}
+          unitPreference={unitPreference}
         />
       </div>
     </div>

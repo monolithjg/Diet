@@ -62,13 +62,22 @@ describe('Results', () => {
   };
 
   const mockRefreshGuidance = vi.fn();
+  const mockUser = {
+    goal: 'maintain',
+    weightKg: 80,
+    unitPreference: 'metric'
+  };
 
   const mockUseStore = (state: typeof mockStoreState | {
     calc: typeof mockStoreState.calc;
     ui: { guidance: typeof mockStoreState.ui.guidance };
   }) => {
     vi.mocked(useStore).mockImplementation((selector) => {
-      return selector({ ...state, refreshGuidance: mockRefreshGuidance } as unknown as StoreState);
+      return selector({
+        ...state,
+        user: mockUser,
+        refreshGuidance: mockRefreshGuidance
+      } as unknown as StoreState);
     });
   };
 

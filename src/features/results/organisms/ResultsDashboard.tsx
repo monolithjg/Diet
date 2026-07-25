@@ -12,6 +12,8 @@ import type { MacroPlan } from '../../../models/MacroPlan';
 import type { GuidanceMessage } from '../../../lib/macros';
 import { Icon } from '../../../components/ui/Icon';
 import { serializeResults } from '../../../lib/sharing';
+import type { Goal } from '../../../models/UserInput';
+import { CalibrationPanel } from './CalibrationPanel';
 
 interface ResultsDashboardProps {
   derivedMetrics: DerivedMetrics;
@@ -19,6 +21,9 @@ interface ResultsDashboardProps {
   guidance: GuidanceMessage[];
   isSharedResult?: boolean;
   sharedTimestamp?: string;
+  goal?: Goal;
+  currentWeightKg?: number;
+  unitPreference?: 'metric' | 'imperial';
   className?: string;
 }
 
@@ -28,6 +33,9 @@ export function ResultsDashboard({
   guidance,
   isSharedResult = false,
   sharedTimestamp,
+  goal,
+  currentWeightKg,
+  unitPreference = 'metric',
   className
 }: ResultsDashboardProps) {
   const navigate = useNavigate();
@@ -184,6 +192,16 @@ export function ResultsDashboard({
       <section className="animate-fade-in" style={{ animationDelay: '100ms' }}>
         <MacroVisualizer macroPlan={macroPlan} />
       </section>
+
+      {!isSharedResult && goal && currentWeightKg && currentWeightKg > 0 && (
+        <section className="animate-fade-in" style={{ animationDelay: '150ms' }}>
+          <CalibrationPanel
+            goal={goal}
+            currentWeightKg={currentWeightKg}
+            unitPreference={unitPreference}
+          />
+        </section>
+      )}
 
       {/* Two-column layout for guidance and action plan */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 animate-fade-in" style={{ animationDelay: '200ms' }}>

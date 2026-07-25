@@ -49,7 +49,7 @@ describe('ActionPlan', () => {
 
     // Check meal frequency action
     expect(screen.getByText('Meal Frequency')).toBeInTheDocument();
-    expect(screen.getByText(/Use 4-5 that supports muscle gain/)).toBeInTheDocument();
+    expect(screen.getByText(/Use 4-5 as a flexible starting pattern/)).toBeInTheDocument();
   });
 
   it('creates micronutrient action items from guidance', () => {
@@ -105,6 +105,29 @@ describe('ActionPlan', () => {
     expect(screen.getByText('Hydration')).toBeInTheDocument();
     expect(screen.getByText('Daily Hydration Target')).toBeInTheDocument();
     expect(screen.getByText(/Use 3.0L as a starting point/)).toBeInTheDocument();
+  });
+
+  it('creates distinct training hydration actions without a duplicate daily target', () => {
+    const hydrationGuidance: GuidanceMessage[] = [
+      {
+        key: 'guidance.hydration.dailyTarget',
+        type: 'info',
+        category: 'hydration',
+        replacements: { target: '2.4-3.3L' }
+      },
+      {
+        key: 'guidance.hydration.trainingExtra',
+        type: 'info',
+        category: 'hydration',
+        replacements: { amount: 500 }
+      }
+    ];
+
+    render(<ActionPlan guidance={hydrationGuidance} />);
+
+    expect(screen.getByText('Daily Hydration Target')).toBeInTheDocument();
+    expect(screen.getByText('Training-Day Fluids')).toBeInTheDocument();
+    expect(screen.getAllByText('Daily Hydration Target')).toHaveLength(1);
   });
 
   it('creates lifestyle action items from guidance', () => {
