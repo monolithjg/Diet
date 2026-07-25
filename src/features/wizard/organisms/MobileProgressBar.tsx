@@ -32,7 +32,7 @@ export const MobileProgressBar = React.memo(function MobileProgressBar({
           return (
             <span
               key={stepNumber}
-              className={`h-2 rounded-full transition-colors duration-300 ${
+              className={`h-2 rounded-full transition-[background-color,box-shadow] duration-200 ${
                 isCompleted
                   ? 'bg-primary'
                   : isCurrent

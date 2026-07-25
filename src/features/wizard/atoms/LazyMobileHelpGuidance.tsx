@@ -1,12 +1,6 @@
 import React, { Suspense } from 'react';
 import { ChunkErrorBoundary } from './ChunkErrorBoundary';
-
-// Define HelpItem interface locally since it's not exported
-interface HelpItem {
-  question: string;
-  answer: string;
-  category?: 'basic' | 'advanced' | 'troubleshooting';
-}
+import type { HelpItem } from './mobileHelpContent';
 
 // Note: Help content is loaded dynamically using dynamic imports below
 
@@ -23,22 +17,29 @@ function HelpContentRenderer({
   className
 }: LazyMobileHelpGuidanceProps) {
   const [helpItems, setHelpItems] = React.useState<HelpItem[]>([]);
-  const [HelpComponent, setHelpComponent] = React.useState<React.ComponentType<any> | null>(null);
+  const [HelpComponent, setHelpComponent] = React.useState<React.ComponentType<{
+    title: string;
+    helpItems: HelpItem[];
+    className?: string;
+  }> | null>(null);
 
   React.useEffect(() => {
     // Load help module dynamically
-    import('./MobileHelpGuidance').then((module) => {
-      setHelpComponent(() => module.MobileHelpGuidance);
+    Promise.all([
+      import('./MobileHelpGuidance'),
+      import('./mobileHelpContent')
+    ]).then(([componentModule, contentModule]) => {
+      setHelpComponent(() => componentModule.MobileHelpGuidance);
 
       switch (helpType) {
         case 'personalInfo':
-          setHelpItems(module.personalInfoHelp);
+          setHelpItems(contentModule.personalInfoHelp);
           break;
         case 'activityGoals':
-          setHelpItems(module.activityGoalsHelp);
+          setHelpItems(contentModule.activityGoalsHelp);
           break;
         case 'dietPreferences':
-          setHelpItems(module.dietPreferencesHelp);
+          setHelpItems(contentModule.dietPreferencesHelp);
           break;
       }
     });

@@ -73,13 +73,13 @@ export function UnitSelector({
       value: 'metric' as const,
       label: 'Metric',
       description: 'kg, cm',
-      icon: '🌍'
+      icon: 'SI'
     },
     {
       value: 'imperial' as const,
       label: 'Imperial',
       description: 'lbs, ft/in',
-      icon: '🇺🇸'
+      icon: 'US'
     }
   ];
 
@@ -106,7 +106,7 @@ export function UnitSelector({
             `}
           >
             <div className="flex items-center space-x-2">
-              <span className="text-lg">{option.icon}</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-subtle text-[10px] font-bold tracking-wide text-primary">{option.icon}</span>
               <div>
                 <div className={`font-medium text-sm ${value === option.value ? 'text-primary' : 'text-foreground'}`}>
                   {option.label}

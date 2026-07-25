@@ -105,7 +105,7 @@ class ChunkErrorBoundaryInner extends Component<ChunkErrorBoundaryProps, ChunkEr
 
           {/* Help Text */}
           <div className="mt-8 text-sm text-muted">
-            💡 If this problem persists, try refreshing the page or check your internet connection
+            If this problem persists, try refreshing the page or check your internet connection
           </div>
         </div>
       );

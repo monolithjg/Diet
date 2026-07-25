@@ -16,18 +16,31 @@ interface ConnectionState {
   connectionType: 'wifi' | 'cellular' | 'unknown';
 }
 
+interface NetworkConnection extends EventTarget {
+  effectiveType?: NetworkInfo['effectiveType'];
+  downlink?: number;
+  rtt?: number;
+  saveData?: boolean;
+}
+
+interface NavigatorWithConnection extends Navigator {
+  connection?: NetworkConnection;
+  mozConnection?: NetworkConnection;
+  webkitConnection?: NetworkConnection;
+}
+
 const isNavigatorAvailable = typeof navigator !== 'undefined';
 
 // Feature detection for Network Information API
 const hasNetworkInfo = (() => {
   if (!isNavigatorAvailable) return false;
-  const nav = navigator as any;
+  const nav = navigator as NavigatorWithConnection;
   return 'connection' in nav || 'mozConnection' in nav || 'webkitConnection' in nav;
 })();
 
-function getConnection(): any {
+function getConnection(): NetworkConnection | null {
   if (!isNavigatorAvailable) return null;
-  const nav = navigator as any;
+  const nav = navigator as NavigatorWithConnection;
   return nav.connection || nav.mozConnection || nav.webkitConnection || null;
 }
 
@@ -242,7 +255,7 @@ export function useChunkPreloader() {
         setTimeout(() => reject(new Error('Preload timeout')), strategy.timeout)
       );
 
-      let loadPromise: Promise<any>;
+      let loadPromise: Promise<unknown>;
       
       // Specific imports with proper file extensions
       if (chunkName === 'Step3ActivityGoals') {

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useStore } from '../store';
 import type { Goal } from '../../models/UserInput';
+import type { PalKey } from '../tdee';
 
 // Mock setTimeout for debounce testing
 vi.useFakeTimers();
@@ -226,7 +227,7 @@ describe('Store CGE Integration', () => {
         });
         
         store.recalcRmr('mifflin');
-        store.setTdee(expectedPal as any, 0); // Type assertion for test
+        store.setTdee(expectedPal as PalKey, 0);
         store.setMacros();
         
         // Guidance should be generated successfully without errors
@@ -288,7 +289,7 @@ describe('Store CGE Integration', () => {
       expect(() => {
         try {
           store.generateGuidance();
-        } catch (err) {
+        } catch {
           // The error should be caught internally
         }
       }).not.toThrow();
@@ -496,7 +497,7 @@ describe('Store CGE Integration', () => {
       ];
       
       testCases.forEach(({ expectedPal }) => {
-        store.setTdee(expectedPal as any, 0); // Add goalPct parameter
+        store.setTdee(expectedPal, 0);
         const currentState = useStore.getState();
         expect(currentState.calc.derivedMetrics.palFactor).toBe(expectedPal);
       });

@@ -150,7 +150,7 @@ export default function Wizard() {
       stepTitle={WIZARD_STEP_TITLES[step - 1]}
       stepDescription={stepValidation.message}
       stepContent={
-        <>
+        <div key={step} className="step-enter">
           {step === 1 && <Step1PersonalInfo />}
           {step === 2 && <Step2BodyComposition />}
           {step === 3 && (
@@ -167,7 +167,7 @@ export default function Wizard() {
               </Suspense>
             </ChunkErrorBoundary>
           )}
-        </>
+        </div>
       }
       navigationControls={
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">

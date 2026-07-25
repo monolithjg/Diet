@@ -1,5 +1,16 @@
 import { test, expect } from '@playwright/test';
 
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean;
+  value: number;
+}
+
+interface PerformanceWithMemory extends Performance {
+  memory?: {
+    usedJSHeapSize: number;
+  };
+}
+
 test.describe('Performance Tests', () => {
   test('should meet Core Web Vitals thresholds', async ({ page }) => {
     // Navigate to homepage and measure loading performance
@@ -33,8 +44,9 @@ test.describe('Performance Tests', () => {
         let clsValue = 0;
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              clsValue += (entry as any).value;
+            const layoutShift = entry as LayoutShiftEntry;
+            if (!layoutShift.hadRecentInput) {
+              clsValue += layoutShift.value;
             }
           }
           resolve(clsValue);
@@ -178,10 +190,7 @@ test.describe('Performance Tests', () => {
 
     // Check memory usage
     const memoryUsage = await page.evaluate(() => {
-      if ('memory' in performance) {
-        return (performance as any).memory.usedJSHeapSize;
-      }
-      return 0;
+      return (performance as PerformanceWithMemory).memory?.usedJSHeapSize ?? 0;
     });
 
     // Memory usage should be reasonable (under 50MB for basic usage)
@@ -213,4 +222,4 @@ test.describe('Performance Tests', () => {
     
     expect(navDuration).toBeLessThan(1000);
   });
-}); 
+});

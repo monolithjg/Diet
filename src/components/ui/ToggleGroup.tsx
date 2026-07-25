@@ -2,24 +2,34 @@ import React, { createContext, useContext } from 'react';
 
 interface ToggleGroupContextValue {
   value: string | string[] | undefined;
-  onValueChange: (value: any) => void;
+  onValueChange: (value: string | string[]) => void;
   type: 'single' | 'multiple';
   disabled?: boolean;
 }
 
 const ToggleGroupContext = createContext<ToggleGroupContextValue | undefined>(undefined);
 
-interface ToggleGroupProps {
-  type: 'single' | 'multiple';
-  value?: string | string[];
-  onValueChange: (value: any) => void;
+interface SharedToggleGroupProps {
   className?: string;
   disabled?: boolean;
   children: React.ReactNode;
   'aria-label'?: string;
 }
 
-export function ToggleGroup({
+type ToggleGroupProps<T extends string> = SharedToggleGroupProps & (
+  | {
+      type: 'single';
+      value?: T;
+      onValueChange: (value: T) => void;
+    }
+  | {
+      type: 'multiple';
+      value?: T[];
+      onValueChange: (value: T[]) => void;
+    }
+);
+
+export function ToggleGroup<T extends string>({
   type,
   value,
   onValueChange,
@@ -27,9 +37,17 @@ export function ToggleGroup({
   disabled = false,
   children,
   'aria-label': ariaLabel,
-}: ToggleGroupProps) {
+}: ToggleGroupProps<T>) {
+  const handleValueChange = (nextValue: string | string[]) => {
+    if (type === 'single') {
+      onValueChange(nextValue as T);
+    } else {
+      onValueChange(nextValue as T[]);
+    }
+  };
+
   return (
-    <ToggleGroupContext.Provider value={{ value, onValueChange, type, disabled }}>
+    <ToggleGroupContext.Provider value={{ value, onValueChange: handleValueChange, type, disabled }}>
       <div
         className={`inline-flex ${className}`}
         role={type === 'single' ? 'radiogroup' : 'group'}

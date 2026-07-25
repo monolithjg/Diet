@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { cn } from '../../../lib/utils';
+import { Icon } from '../../../components/ui/Icon';
 
 interface SleepHoursInputProps {
   value?: number;
@@ -93,8 +94,8 @@ export function SleepHoursInput({
         </p>
       )}
 
-      <div className="text-xs text-muted-foreground">
-        💡 Most adults need 7-9 hours for optimal recovery and metabolism
+      <div className="flex gap-2 text-xs text-muted-foreground">
+        <Icon name="info" className="h-4 w-4 flex-shrink-0" /> Most adults need 7-9 hours for optimal recovery and metabolism
       </div>
     </div>
   );

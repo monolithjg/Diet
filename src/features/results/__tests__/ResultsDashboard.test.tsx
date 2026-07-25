@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import type { DerivedMetrics } from '../../../models/DerivedMetrics';
 import type { MacroPlan } from '../../../models/MacroPlan';
 import type { GuidanceMessage } from '../../../lib/macros';
+import { serializeResults } from '../../../lib/sharing';
 
 // Mock the sharing module
 vi.mock('../../../lib/sharing', () => ({
@@ -65,6 +66,7 @@ describe('ResultsDashboard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(serializeResults).mockReturnValue('mock-serialized-data');
   });
 
   afterEach(() => {

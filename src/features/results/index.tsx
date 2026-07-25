@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { deserializeResults, type ShareableResults } from '../../lib/sharing';
 import { ResultsDashboard } from './organisms/ResultsDashboard';
+import { Icon } from '../../components/ui/Icon';
 
 /**
  * Enhanced Results component that displays comprehensive nutrition dashboard with CGE guidance
@@ -50,7 +51,7 @@ export default function Results() {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-md mx-auto">
-          <div className="text-6xl mb-6">📊</div>
+          <Icon name="chart" className="mx-auto mb-6 h-12 w-12 text-primary" />
           <h1 className="text-2xl font-bold text-foreground mb-4">
             No Results Available
           </h1>

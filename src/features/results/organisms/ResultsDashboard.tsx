@@ -10,6 +10,8 @@ import { cn } from '../../../lib/utils';
 import type { DerivedMetrics } from '../../../models/DerivedMetrics';
 import type { MacroPlan } from '../../../models/MacroPlan';
 import type { GuidanceMessage } from '../../../lib/macros';
+import { Icon } from '../../../components/ui/Icon';
+import { serializeResults } from '../../../lib/sharing';
 
 interface ResultsDashboardProps {
   derivedMetrics: DerivedMetrics;
@@ -45,9 +47,6 @@ export function ResultsDashboard({
 
   const handleShare = async () => {
     try {
-      // Import the serialization function
-      const { serializeResults } = await import('../../../lib/sharing');
-
       // Generate shareable URL with encoded results data
       const encodedData = serializeResults(derivedMetrics, macroPlan);
       const url = `${window.location.origin}/results?d=${encodedData}`;
@@ -94,23 +93,25 @@ export function ResultsDashboard({
   return (
     <div className={cn("space-y-8 max-w-7xl mx-auto px-4 lg:px-6 animate-fade-in", className)}>
       {/* Header Section */}
-      <div className="text-center space-y-4 py-8">
-        <h1 className="text-4xl font-normal text-foreground tracking-tight">
-          Your Personalized Nutrition Plan
+      <div className="space-y-5 py-8 md:py-12">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Your personal nutrition plan</p>
+        <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.05em] text-foreground md:text-7xl">
+          Nutrition built around your life.
         </h1>
-        <p className="text-lg text-muted max-w-2xl mx-auto">
-          Complete macronutrient breakdown with personalized guidance
+        <span className="sr-only">Your Personalized Nutrition Plan</span>
+        <p className="text-lg leading-relaxed text-muted max-w-2xl md:text-xl">
+          Your daily calories, macro targets, and practical guidance—all in one clear plan.
         </p>
         {isSharedResult && sharedDateLabel && (
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-secondary text-sm text-muted font-medium">
-            📅 Generated: {sharedDateLabel}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-sm text-muted font-medium">
+            <Icon name="calendar" className="h-4 w-4" /> Generated: {sharedDateLabel}
           </div>
         )}
       </div>
 
       {/* Key Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-border bg-surface shadow-sm hover:shadow-md transition-shadow duration-200">
+        <Card className="border-0 bg-surface shadow-sm hover:shadow-md transition-shadow duration-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted uppercase tracking-wider">Resting Metabolic Rate</CardTitle>
           </CardHeader>
@@ -126,7 +127,7 @@ export function ResultsDashboard({
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-surface shadow-sm hover:shadow-md transition-shadow duration-200">
+        <Card className="border-0 bg-surface shadow-sm hover:shadow-md transition-shadow duration-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted uppercase tracking-wider">Total Daily Expenditure</CardTitle>
           </CardHeader>
@@ -172,9 +173,9 @@ export function ResultsDashboard({
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 animate-fade-in" style={{ animationDelay: '200ms' }}>
         {/* Personalized Guidance */}
         <Card className="border-border bg-surface shadow-sm h-full">
-          <CardHeader className="border-b border-border/50 bg-secondary/30">
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-lg font-semibold text-foreground">
-              <span className="mr-2 text-xl">✨</span>
+              <Icon name="spark" className="mr-2 text-primary" />
               Personalized Guidance
             </CardTitle>
             <p className="text-sm text-muted">
@@ -199,7 +200,7 @@ export function ResultsDashboard({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 justify-center pt-8 pb-4 border-t border-border print:hidden animate-fade-in" style={{ animationDelay: '300ms' }}>
+      <div className="flex flex-wrap gap-4 justify-center pt-12 pb-4 print:hidden animate-fade-in" style={{ animationDelay: '300ms' }}>
         <Button
           variant="outline"
           onClick={handleBackToCalculator}
@@ -235,10 +236,10 @@ export function ResultsDashboard({
       </div>
 
       {/* Footer disclaimer */}
-      <div className="text-center pt-6 pb-8 border-t border-border">
+      <div className="text-center pt-8 pb-8">
         <div className="max-w-2xl mx-auto px-4">
           <p className="text-xs text-muted leading-relaxed">
-            ⚕️ This nutrition plan is for educational purposes only and is not a substitute for professional medical advice.
+            This nutrition plan is for educational purposes only and is not a substitute for professional medical advice.
             Always consult with a qualified healthcare provider or registered dietitian before making significant changes to your diet,
             especially if you have any health conditions or concerns.
           </p>

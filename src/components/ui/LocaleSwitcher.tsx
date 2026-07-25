@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-void React;
+import { useState, useEffect } from 'react';
 import { cn } from '../../lib/utils';
 import {
   setLocale,
@@ -15,13 +14,7 @@ interface LocaleSwitcherProps {
   showFlag?: boolean;
 }
 
-const getLocaleFlag = (locale: Locale): string => {
-  const flags: Record<Locale, string> = {
-    en: '🇺🇸',
-    es: '🇪🇸'
-  };
-  return flags[locale] || '🌐';
-};
+const getLocaleMark = (locale: Locale): string => locale.toUpperCase();
 
 export function LocaleSwitcher({
   className,
@@ -66,7 +59,7 @@ export function LocaleSwitcher({
         title={`Switch to ${getLocaleDisplayName(otherLocale)}`}
       >
         {showFlag && (
-          <span className="text-base">{getLocaleFlag(otherLocale)}</span>
+          <span className="text-xs font-bold">{getLocaleMark(otherLocale)}</span>
         )}
         <span>{getLocaleDisplayName(otherLocale)}</span>
       </button>
@@ -88,7 +81,7 @@ export function LocaleSwitcher({
         aria-haspopup="true"
       >
         {showFlag && (
-          <span className="text-base">{getLocaleFlag(currentLocale)}</span>
+          <span className="text-xs font-bold">{getLocaleMark(currentLocale)}</span>
         )}
         <span>{getLocaleDisplayName(currentLocale)}</span>
         <svg
@@ -120,7 +113,7 @@ export function LocaleSwitcher({
                 )}
               >
                 {showFlag && (
-                  <span className="text-base">{getLocaleFlag(locale)}</span>
+                  <span className="text-xs font-bold">{getLocaleMark(locale)}</span>
                 )}
                 <span>{getLocaleDisplayName(locale)}</span>
                 {locale === currentLocale && (
@@ -151,40 +144,4 @@ export function LocaleSwitcher({
       )}
     </div>
   );
-}
-
-// Hook to use locale switching in other components
-export function useLocale() {
-  const [currentLocale, setCurrentLocaleState] = useState<Locale>(getCurrentLocale());
-
-  useEffect(() => {
-    const handleLocaleChange = (event: CustomEvent<{ locale: Locale }>) => {
-      setCurrentLocaleState(event.detail.locale);
-    };
-
-    const handleStorageChange = () => {
-      setCurrentLocaleState(getCurrentLocale());
-    };
-
-    window.addEventListener('localeChanged', handleLocaleChange as EventListener);
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('localeChanged', handleLocaleChange as EventListener);
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const changeLocale = (locale: Locale) => {
-    setLocale(locale);
-    setCurrentLocaleState(locale);
-    window.dispatchEvent(new CustomEvent('localeChanged', { detail: { locale } }));
-  };
-
-  return {
-    currentLocale,
-    changeLocale,
-    availableLocales: getAvailableLocales(),
-    getDisplayName: getLocaleDisplayName
-  };
 }

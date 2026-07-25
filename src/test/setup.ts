@@ -35,9 +35,9 @@ class MockResizeObserver {
   observe = vi.fn()
   unobserve = vi.fn()
   disconnect = vi.fn()
-  constructor(_callback: ResizeObserverCallback) {
-    // Parameter prefixed with underscore to indicate intentional non-use
+  constructor(callback: ResizeObserverCallback) {
+    void callback
   }
 }
 
-global.ResizeObserver = MockResizeObserver as any 
+global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver

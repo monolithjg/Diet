@@ -38,17 +38,18 @@ export function MobileWizardLayout({
   const stepHelp = getStepHelp();
 
   return (
-    <div className="flex flex-col gap-8 animate-slide-up">
+    <div className="flex flex-col gap-8">
       {/* Header Section */}
-      <header className="text-center space-y-4">
-        <div className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-            Diet Calculator
+      <header className={step === 1 ? "space-y-8 py-4 md:py-8" : "space-y-4"}>
+        {step === 1 && <div className="max-w-4xl space-y-5">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">A plan you can live with</p>
+          <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.05em] text-foreground md:text-7xl">
+            Nutrition built around your life.
           </h1>
-          <p className="text-muted text-lg max-w-2xl mx-auto">
-            Get personalized nutrition recommendations based on your goals and lifestyle.
+          <p className="max-w-2xl text-lg leading-relaxed text-muted md:text-xl">
+            Get a clear daily calorie target, practical macro ranges, and diet guidance shaped around your body, routine, and goals.
           </p>
-        </div>
+        </div>}
         <div className="max-w-xl mx-auto">
           {progressBar}
         </div>
@@ -56,9 +57,9 @@ export function MobileWizardLayout({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Main Content Card */}
-        <main className="lg:col-span-8 bg-surface shadow-soft rounded-3xl border border-border transition-all duration-300 hover:shadow-card-hover">
+        <main className="lg:col-span-8 bg-surface shadow-soft rounded-3xl transition-shadow duration-200 hover:shadow-card-hover">
           {/* Step Header */}
-          <div className="p-6 md:p-8 border-b border-border bg-secondary/30 rounded-t-3xl">
+          <div className="p-6 pb-2 md:p-8 md:pb-3">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-foreground">
@@ -86,7 +87,7 @@ export function MobileWizardLayout({
 
           {/* Mobile Help Panel (Collapsible) */}
           {stepHelp && showMobileHelp && (
-            <div className="border-b border-border bg-secondary/20 lg:hidden animate-fade-in">
+            <div className="mx-6 rounded-2xl bg-secondary/60 lg:hidden animate-fade-in">
               <div className="p-6">
                 <LazyMobileHelpGuidance
                   title={stepHelp.title}
@@ -102,7 +103,7 @@ export function MobileWizardLayout({
           </div>
 
           {/* Step Navigation */}
-          <div className="sticky bottom-0 z-20 p-4 md:p-6 border-t border-border bg-surface/95 backdrop-blur shadow-[0_-8px_24px_rgb(16_24_40_/_0.08)] rounded-b-3xl">
+          <div className="sticky bottom-0 z-20 p-4 md:p-6 bg-surface/95 backdrop-blur shadow-[0_-8px_24px_rgb(16_24_40_/_0.06)] rounded-b-3xl">
             {navigationControls}
           </div>
         </main>
@@ -114,7 +115,7 @@ export function MobileWizardLayout({
 
           {/* Desktop Help Panel */}
           {stepHelp && (
-            <div className="hidden lg:block bg-surface shadow-card rounded-2xl border border-border p-6 sticky top-24">
+            <div className="hidden lg:block bg-surface shadow-card rounded-2xl p-6 sticky top-24">
               <LazyMobileHelpGuidance
                 title={stepHelp.title}
                 helpType={stepHelp.helpType}
@@ -123,9 +124,9 @@ export function MobileWizardLayout({
           )}
 
           {/* Quick Tips Card */}
-          <div className="bg-surface/50 border border-border rounded-2xl p-6">
+          <div className="bg-surface-subtle rounded-2xl p-6">
             <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="text-xl">✨</span>
+              <svg className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4L12 3Z"/></svg>
               Quick Tips
             </h3>
             <div className="space-y-3 text-sm text-muted">

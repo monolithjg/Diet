@@ -138,11 +138,11 @@ function replaceTokens(
  */
 function getMessageByPath(locale: LocaleData, keyPath: string): string | undefined {
   const parts = keyPath.split('.');
-  let current: any = locale;
+  let current: unknown = locale;
   
   for (const part of parts) {
     if (current && typeof current === 'object' && part in current) {
-      current = current[part];
+      current = (current as Record<string, unknown>)[part];
     } else {
       return undefined;
     }
@@ -226,4 +226,4 @@ export function translateValidationMessage(key: string, replacements?: Record<st
 // Initialize locale on module load
 if (typeof window !== 'undefined') {
   initializeLocale();
-} 
+}

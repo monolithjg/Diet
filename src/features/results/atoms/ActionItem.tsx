@@ -1,7 +1,8 @@
 import { cn } from '../../../lib/utils';
+import { Icon, type IconName } from '../../../components/ui/Icon';
 
 interface ActionItemProps {
-  icon: string;
+  icon: IconName;
   title: string;
   description: string;
   priority: 'high' | 'medium' | 'low';
@@ -51,8 +52,8 @@ export function ActionItem({
       </div>
 
       {/* Icon */}
-      <div className="flex-shrink-0 text-2xl filter drop-shadow-sm">
-        {icon}
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-surface-subtle text-primary">
+        <Icon name={icon} className="h-4 w-4" />
       </div>
 
       {/* Content */}

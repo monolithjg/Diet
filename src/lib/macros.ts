@@ -444,7 +444,7 @@ export function allocateMacros(input: MacroInput): MacroOutput {
   
   // RULE 4: Calorie matching loop
   // Calculate how many calories are left after allocating protein and fat
-  let proteinKcal = proteinG * MACRO_CONSTANTS.PROTEIN_KCAL_PER_G;
+  const proteinKcal = proteinG * MACRO_CONSTANTS.PROTEIN_KCAL_PER_G;
   let fatKcal = fatG * MACRO_CONSTANTS.FAT_KCAL_PER_G;
   let remainingKcal = targetKcal - (proteinKcal + fatKcal);
   
@@ -576,4 +576,4 @@ export function allocateMacros(input: MacroInput): MacroOutput {
     carbPct: Math.round(carbPct * 100) / 100,
     guidance: uniqueGuidance
   };
-} 
+}

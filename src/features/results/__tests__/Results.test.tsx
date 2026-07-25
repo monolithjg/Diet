@@ -4,6 +4,7 @@ import Results from '../index';
 import { useStore } from '../../../lib/store';
 import * as sharing from '../../../lib/sharing';
 import { MemoryRouter } from 'react-router-dom';
+import type { StoreState } from '../../../lib/store';
 
 // Mock the store
 vi.mock('../../../lib/store', () => ({
@@ -60,12 +61,9 @@ describe('Results', () => {
     }
   };
 
-  const mockUseStore = (state: any) => {
-    vi.mocked(useStore).mockImplementation((selector?: any) => {
-      if (typeof selector === 'function') {
-        return selector(state);
-      }
-      return state;
+  const mockUseStore = (state: typeof mockStoreState) => {
+    vi.mocked(useStore).mockImplementation((selector) => {
+      return selector(state as unknown as StoreState);
     });
   };
 

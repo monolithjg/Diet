@@ -6,12 +6,13 @@ import { StressLevelScale } from '../atoms/StressLevelScale';
 import { StepContainer } from './StepContainer';
 import { cn } from '../../../lib/utils';
 import type { DietStyle, Goal } from '../../../models/UserInput';
+import { Icon, type IconName } from '../../../components/ui/Icon';
 
 interface DietOption {
   value: DietStyle;
   title: string;
   description: string;
-  icon: string;
+  icon: IconName;
   macros: {
     protein: number;
     carbs: number;
@@ -24,42 +25,42 @@ const dietStyles: DietOption[] = [
     value: 'balanced',
     title: 'Balanced',
     description: 'A flexible everyday approach with a steady mix of protein, carbohydrates, and fat.',
-    icon: '⚖️',
+    icon: 'balance',
     macros: { protein: 20, carbs: 50, fat: 30 }
   },
   {
     value: 'highProtein',
     title: 'High Protein',
     description: 'More protein to support fullness, workout recovery, and lean muscle.',
-    icon: '💪',
+    icon: 'protein',
     macros: { protein: 30, carbs: 45, fat: 25 }
   },
   {
     value: 'lowCarb',
     title: 'Low Carb',
     description: 'Fewer carbohydrates with more protein and fat for steadier energy.',
-    icon: '🥩',
+    icon: 'low-carb',
     macros: { protein: 25, carbs: 35, fat: 40 }
   },
   {
     value: 'keto',
     title: 'Ketogenic',
     description: 'A very low-carbohydrate, high-fat approach designed to support ketosis.',
-    icon: '🥑',
+    icon: 'keto',
     macros: { protein: 20, carbs: 10, fat: 70 }
   },
   {
     value: 'vegan',
     title: 'Vegan',
     description: 'A fully plant-based pattern that excludes all animal-derived foods.',
-    icon: '🌱',
+    icon: 'plant',
     macros: { protein: 25, carbs: 45, fat: 30 }
   },
   {
     value: 'vegetarian',
     title: 'Vegetarian',
     description: 'A plant-forward pattern that can include eggs and dairy products.',
-    icon: '🥬',
+    icon: 'vegetarian',
     macros: { protein: 22, carbs: 50, fat: 28 }
   }
 ];
@@ -169,10 +170,10 @@ function Step4DietPreferences() {
                   <div className="flex h-full flex-col">
                     <div className="mb-4 flex items-start gap-3 pr-8">
                       <span
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border-subtle bg-surface text-2xl shadow-sm"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-subtle text-primary"
                         aria-hidden="true"
                       >
-                        {diet.icon}
+                        <Icon name={diet.icon} className="h-5 w-5" />
                       </span>
                       <div className="min-w-0 pt-0.5">
                         <span className="block text-lg font-bold text-foreground">{diet.title}</span>
@@ -207,7 +208,7 @@ function Step4DietPreferences() {
           </div>
         </fieldset>
 
-        <div className="border-t border-border-subtle pt-7 animate-fade-in" style={{ animationDelay: '100ms' }}>
+        <div className="pt-10 animate-fade-in" style={{ animationDelay: '100ms' }}>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Optional refinements</p>
           <h3 className="mt-2 text-xl font-semibold text-foreground">Fine-tune your suggestions</h3>
           <p className="mt-1 text-sm text-muted">These details improve meal guidance but are not required to calculate your plan.</p>
@@ -253,14 +254,14 @@ function Step4DietPreferences() {
 
         {/* Sleep & Stress */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
-          <section className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+          <section className="bg-surface-subtle rounded-2xl p-6">
             <SleepHoursInput
               value={user.sleepHours}
               onChange={handleSleepHoursChange}
             />
           </section>
 
-          <section className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+          <section className="bg-surface-subtle rounded-2xl p-6">
             <StressLevelScale
               value={user.stressLevel}
               onChange={handleStressLevelChange}
@@ -273,14 +274,14 @@ function Step4DietPreferences() {
           <Card className="bg-secondary/30 border-none shadow-none">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-semibold flex items-center gap-2 text-foreground">
-                <span className="text-xl">💡</span>
+                <Icon name="info" className="text-primary" />
                 Why We Ask About Lifestyle
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted">
                 <div className="flex gap-3">
-                  <span className="text-lg flex-shrink-0">😴</span>
+                  <Icon name="sleep" className="flex-shrink-0 text-primary" />
                   <div>
                     <strong className="block text-foreground mb-1">Sleep</strong>
                     <span className="text-xs leading-relaxed">
@@ -289,7 +290,7 @@ function Step4DietPreferences() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-lg flex-shrink-0">😰</span>
+                  <Icon name="stress" className="flex-shrink-0 text-primary" />
                   <div>
                     <strong className="block text-foreground mb-1">Stress</strong>
                     <span className="text-xs leading-relaxed">

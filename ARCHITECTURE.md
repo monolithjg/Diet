@@ -2,14 +2,33 @@
 
 This document outlines the mobile-first architecture and performance optimization strategies for the Diet & Macronutrient Calculator project.
 
+## Application Composition
+
+`src/main.tsx` is the browser entry point and `src/routes.tsx` is the single
+composition root for the React application. Route-level features are loaded
+lazily beneath `src/components/layout/Layout.tsx`, which owns the shared page
+shell and renders route content through React Router's `Outlet`.
+
+Keep these boundaries explicit:
+
+- `main.tsx` owns browser bootstrapping, service-worker setup, and telemetry.
+- `routes.tsx` owns route declarations and route-level code splitting.
+- `components/layout/Layout.tsx` owns shared navigation and page chrome.
+- `features/*` own feature orchestration and may depend on shared UI, hooks,
+  models, constants, and domain logic.
+- `lib/*` and `models/*` must remain independent of React components.
+
+Do not introduce a second router or app shell. New pages should be exported
+from their feature and registered directly in `routes.tsx`.
+
 ## Tech Stack
 
 ### Core Technologies
-- **React 18** with TypeScript for UI components and mobile-first design
+- **React 19** with TypeScript for UI components and mobile-first design
 - **Vite** for fast development, optimized builds, and code splitting
 - **TailwindCSS** for utility-first, mobile-first responsive styling
 - **Zustand** for lightweight state management with performance optimization
-- **React Router v6** for routing with lazy loading
+- **React Router v7** for routing with lazy loading
 - **Recharts** for responsive data visualization
 - **Radix UI/shadcn** for accessible, mobile-optimized UI components
 - **Vitest + React Testing Library** for comprehensive testing (266 tests)
@@ -68,7 +87,13 @@ src/
 │   ├── cge/                     # Contextual Guidance Engine
 │   │   ├── i18n.ts             # Internationalization system
 │   │   └── rules/              # Guidance rule sets
-│   ├── store.ts                 # Optimized Zustand store
+│   ├── store.ts                 # Zustand composition and public hook
+│   ├── store/                   # Store domain modules
+│   │   ├── calculations.ts      # Pure nutrition calculations
+│   │   ├── guidance.ts          # CGE projection and scheduling
+│   │   ├── persistence.ts       # Local storage boundary
+│   │   ├── state.ts             # Initial state factories
+│   │   └── types.ts             # Store state and action contracts
 │   ├── rmr.ts                   # RMR calculations
 │   ├── tdee.ts                  # TDEE calculations
 │   └── macros.ts                # Macro distribution
@@ -84,7 +109,8 @@ src/
 │       └── ...
 ├── models/                      # Data models and interfaces
 ├── constants/                   # Configuration and presets
-└── App.tsx                      # Mobile-responsive app shell
+├── routes.tsx                  # Route composition and lazy page loading
+└── main.tsx                    # Browser bootstrap and runtime services
 ```
 
 ## State Management & Performance
@@ -106,6 +132,11 @@ interface Store {
   };
 }
 ```
+
+The public `useStore` hook remains in `lib/store.ts`, but domain work is kept
+outside the Zustand initializer. Calculation and guidance modules expose pure
+functions, persistence is isolated behind a storage adapter, and fresh-state
+factories prevent reset operations from sharing mutable defaults.
 
 ### Performance Optimizations
 - **Debounced Updates**: `useDebouncedStore` for mobile input performance
@@ -296,4 +327,4 @@ npm run build  # 2.52s build time with full optimization
 - **Advanced gestures** (swipe navigation, pinch-to-zoom)
 - **Haptic feedback** for supported mobile devices
 
-This architecture ensures exceptional mobile performance while maintaining scalability, accessibility, and developer experience. 
+This architecture ensures exceptional mobile performance while maintaining scalability, accessibility, and developer experience.

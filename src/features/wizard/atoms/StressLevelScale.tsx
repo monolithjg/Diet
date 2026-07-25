@@ -1,6 +1,7 @@
 import { Card, CardContent } from '../../../components/ui/Card';
 import { Label } from '../../../components/ui/Label';
 import { cn } from '../../../lib/utils';
+import { Icon } from '../../../components/ui/Icon';
 
 interface StressLevelScaleProps {
   value?: 1 | 2 | 3;
@@ -14,21 +15,18 @@ const stressLevels = [
     value: 1 as const,
     label: 'Low Stress',
     description: 'Generally calm and relaxed',
-    emoji: '😌',
     color: 'text-success'
   },
   {
     value: 2 as const,
     label: 'Moderate Stress',
     description: 'Some daily pressures',
-    emoji: '😐',
     color: 'text-yellow-600'
   },
   {
     value: 3 as const,
     label: 'High Stress',
     description: 'Frequently feeling overwhelmed',
-    emoji: '😰',
     color: 'text-error'
   }
 ];
@@ -60,14 +58,14 @@ export function StressLevelScale({
           <Card
             key={level.value}
             className={cn(
-              "cursor-pointer transition-all hover:shadow-md",
+              "cursor-pointer border-0 transition-all duration-200 hover:shadow-md",
               value === level.value ? "ring-2 ring-primary bg-primary/5" : "hover:bg-accent/5",
               error && "border-destructive"
             )}
             onClick={() => onChange(value === level.value ? undefined : level.value)}
           >
             <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-              <div className="text-3xl mb-2">{level.emoji}</div>
+              <Icon name="stress" className={cn("mb-2 h-6 w-6", level.color)} />
               <div className="font-medium mb-1">{level.label}</div>
               <div className="text-xs text-muted-foreground">
                 {level.description}
@@ -101,8 +99,8 @@ export function StressLevelScale({
         </p>
       )}
 
-      <div className="text-xs text-muted-foreground">
-        💡 Stress affects cortisol levels, which can impact metabolism and recovery
+      <div className="flex gap-2 text-xs text-muted-foreground">
+        <Icon name="info" className="h-4 w-4 flex-shrink-0" /> Stress affects cortisol levels, which can impact metabolism and recovery
       </div>
     </div>
   );

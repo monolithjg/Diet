@@ -29,13 +29,10 @@ export const AgeInput = React.memo(function AgeInput({
 
   // Sync local value with prop value changes
   useEffect(() => {
-    if (value > 0) {
-      if (parseInt(localValue) !== value) {
-        setLocalValue(value.toString());
-      }
-    } else {
-      setLocalValue('');
-    }
+    setLocalValue((currentValue) => {
+      if (value <= 0) return '';
+      return parseInt(currentValue) === value ? currentValue : value.toString();
+    });
   }, [value]);
 
   const validateAge = useCallback((ageStr: string): string | undefined => {

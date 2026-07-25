@@ -217,7 +217,7 @@ function LoadingSkeleton({ variant, text, className }: LoadingSkeletonProps) {
       {/* Loading Footer for Mobile */}
       <div className="p-4 bg-surface-subtle border-t border-border-subtle rounded-b-lg">
         <div className="text-xs text-muted text-center">
-          📱 Optimizing for your device...
+          Optimizing for your device...
         </div>
       </div>
     </div>

@@ -1,19 +1,17 @@
 import { createBrowserRouter } from 'react-router-dom';
-import React, { lazy, Suspense } from 'react';
-import Layout from './components/Layout';
-void React;
+import { lazy, Suspense } from 'react';
+import Layout from './components/layout/Layout';
 
 // Lazy-loaded route components
 const Wizard = lazy(() => import('./features/wizard'));
 const Results = lazy(() => import('./features/results'));
 
-const LoadingFallback = () => (
+const loadingFallback = (
   <div className="flex items-center justify-center h-screen">
     <p>Loading…</p>
   </div>
 );
 
-// ───────────────────────── router definition ─────────────────────────
 export const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -21,7 +19,7 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: (
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={loadingFallback}>
             <Wizard />
           </Suspense>
         ),
@@ -29,7 +27,7 @@ export const router = createBrowserRouter([
       {
         path: 'results',
         element: (
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={loadingFallback}>
             <Results />
           </Suspense>
         ),

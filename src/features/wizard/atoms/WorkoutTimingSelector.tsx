@@ -1,6 +1,7 @@
 import { Card, CardContent } from '../../../components/ui/Card';
 import { Label } from '../../../components/ui/Label';
 import { cn } from '../../../lib/utils';
+import { Icon } from '../../../components/ui/Icon';
 
 interface WorkoutTimingSelectorProps {
   value?: 'am' | 'pm';
@@ -24,14 +25,14 @@ export function WorkoutTimingSelector({
       <div className="grid grid-cols-2 gap-3">
         <Card 
           className={cn(
-            "cursor-pointer transition-all hover:shadow-md",
+            "cursor-pointer border-0 transition-all duration-200 hover:shadow-md",
             value === 'am' ? "ring-2 ring-primary bg-primary/5" : "hover:bg-accent/5",
             error && "border-destructive"
           )}
           onClick={() => onChange(value === 'am' ? undefined : 'am')}
         >
           <CardContent className="flex flex-col items-center justify-center p-6">
-            <div className="text-2xl mb-2">🌅</div>
+            <Icon name="sun" className="mb-2 h-6 w-6 text-primary" />
             <div className="font-medium">Morning</div>
             <div className="text-sm text-muted-foreground text-center">
               Before 12 PM
@@ -41,14 +42,14 @@ export function WorkoutTimingSelector({
         
         <Card 
           className={cn(
-            "cursor-pointer transition-all hover:shadow-md",
+            "cursor-pointer border-0 transition-all duration-200 hover:shadow-md",
             value === 'pm' ? "ring-2 ring-primary bg-primary/5" : "hover:bg-accent/5",
             error && "border-destructive"
           )}
           onClick={() => onChange(value === 'pm' ? undefined : 'pm')}
         >
           <CardContent className="flex flex-col items-center justify-center p-6">
-            <div className="text-2xl mb-2">🌆</div>
+            <Icon name="sleep" className="mb-2 h-6 w-6 text-primary" />
             <div className="font-medium">Evening</div>
             <div className="text-sm text-muted-foreground text-center">
               After 12 PM
@@ -80,4 +81,4 @@ export function WorkoutTimingSelector({
       )}
     </div>
   );
-} 
+}

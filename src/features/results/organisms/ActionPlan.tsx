@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import { ActionItem } from '../atoms/ActionItem';
 import type { GuidanceMessage } from '../../../lib/macros';
 import { cn } from '../../../lib/utils';
+import { Icon, type IconName } from '../../../components/ui/Icon';
 
 interface ActionPlanProps {
   guidance: GuidanceMessage[];
@@ -11,7 +12,7 @@ interface ActionPlanProps {
 // Transform guidance messages into actionable items
 const createActionItems = (guidance: GuidanceMessage[]) => {
   const actions: Array<{
-    icon: string;
+    icon: IconName;
     title: string;
     description: string;
     priority: 'high' | 'medium' | 'low';
@@ -29,7 +30,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
     if (message.category === 'mealTiming') {
       if (message.key.includes('preWorkout')) {
         actions.push({
-          icon: '🥤',
+          icon: 'water',
           title: 'Pre-Workout Nutrition',
           description: `Have ${message.replacements?.protein || '15-20'}g protein ${message.replacements?.timing || '30'} minutes before training for optimal performance.`,
           priority,
@@ -38,7 +39,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
       }
       if (message.key.includes('postWorkout')) {
         actions.push({
-          icon: '🍗',
+          icon: 'protein',
           title: 'Post-Workout Recovery',
           description: `Consume ${message.replacements?.protein || '20'}g protein within 2 hours after training to support muscle recovery.`,
           priority,
@@ -47,7 +48,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
       }
       if (message.key.includes('frequency')) {
         actions.push({
-          icon: '🍽️',
+          icon: 'meal',
           title: 'Meal Frequency',
           description: `Aim for ${message.replacements?.meals || '3-4'} meals per day to support your ${message.replacements?.reason || 'goals'}.`,
           priority,
@@ -60,7 +61,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
     if (message.category === 'micronutrient') {
       if (message.key.includes('b12')) {
         actions.push({
-          icon: '💊',
+          icon: 'supplement',
           title: 'B-12 Supplementation',
           description: `Take ${message.replacements?.dosage || '10-25 mcg daily'} B-12 supplement due to limited availability in plant foods.`,
           priority,
@@ -69,7 +70,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
       }
       if (message.key.includes('iron')) {
         actions.push({
-          icon: '🩸',
+          icon: 'info',
           title: 'Iron Optimization',
           description: 'Consider iron-rich foods or supplementation, especially for premenopausal women. Pair with vitamin C for better absorption.',
           priority,
@@ -78,7 +79,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
       }
       if (message.key.includes('vitaminD')) {
         actions.push({
-          icon: '☀️',
+          icon: 'sun',
           title: 'Vitamin D Support',
           description: 'Consider vitamin D supplementation, especially during winter months or with limited sun exposure.',
           priority,
@@ -90,7 +91,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
     // Hydration actions
     if (message.category === 'hydration') {
       actions.push({
-        icon: '💧',
+        icon: 'water',
         title: 'Daily Hydration Target',
         description: `Aim for ${message.replacements?.target || '2.5L'} water daily${message.replacements?.additional ? `, plus ${message.replacements.additional} on training days` : ''}.`,
         priority,
@@ -102,7 +103,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
     if (message.category === 'lifestyle') {
       if (message.key.includes('sleep')) {
         actions.push({
-          icon: '😴',
+          icon: 'sleep',
           title: 'Sleep Optimization',
           description: `Aim for ${message.replacements?.target || '7-9'} hours of sleep per night to support ${message.replacements?.impact || 'your goals'}.`,
           priority,
@@ -111,7 +112,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
       }
       if (message.key.includes('stress')) {
         actions.push({
-          icon: '🧘',
+          icon: 'stress',
           title: 'Stress Management',
           description: 'Consider stress management techniques like meditation, deep breathing, or yoga to support optimal metabolism.',
           priority,
@@ -123,7 +124,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
     // Allergy swap actions
     if (message.category === 'allergySwap') {
       actions.push({
-        icon: '🔄',
+        icon: 'swap',
         title: 'Food Alternatives',
         description: 'Replace allergenic foods with safe alternatives that provide similar nutritional benefits.',
         priority,
@@ -160,13 +161,13 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <span className="mr-2">✅</span>
+            <Icon name="check" className="mr-2 text-primary" />
             Your Action Plan
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <div className="text-4xl mb-4">🎯</div>
+            <Icon name="target" className="mx-auto mb-4 h-10 w-10 text-primary" />
             <h3 className="text-lg font-medium text-foreground mb-2">
               Great job!
             </h3>
@@ -181,9 +182,9 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
 
   return (
     <Card className={cn("border-border bg-surface shadow-sm h-full flex flex-col", className)}>
-      <CardHeader className="border-b border-border/50 bg-secondary/30">
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center text-lg font-semibold text-foreground">
-          <span className="mr-2 text-xl">🎯</span>
+          <Icon name="target" className="mr-2 text-primary" />
           Your Action Plan
         </CardTitle>
         <p className="text-sm text-muted mt-1">
@@ -212,7 +213,7 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
         ))}
 
         {/* Summary */}
-        <div className="pt-6 border-t border-border mt-auto">
+        <div className="pt-8 mt-auto">
           <div className="flex items-center justify-between text-xs font-medium text-muted">
             <span>
               Total recommendations: {actionItems.length}

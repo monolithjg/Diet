@@ -9,11 +9,12 @@ import { Input } from '../../../components/ui/Input';
 import type { Goal } from '../../../models/UserInput';
 import { activityLevels } from '../../../constants/activityLevels';
 import { StepContainer } from './StepContainer';
+import { Icon, type IconName } from '../../../components/ui/Icon';
 
-const goalDetails: Record<Goal, { name: string; icon: string; description: string }> = {
-  loss: { name: 'Weight Loss', icon: '📉', description: 'Create a caloric deficit' },
-  maintain: { name: 'Maintain Weight', icon: '⚖️', description: 'Maintain current weight' },
-  gain: { name: 'Weight Gain', icon: '📈', description: 'Create a caloric surplus' },
+const goalDetails: Record<Goal, { name: string; icon: IconName; description: string }> = {
+  loss: { name: 'Weight Loss', icon: 'trend-down', description: 'Create a caloric deficit' },
+  maintain: { name: 'Maintain Weight', icon: 'balance', description: 'Maintain current weight' },
+  gain: { name: 'Weight Gain', icon: 'trend-up', description: 'Create a caloric surplus' },
 };
 
 function Step3ActivityGoals() {
@@ -148,7 +149,7 @@ function Step3ActivityGoals() {
                 className="flex flex-col items-center justify-center h-auto py-6 px-4 gap-3 bg-surface border-2 border-border hover:border-primary/50 hover:bg-secondary/50 data-[state=on]:border-primary data-[state=on]:bg-primary/5 data-[state=on]:text-foreground transition-all duration-200 rounded-2xl shadow-sm"
                 aria-label={goalDetails[goalKey].name}
               >
-                <span className="text-4xl filter drop-shadow-sm">{goalDetails[goalKey].icon}</span>
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-primary"><Icon name={goalDetails[goalKey].icon} className="h-6 w-6" /></span>
                 <div className="text-center space-y-1">
                   <span className="block font-semibold text-base">{goalDetails[goalKey].name}</span>
                   <span className="block text-xs text-muted">{goalDetails[goalKey].description}</span>
