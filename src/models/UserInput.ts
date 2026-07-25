@@ -1,4 +1,4 @@
-export type Sex = 'male' | 'female' | 'other';
+export type Sex = 'male' | 'female' | 'other' | 'unspecified';
 
 export type Goal = 'loss' | 'maintain' | 'gain';
 
@@ -30,7 +30,7 @@ export interface CustomMacros {
  * calculation pipeline consistent and avoid rounding errors.
  */
 export interface UserInput {
-  /** Age in whole years (13-120). */
+  /** Age in whole years (18-120). */
   age: number;
   sex: Sex;
   /** Body weight in kilograms (30-300 kg). */

@@ -3,7 +3,6 @@ void React;
 import { useStore } from '../../../lib/store';
 import { Label } from '../../../components/ui/Label';
 import { WorkoutTimingSelector } from '../atoms/WorkoutTimingSelector';
-import { Slider } from '../../../components/ui/Slider';
 import { ToggleGroup, ToggleGroupItem } from '../../../components/ui/ToggleGroup';
 import { Input } from '../../../components/ui/Input';
 import type { Goal } from '../../../models/UserInput';
@@ -31,8 +30,10 @@ function Step3ActivityGoals() {
   const [deficitSurplusError, setDeficitSurplusError] = useState<string | undefined>(undefined);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
-  const handleActivityLevelChange = (value: number[]) => {
-    updateUserWithGuidance({ activityLevel: value[0] });
+  const handleActivityLevelChange = (value?: string) => {
+    if (value) {
+      updateUserWithGuidance({ activityLevel: Number(value) });
+    }
   };
 
   const handleGoalChange = (goal?: Goal) => {
@@ -90,43 +91,37 @@ function Step3ActivityGoals() {
             <Label className="text-lg font-semibold text-foreground">
               Physical Activity Level
             </Label>
-            <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
-              PAL: {user.activityLevel.toFixed(2)}
-            </span>
-          </div>
-
-          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm space-y-6">
-            <p className="text-muted text-sm">
-              {currentActivityLevelDetails?.description || 'Select your typical activity level'}
-            </p>
-
-            <div className="px-2">
-              <Slider
-                id="activity-level-slider"
-                min={1.2}
-                max={2.5}
-                step={0.01}
-                value={[user.activityLevel || 1.2]}
-                onValueChange={handleActivityLevelChange}
-                className="w-full py-4"
-                aria-label={`Activity Level: ${currentActivityLevelDetails?.name}`}
-              />
-            </div>
-
-            <div className="flex justify-between text-xs font-medium text-muted px-1">
-              <span>Sedentary</span>
-              <span className="hidden sm:block">Light</span>
-              <span>Moderate</span>
-              <span className="hidden sm:block">Active</span>
-              <span>Very Active</span>
-            </div>
-
-            <div className="text-center">
-              <span className="text-lg font-semibold text-foreground">
-                {currentActivityLevelDetails?.name}
+            {currentActivityLevelDetails && (
+              <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+                {currentActivityLevelDetails.name}
               </span>
-            </div>
+            )}
           </div>
+
+          <p className="text-sm leading-relaxed text-muted">
+            Include your job, daily movement, and training—not only formal workouts. Choose the closest typical week.
+          </p>
+          <ToggleGroup
+            type="single"
+            value={user.activityLevel > 0 ? user.activityLevel.toString() : undefined}
+            onValueChange={handleActivityLevelChange}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            aria-label="Physical Activity Level"
+          >
+            {activityLevels.map(level => (
+              <ToggleGroupItem
+                key={level.category}
+                value={level.level.toString()}
+                className="h-auto min-h-24 items-start justify-start rounded-2xl border-2 border-border bg-surface p-4 text-left data-[state=on]:border-primary data-[state=on]:bg-primary/5"
+                aria-label={`${level.name}: ${level.description}`}
+              >
+                <span>
+                  <span className="block font-semibold text-foreground">{level.name}</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted">{level.description}</span>
+                </span>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </section>
 
         {/* Goal Selection */}
@@ -200,15 +195,16 @@ function Step3ActivityGoals() {
 
               <div
                 id="advanced-settings-content"
+                hidden={!showAdvancedSettings}
                 className={`transition-all duration-300 ease-in-out ${showAdvancedSettings ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
                   }`}
               >
                 <div className="p-4 sm:p-6 pt-0 border-t border-border/50">
                   <Label htmlFor="deficit-surplus" className="text-sm font-medium text-foreground block mb-2">
-                    Custom Calorie Target
+                    Daily Calorie Adjustment
                   </Label>
                   <p className="text-xs text-muted mb-4">
-                    Adjust the default calorie target. Max ±40% of TDEE.
+                    Optional change from your estimated maintenance calories. Use a negative number for a deficit or a positive number for a surplus; safety limits are applied automatically.
                   </p>
 
                   <div className="relative max-w-xs">

@@ -26,8 +26,8 @@ export function normalizeGoal(value: Goal | string): Goal {
   return value === 'loss' || value === 'gain' ? value : 'maintain';
 }
 
-export function normalizeSex(value: Sex): 'male' | 'female' {
-  return value === 'female' ? 'female' : 'male';
+export function normalizeSex(value: Sex): 'male' | 'female' | undefined {
+  return value === 'male' || value === 'female' ? value : undefined;
 }
 
 export function mapActivityLevelToPal(activityLevel: unknown): PalKey {
@@ -48,18 +48,40 @@ export function calculateRmr(
   user: UserInput,
   formula: DerivedMetrics['formulaUsed']
 ): number {
-  const formulaInput = {
-    weightKg: user.weightKg,
-    heightCm: user.heightCm,
-    age: user.age,
-    sex: normalizeSex(user.sex)
+  const calculateMifflin = (): number => {
+    const equationSex = normalizeSex(user.sex);
+    if (equationSex) {
+      return mifflinStJeor({
+        weightKg: user.weightKg,
+        heightCm: user.heightCm,
+        age: user.age,
+        sex: equationSex
+      }).rmr;
+    }
+
+    // When the user does not select a binary equation constant, use the
+    // midpoint and disclose that choice in the UI rather than silently
+    // defaulting to the male constant.
+    const maleEstimate = mifflinStJeor({
+      weightKg: user.weightKg,
+      heightCm: user.heightCm,
+      age: user.age,
+      sex: 'male'
+    }).rmr;
+    const femaleEstimate = mifflinStJeor({
+      weightKg: user.weightKg,
+      heightCm: user.heightCm,
+      age: user.age,
+      sex: 'female'
+    }).rmr;
+    return (maleEstimate + femaleEstimate) / 2;
   };
 
   switch (formula) {
     case 'manual':
       return user.rmrManual !== undefined
         ? manualRmr(user.rmrManual).rmr
-        : mifflinStJeor(formulaInput).rmr;
+        : calculateMifflin();
     case 'katch':
       return katchMcArdle({
         weightKg: user.weightKg,
@@ -71,7 +93,7 @@ export function calculateRmr(
         bodyFatPct: user.bodyFatPct ?? 0
       }).rmr;
     default:
-      return mifflinStJeor(formulaInput).rmr;
+      return calculateMifflin();
   }
 }
 
@@ -103,15 +125,25 @@ export function calculateNutritionPlan(
     rmr: calculation.derivedMetrics.rmr,
     pal: palKey,
     dietStyle,
+    tefPct: user.tefPct,
     goalPct,
     sex: normalizeSex(user.sex),
     bodyFatPct: user.bodyFatPct
   });
+  const requestedTarget = user.deficitSurplusKcal === undefined
+    ? tdee.adjustedCalories
+    : tdee.tdee + user.deficitSurplusKcal;
+  const targetCalories = Math.round(Math.min(
+    tdee.tdee * 1.2,
+    Math.max(tdee.tdee * 0.6, requestedTarget)
+  ));
   const macroResult = allocateMacros({
-    targetKcal: tdee.tdee,
+    targetKcal: targetCalories,
     weightKg: user.weightKg,
+    bodyFatPct: user.bodyFatPct,
     dietStyle,
-    goal
+    goal,
+    custom: user.customMacros
   });
   const { guidance: macroGuidance = [], carbG, ...macroValues } = macroResult;
 
@@ -127,7 +159,7 @@ export function calculateNutritionPlan(
       ...calculation.macroPlan,
       ...macroValues,
       carbsG: carbG,
-      targetCalories: tdee.tdee
+      targetCalories
     },
     macroGuidance
   };
@@ -138,10 +170,12 @@ export function calculateMacros(user: UserInput, calculation: CalculationState):
   macroGuidance: GuidanceMessage[];
 } {
   const result = allocateMacros({
-    targetKcal: calculation.derivedMetrics.tdee,
+    targetKcal: calculation.macroPlan.targetCalories || calculation.derivedMetrics.tdee,
     weightKg: user.weightKg,
+    bodyFatPct: user.bodyFatPct,
     dietStyle: normalizeDietStyle(user.dietStyle),
-    goal: normalizeGoal(user.goal)
+    goal: normalizeGoal(user.goal),
+    custom: user.customMacros
   });
   const { guidance: macroGuidance = [], carbG, ...macroValues } = result;
 
@@ -150,7 +184,7 @@ export function calculateMacros(user: UserInput, calculation: CalculationState):
       ...calculation.macroPlan,
       ...macroValues,
       carbsG: carbG,
-      targetCalories: calculation.derivedMetrics.tdee
+      targetCalories: calculation.macroPlan.targetCalories || calculation.derivedMetrics.tdee
     },
     macroGuidance
   };

@@ -2,15 +2,15 @@
   "guidance": {
     "mealTiming": {
       "preWorkoutMuscleGain": "Pre-workout: {protein}g protein + {carbs}g carbs {window} minutes before training",
-      "preWorkoutFatLoss": "Pre-workout: {protein}g protein + {caffeine} caffeine {timing} minutes before training",
+      "preWorkoutFatLoss": "Pre-workout option: about {protein}g protein {timing} minutes before training, adjusted for comfort and session demands",
       "preWorkoutMaintenance": "Pre-workout: {recommendation}",
       "postWorkoutMuscleGain": "Post-workout: {protein}g protein + {carbs}g carbs within {window} hours",
       "postWorkoutFatLossLean": "Post-workout: {protein}g protein + {carbs}g carbs (suitable for {bodyFat}% body fat)",
-      "postWorkoutFatLossGeneral": "Post-workout: {protein}g protein, minimal carbs to preserve fat loss",
+      "postWorkoutFatLossGeneral": "Post-workout: about {protein}g protein, with carbohydrates based on training demands and daily targets",
       "postWorkoutMaintenance": "Post-workout: {recommendation}",
       "frequencyMuscleGain": "Daily frequency: {meals} eating occasions to {reason}",
       "frequencyFatLossIF": "Daily frequency: Consider {method} for {benefit}. {timing}",
-      "frequencyFatLossRegular": "Daily frequency: {meals} meals for {reason}",
+      "frequencyFatLossRegular": "Meal timing: use {meals}; prioritize {reason}",
       "frequencyMaintenance": "Daily frequency: {meals} meals {flexibility}",
       "earlyWorkoutOptimization": "Early workout timing: Small meal {timing} with {content}, then {postTiming}"
     },
@@ -28,8 +28,8 @@
       "creatineConsider": "Consider {supplement} ({amount}) due to {reason} for {benefit}"
     },
     "hydration": {
-      "dailyTarget": "Target {total}L daily: {base}L base + {additional}ml for {reason}",
-      "trainingExtra": "Add {amount}ml {timing} on training days",
+      "dailyTarget": "Use {target} daily as a starting range for {reason}; adjust for thirst, climate, sweat, and medical guidance",
+      "trainingExtra": "During training, consider up to {amount}ml extra fluid {timing}",
       "electrolytesConsider": "Consider electrolyte replacement due to {reason}"
     },
     "allergySwap": {
@@ -39,18 +39,17 @@
       "genericAdvice": "For {allergen} allergy: {advice}"
     },
     "lifestyle": {
-      "sleepLow": "Current sleep ({current}h) is below optimal. Target {target} hours for better {impact}",
-      "stressHigh": "High stress levels may impact {impact}. Consider stress management techniques"
+      "sleepLow": "Current sleep ({current}h) is below the common adult recommendation. If feasible, work toward at least 7 hours to support {impact}",
+      "stressHigh": "High stress may affect {impact}. Consider a realistic stress-management practice"
     }
   },
   "validation": {
     "prot_critical": "Protein intake is critically low. Increase to meet minimum requirements",
     "prot_low_general": "Protein intake is below recommended levels for your goals",
-    "prot_high": "Protein intake is very high. Ensure adequate kidney function",
+    "prot_high": "Protein is above the common target range. Review the target, especially if you have kidney disease or clinician-directed restrictions",
     "fat_too_low": "Fat intake is below essential fatty acid requirements",
     "fat_high": "Fat intake is quite high for a non-ketogenic diet",
     "carb_keto_break": "Carbohydrate intake exceeds ketogenic diet limits",
-    "fiber_low": "Fiber intake may be insufficient. Consider adding high-fiber foods",
     "macro_balance_off": "Custom macro distribution is off-target. Consider auto-balance",
     "proteinFloorRaised": "Protein has been raised to meet minimum requirements",
     "macro_conflict": "Unable to meet macro targets with current constraints. Please adjust calories or custom macros."
@@ -58,4 +57,4 @@
   "disclaimer": {
     "medical": "{text}"
   }
-} 
+}

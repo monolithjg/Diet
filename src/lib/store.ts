@@ -74,12 +74,7 @@ export const useStore = create<StoreState>()(
       if (!input) {
         set((state) => {
           state.cgeGuidance = [];
-          state.ui.guidance = [{
-            key: 'guidance.missingMacros',
-            type: 'warn',
-            category: 'validation',
-            replacements: { text: 'Macronutrient data is incomplete or missing.' }
-          }];
+          state.ui.guidance = [];
         });
         return;
       }
@@ -106,7 +101,12 @@ export const useStore = create<StoreState>()(
 
     recalcRmr: (formula) => {
       const snapshot = get();
-      const selected = formula ?? snapshot.calc.derivedMetrics.formulaUsed ?? 'mifflin';
+      const selected = formula
+        ?? (snapshot.user.rmrManual !== undefined
+          ? 'manual'
+          : snapshot.user.bodyFatPct !== undefined
+            ? 'katch'
+            : 'mifflin');
       try {
         const rmr = calculateRmr(snapshot.user, selected);
         set((state) => {

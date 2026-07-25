@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 void React;
 import { useStore } from '../../../lib/store';
 import { LazyAdvancedSettings } from '../atoms/LazyAdvancedSettings';
@@ -12,8 +12,7 @@ export function Step2BodyComposition() {
   // Combine into user object for convenience
   const user = { bodyFatPct, rmrManual };
 
-  // Remove local state, derive from store
-  const showManualRmrInput = !!rmrManual;
+  const [showManualRmrInput, setShowManualRmrInput] = useState(rmrManual !== undefined);
 
   const handleBodyFatChange = useCallback((bodyFatPct?: number) => {
     updateUserWithGuidance({ bodyFatPct: bodyFatPct === 0 ? undefined : bodyFatPct });
@@ -23,12 +22,12 @@ export function Step2BodyComposition() {
     updateUserWithGuidance({ rmrManual: rmr === 0 ? undefined : rmr });
   }, [updateUserWithGuidance]);
 
-  // Only clear rmrManual if it is set
   const handleToggleShowManualRmr = useCallback(() => {
-    if (rmrManual) {
+    if (showManualRmrInput && rmrManual !== undefined) {
       updateUserWithGuidance({ rmrManual: undefined });
     }
-  }, [rmrManual, updateUserWithGuidance]);
+    setShowManualRmrInput(current => !current);
+  }, [showManualRmrInput, rmrManual, updateUserWithGuidance]);
 
   return (
     <StepContainer>
@@ -39,7 +38,7 @@ export function Step2BodyComposition() {
             Body Composition (Optional)
           </h2>
           <p className="text-sm text-muted">
-            Providing this information can improve the accuracy of your results.
+            A measured body-fat estimate selects a lean-mass RMR equation. Leave it blank if the value is only a guess.
           </p>
         </div>
 
@@ -64,13 +63,6 @@ export function Step2BodyComposition() {
           </div>
         )}
 
-        {/* Development Info - Remove in production */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-3 bg-secondary rounded text-xs text-muted">
-            <strong>Debug Info:</strong><br />
-            Body Fat %: {user.bodyFatPct?.toFixed(1) ?? 'N/A'} | Show UI: {showManualRmrInput.toString()}
-          </div>
-        )}
       </div>
     </StepContainer>
   );

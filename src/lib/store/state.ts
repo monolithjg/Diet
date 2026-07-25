@@ -2,11 +2,11 @@ import type { Goal, UserInput } from '../../models/UserInput';
 import type { CalculationState, UiState } from './types';
 
 const initialUser: UserInput = {
-  age: 30,
-  sex: 'male',
-  heightCm: 175,
-  weightKg: 70,
-  activityLevel: 1.55,
+  age: 0,
+  sex: 'unspecified',
+  heightCm: 0,
+  weightKg: 0,
+  activityLevel: 0,
   goal: 'maintain' as Goal,
   allergies: [],
   unitPreference: 'metric'
@@ -60,4 +60,3 @@ export function createInitialUi(): UiState {
     guidance: [...initialUi.guidance]
   };
 }
-

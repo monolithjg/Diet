@@ -48,9 +48,9 @@ export function SleepHoursInput({
 
   const getSleepFeedback = (hours?: number) => {
     if (!hours) return '';
-    if (hours < 6) return 'This may impact your nutrition goals';
-    if (hours < 7) return 'Consider aiming for 7-9 hours for optimal recovery';
-    if (hours <= 9) return 'Great! This supports your health goals';
+    if (hours < 6) return 'Short sleep can make recovery and plan adherence harder';
+    if (hours < 7) return 'If feasible, work toward at least 7 hours consistently';
+    if (hours <= 9) return 'This meets the common minimum recommendation for adults';
     return 'Ensure this feels refreshing for you';
   };
 
@@ -95,7 +95,7 @@ export function SleepHoursInput({
       )}
 
       <div className="flex gap-2 text-xs text-muted-foreground">
-        <Icon name="info" className="h-4 w-4 flex-shrink-0" /> Most adults need 7-9 hours for optimal recovery and metabolism
+        <Icon name="info" className="h-4 w-4 flex-shrink-0" /> Adults are generally advised to sleep at least 7 hours; individual needs vary
       </div>
     </div>
   );

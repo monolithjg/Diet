@@ -103,7 +103,7 @@ describe('Lifestyle Rules - CGE Integration', () => {
       const stressGuidance = lifestyleGuidance.find(g => g.key === 'guidance.lifestyle.stressHigh');
       expect(stressGuidance).toBeDefined();
       expect(stressGuidance?.type).toBe('info');
-      expect(stressGuidance?.replacements?.impact).toBe('cortisol levels and recovery');
+      expect(stressGuidance?.replacements?.impact).toBe('sleep, recovery, and plan adherence');
     });
 
     it('should generate both sleep and stress guidance when both conditions are met', () => {
@@ -133,7 +133,7 @@ describe('Lifestyle Rules - CGE Integration', () => {
       
       expect(stressGuidance).toBeDefined();  
       expect(stressGuidance?.type).toBe('info');
-      expect(stressGuidance?.replacements?.impact).toBe('cortisol levels and recovery');
+      expect(stressGuidance?.replacements?.impact).toBe('sleep, recovery, and plan adherence');
     });
 
     it('should handle no lifestyle guidance when neither condition is met', () => {
@@ -440,4 +440,4 @@ describe('Lifestyle Rules - CGE Integration', () => {
       });
     });
   });
-}); 
+});

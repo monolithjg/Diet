@@ -11,6 +11,15 @@ describe('Wizard component', () => {
   });
 
   it('advances through steps and navigates to results', async () => {
+    useStore.getState().updateUser({
+      age: 30,
+      sex: 'male',
+      weightKg: 80,
+      heightCm: 180,
+      activityLevel: 1.55,
+      goal: 'maintain'
+    });
+
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>

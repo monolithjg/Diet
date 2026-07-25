@@ -201,7 +201,7 @@ describe('Hydration Rules - CGE Integration', () => {
       expect(keys).toContain('guidance.hydration.electrolytesConsider');
       
       const dailyTarget = hydrationGuidance.find(g => g.key === 'guidance.hydration.dailyTarget');
-      expect(dailyTarget?.replacements?.total).toBe(3.9); // 90kg * 35ml + 750ml = 3.9L
+      expect(dailyTarget?.replacements?.total).toBe(4.0);
     });
   });
 
@@ -288,4 +288,4 @@ describe('Hydration Rules - CGE Integration', () => {
       });
     });
   });
-}); 
+});

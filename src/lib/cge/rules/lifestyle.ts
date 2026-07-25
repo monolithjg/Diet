@@ -15,7 +15,7 @@ export interface LifestyleContext {
  * 
  * Rules:
  * - Sleep < 6 hours: warn-level guidance with goal-specific impact
- * - Stress level >= 3: info-level guidance about cortisol/recovery
+ * - Stress level >= 3: info-level recovery and adherence guidance
  * - Goal-contextual messaging for different impacts
  */
 export function generateLifestyleGuidance(ctx: LifestyleContext): GuidanceMessage[] {
@@ -42,10 +42,10 @@ export function generateLifestyleGuidance(ctx: LifestyleContext): GuidanceMessag
       type: 'info',
       category: 'lifestyle',
       replacements: {
-        impact: 'cortisol levels and recovery'
+        impact: 'sleep, recovery, and plan adherence'
       }
     });
   }
   
   return guidance;
-} 
+}

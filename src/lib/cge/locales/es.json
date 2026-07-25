@@ -2,15 +2,15 @@
   "guidance": {
     "mealTiming": {
       "preWorkoutMuscleGain": "Pre-entreno: {protein}g de proteína + {carbs}g de carbohidratos {window} minutos antes de entrenar",
-      "preWorkoutFatLoss": "Pre-entreno: {protein}g de proteína + {caffeine} cafeína {timing} minutos antes de entrenar",
+      "preWorkoutFatLoss": "Opción pre-entreno: aproximadamente {protein}g de proteína {timing} minutos antes de entrenar, ajustado según comodidad y exigencia",
       "preWorkoutMaintenance": "Pre-entreno: {recommendation}",
       "postWorkoutMuscleGain": "Post-entreno: {protein}g de proteína + {carbs}g de carbohidratos dentro de {window} horas",
       "postWorkoutFatLossLean": "Post-entreno: {protein}g de proteína + {carbs}g de carbohidratos (adecuado para {bodyFat}% de grasa corporal)",
-      "postWorkoutFatLossGeneral": "Post-entreno: {protein}g de proteína, carbohidratos mínimos para preservar la pérdida de grasa",
+      "postWorkoutFatLossGeneral": "Post-entreno: aproximadamente {protein}g de proteína, con carbohidratos según el entrenamiento y los objetivos diarios",
       "postWorkoutMaintenance": "Post-entreno: {recommendation}",
       "frequencyMuscleGain": "Frecuencia diaria: {meals} comidas para {reason}",
       "frequencyFatLossIF": "Frecuencia diaria: Considera {method} para {benefit}. {timing}",
-      "frequencyFatLossRegular": "Frecuencia diaria: {meals} comidas para {reason}",
+      "frequencyFatLossRegular": "Horario de comidas: usa {meals}; prioriza {reason}",
       "frequencyMaintenance": "Frecuencia diaria: {meals} comidas {flexibility}",
       "earlyWorkoutOptimization": "Entreno temprano: Comida pequeña {timing} con {content}, luego {postTiming}"
     },
@@ -28,8 +28,8 @@
       "creatineConsider": "Considera {supplement} ({amount}) debido a {reason} para {benefit}"
     },
     "hydration": {
-      "dailyTarget": "Objetivo {total}L diarios: {base}L base + {additional}ml para {reason}",
-      "trainingExtra": "Añade {amount}ml {timing} en días de entrenamiento",
+      "dailyTarget": "Usa {target} diarios como rango inicial para {reason}; ajusta según sed, clima, sudor y orientación médica",
+      "trainingExtra": "Durante el entrenamiento, considera hasta {amount}ml de líquido adicional {timing}",
       "electrolytesConsider": "Considera reposición de electrolitos debido a {reason}"
     },
     "allergySwap": {
@@ -39,18 +39,17 @@
       "genericAdvice": "Para alergia a {allergen}: {advice}"
     },
     "lifestyle": {
-      "sleepLow": "El sueño actual ({current}h) está por debajo del óptimo. Objetivo {target} horas para mejor {impact}",
-      "stressHigh": "Los niveles altos de estrés pueden impactar {impact}. Considera técnicas de manejo del estrés"
+      "sleepLow": "El sueño actual ({current}h) está por debajo de la recomendación general para adultos. Si es posible, intenta dormir al menos 7 horas para apoyar {impact}",
+      "stressHigh": "El estrés alto puede afectar {impact}. Considera una práctica realista para manejarlo"
     }
   },
   "validation": {
     "prot_critical": "La ingesta de proteína es críticamente baja. Aumenta para cumplir los requisitos mínimos",
     "prot_low_general": "La ingesta de proteína está por debajo de los niveles recomendados para tus objetivos",
-    "prot_high": "La ingesta de proteína es muy alta. Asegura una función renal adecuada",
+    "prot_high": "La proteína supera el rango habitual. Revisa el objetivo, especialmente si tienes enfermedad renal o restricciones médicas",
     "fat_too_low": "La ingesta de grasa está por debajo de los requisitos de ácidos grasos esenciales",
     "fat_high": "La ingesta de grasa es bastante alta para una dieta no cetogénica",
     "carb_keto_break": "La ingesta de carbohidratos excede los límites de la dieta cetogénica",
-    "fiber_low": "La ingesta de fibra puede ser insuficiente. Considera añadir alimentos ricos en fibra",
     "macro_balance_off": "La distribución de macros personalizada está fuera del objetivo. Considera auto-equilibrar",
     "proteinFloorRaised": "La proteína ha sido aumentada para cumplir los requisitos mínimos",
     "macro_conflict": "No se pueden cumplir los objetivos de macros con las restricciones actuales. Por favor ajusta las calorías o macros personalizados."
@@ -58,4 +57,4 @@
   "disclaimer": {
     "medical": "{text}"
   }
-} 
+}

@@ -14,22 +14,23 @@ const MACRO_COLORS = {
 };
 
 export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) {
+  const normalizePercent = (value: number) => value <= 1 ? value * 100 : value;
   const pieData = [
     {
       name: 'Protein',
-      value: macroPlan.proteinPct,
+      value: normalizePercent(macroPlan.proteinPct),
       grams: macroPlan.proteinG,
       color: MACRO_COLORS.protein
     },
     {
       name: 'Carbs',
-      value: macroPlan.carbPct,
+      value: normalizePercent(macroPlan.carbPct),
       grams: macroPlan.carbsG,
       color: MACRO_COLORS.carbs
     },
     {
       name: 'Fat',
-      value: macroPlan.fatPct,
+      value: normalizePercent(macroPlan.fatPct),
       grams: macroPlan.fatG,
       color: MACRO_COLORS.fat
     }
@@ -54,10 +55,10 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
                 >
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="font-semibold text-foreground">{macro.name}</span>
-                    <span className="text-sm text-muted"><strong className="text-lg text-foreground">{Math.round(macro.grams)}g</strong><span aria-hidden="true"> · </span><span>{macro.value}%</span></span>
+                    <span className="text-sm text-muted"><strong className="text-lg text-foreground">{Math.round(macro.grams)}g</strong><span aria-hidden="true"> · </span><span>{Math.round(macro.value)}%</span></span>
                     <span className="sr-only">{Math.round(macro.grams)}</span>
                   </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-surface-subtle" role="img" aria-label={`${macro.name}: ${macro.value}%`}>
+                  <div className="h-3 overflow-hidden rounded-full bg-surface-subtle" role="img" aria-label={`${macro.name}: ${Math.round(macro.value)}%`}>
                     <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${macro.value}%`, backgroundColor: macro.color }} />
                   </div>
                 </div>
@@ -89,6 +90,9 @@ export function MacroVisualizer({ macroPlan, className }: MacroVisualizerProps) 
                 <div className="text-[10px] uppercase tracking-wide text-warning/70 font-medium">kcal from fat</div>
               </div>
             </div>
+            <p className="mt-4 text-center text-xs text-muted">
+              Fiber starting target: about {Math.round((macroPlan.targetCalories / 1000) * 14)}g per day from food.
+            </p>
           </div>
       </CardContent>
     </Card>

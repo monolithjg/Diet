@@ -45,7 +45,7 @@ export function SexSelector({
       </legend>
 
       <p className="text-xs text-muted mb-4">
-        Used for accurate metabolic calculations
+        Used only to select a published equation constant. “Prefer not to say” uses the midpoint of both estimates.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" role="radiogroup" aria-invalid={hasError}>

@@ -32,7 +32,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'water',
           title: 'Pre-Workout Nutrition',
-          description: `Have ${message.replacements?.protein || '15-20'}g protein ${message.replacements?.timing || '30'} minutes before training for optimal performance.`,
+          description: `A practical option is ${message.replacements?.protein || '15-20'}g protein ${message.replacements?.timing || '30-90'} minutes before training, adjusted for comfort and session demands.`,
           priority,
           category: 'Meal Timing'
         });
@@ -41,7 +41,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'protein',
           title: 'Post-Workout Recovery',
-          description: `Consume ${message.replacements?.protein || '20'}g protein within 2 hours after training to support muscle recovery.`,
+          description: `Include about ${message.replacements?.protein || '20'}g protein in a meal within a few hours after training.`,
           priority,
           category: 'Meal Timing'
         });
@@ -50,7 +50,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'meal',
           title: 'Meal Frequency',
-          description: `Aim for ${message.replacements?.meals || '3-4'} meals per day to support your ${message.replacements?.reason || 'goals'}.`,
+          description: `Use ${message.replacements?.meals || 'a repeatable meal schedule'} that supports ${message.replacements?.reason || 'adherence and training'}.`,
           priority,
           category: 'Meal Timing'
         });
@@ -63,7 +63,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'supplement',
           title: 'B-12 Supplementation',
-          description: `Take ${message.replacements?.dosage || '10-25 mcg daily'} B-12 supplement due to limited availability in plant foods.`,
+          description: `Review B-12-fortified foods or an appropriate supplement (${message.replacements?.dosage || 'dose varies'}) with a qualified clinician.`,
           priority,
           category: 'Supplements'
         });
@@ -72,7 +72,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'info',
           title: 'Iron Optimization',
-          description: 'Consider iron-rich foods or supplementation, especially for premenopausal women. Pair with vitamin C for better absorption.',
+          description: 'Prioritize iron-rich foods and pair plant sources with vitamin C. Use iron supplements only when a clinician or laboratory result supports them.',
           priority,
           category: 'Nutrition'
         });
@@ -81,7 +81,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'sun',
           title: 'Vitamin D Support',
-          description: 'Consider vitamin D supplementation, especially during winter months or with limited sun exposure.',
+          description: 'Review vitamin D intake, sun exposure, and any need for testing or supplementation with a qualified clinician.',
           priority,
           category: 'Supplements'
         });
@@ -93,7 +93,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
       actions.push({
         icon: 'water',
         title: 'Daily Hydration Target',
-        description: `Aim for ${message.replacements?.target || '2.5L'} water daily${message.replacements?.additional ? `, plus ${message.replacements.additional} on training days` : ''}.`,
+        description: `Use ${message.replacements?.target || 'a personalized range'} as a starting point, then adjust for thirst, climate, workout duration, and measured sweat loss.`,
         priority,
         category: 'Hydration'
       });
@@ -114,7 +114,7 @@ const createActionItems = (guidance: GuidanceMessage[]) => {
         actions.push({
           icon: 'stress',
           title: 'Stress Management',
-          description: 'Consider stress management techniques like meditation, deep breathing, or yoga to support optimal metabolism.',
+          description: 'Choose a realistic stress-management practice that supports recovery, sleep, and plan adherence.',
           priority,
           category: 'Lifestyle'
         });
@@ -169,10 +169,10 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
           <div className="text-center py-8">
             <Icon name="target" className="mx-auto mb-4 h-10 w-10 text-primary" />
             <h3 className="text-lg font-medium text-foreground mb-2">
-              Great job!
+              No action items available
             </h3>
             <p className="text-sm text-muted">
-              Your nutrition plan looks well-balanced. Continue following your current approach.
+              Recalculate or refresh your plan to generate guidance for these targets.
             </p>
           </div>
         </CardContent>
@@ -214,11 +214,11 @@ export function ActionPlan({ guidance, className }: ActionPlanProps) {
 
         {/* Summary */}
         <div className="pt-8 mt-auto">
-          <div className="flex items-center justify-between text-xs font-medium text-muted">
+          <div className="flex flex-col gap-3 text-xs font-medium text-muted sm:flex-row sm:items-center sm:justify-between">
             <span>
               Total recommendations: {actionItems.length}
             </span>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <span className="flex items-center">
                 <div className="w-1.5 h-1.5 bg-error rounded-full mr-1.5"></div>
                 High: {actionItems.filter(a => a.priority === 'high').length}

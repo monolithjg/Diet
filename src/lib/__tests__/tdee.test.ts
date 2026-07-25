@@ -15,11 +15,11 @@ describe('TDEE Calculations', () => {
       dietStyle: 'balanced'
     });
     
-    // Expected: TDEE ≈ 1650 × 1.55 + 10% = 2813.25 kcal
-    expect(result.tdee).toBeCloseTo(2813.25, 2);
+    // PAL-based maintenance already includes the thermic effect in population estimates.
+    expect(result.tdee).toBeCloseTo(2557.5, 2);
     expect(result.palFactor).toBe(1.55);
     expect(result.tef).toBeCloseTo(255.75, 2);
-    expect(result.adjustedCalories).toBeCloseTo(2813.25, 2);
+    expect(result.adjustedCalories).toBeCloseTo(2557.5, 2);
   });
 
   // TC-T2: TDEE with 20% deficit
@@ -31,9 +31,8 @@ describe('TDEE Calculations', () => {
       goalPct: -0.20
     });
     
-    // Expected: TDEE same as TC-T1, but adjusted ≈ 2250.6 kcal
-    expect(result.tdee).toBeCloseTo(2813.25, 2);
-    expect(result.adjustedCalories).toBeCloseTo(2250.6, 1);
+    expect(result.tdee).toBeCloseTo(2557.5, 2);
+    expect(result.adjustedCalories).toBeCloseTo(2046, 1);
   });
 
   // TC-T3: High protein diet with active lifestyle
@@ -44,11 +43,10 @@ describe('TDEE Calculations', () => {
       dietStyle: 'highProtein'
     });
     
-    // Expected: TDEE ≈ (2000 × 1.725) + 15% = 3967.5 kcal
-    expect(result.tdee).toBeCloseTo(3967.5, 1);
+    expect(result.tdee).toBeCloseTo(3450, 1);
     expect(result.palFactor).toBe(1.725);
     expect(result.tef).toBeCloseTo(517.5, 1); // 15% of (2000 * 1.725)
-    expect(result.adjustedCalories).toBeCloseTo(3967.5, 1);
+    expect(result.adjustedCalories).toBeCloseTo(3450, 1);
   });
 
   // TC-T4: Keto diet with sedentary lifestyle and weight gain goal
@@ -60,11 +58,10 @@ describe('TDEE Calculations', () => {
       goalPct: 0.10
     });
     
-    // Expected: TDEE ≈ (1400 × 1.2) + 12% = 1881.6 kcal, adjusted ≈ 2069.76 kcal
-    expect(result.tdee).toBeCloseTo(1881.6, 1);
+    expect(result.tdee).toBeCloseTo(1680, 1);
     expect(result.palFactor).toBe(1.2);
     expect(result.tef).toBeCloseTo(201.6, 1); // 12% of (1400 * 1.2)
-    expect(result.adjustedCalories).toBeCloseTo(2069.76, 2);
+    expect(result.adjustedCalories).toBeCloseTo(1848, 2);
   });
 
   // Test custom TEF override
@@ -76,13 +73,12 @@ describe('TDEE Calculations', () => {
       tefPct: 0.18 // 18% instead of default 10%
     });
     
-    // Expected: TDEE ≈ 1650 × 1.55 × 1.18 = 3023.85 kcal
+    // TEF is retained as an explanatory component, not added to PAL-based TDEE.
     const baseTdee = 1650 * 1.55;
     const expectedTef = baseTdee * 0.18;
-    const expectedTdee = Math.round((baseTdee + expectedTef) * 100) / 100;
     
     expect(result.tef).toBeCloseTo(expectedTef, 2);
-    expect(result.tdee).toBeCloseTo(expectedTdee, 2);
+    expect(result.tdee).toBeCloseTo(baseTdee, 2);
   });
 
   // Test body composition safety for low body fat
@@ -96,8 +92,7 @@ describe('TDEE Calculations', () => {
       sex: 'male'
     }, { bodyCompSafety: true });
     
-    // Expected: TDEE ≈ 2813.25 kcal, but deficit capped at 15% instead of 30%
-    const expectedTdee = 2813.25;
+    const expectedTdee = 2557.5;
     const cappedAdjusted = expectedTdee * 0.85; // 15% deficit
     
     expect(result.tdee).toBeCloseTo(expectedTdee, 2);

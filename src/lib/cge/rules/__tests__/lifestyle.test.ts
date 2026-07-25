@@ -185,7 +185,7 @@ describe('Lifestyle Guidance Rules', () => {
           type: 'info',
           category: 'lifestyle',
           replacements: {
-            impact: 'cortisol levels and recovery'
+            impact: 'sleep, recovery, and plan adherence'
           }
         });
       });
@@ -197,7 +197,7 @@ describe('Lifestyle Guidance Rules', () => {
           const context = createContext({ stressLevel: 3, goal });
           const guidance = generateLifestyleGuidance(context);
           
-          expect(guidance[0].replacements?.impact).toBe('cortisol levels and recovery');
+          expect(guidance[0].replacements?.impact).toBe('sleep, recovery, and plan adherence');
         });
       });
     });
@@ -224,7 +224,7 @@ describe('Lifestyle Guidance Rules', () => {
       
       expect(stressGuidance).toBeDefined();
       expect(stressGuidance?.type).toBe('info');
-      expect(stressGuidance?.replacements?.impact).toBe('cortisol levels and recovery');
+      expect(stressGuidance?.replacements?.impact).toBe('sleep, recovery, and plan adherence');
     });
 
     it('should provide only sleep guidance when only sleep condition is met', () => {
@@ -402,7 +402,7 @@ describe('Lifestyle Guidance Rules', () => {
         
         // Stress guidance should be consistent
         const stressGuidance = guidance.find(g => g.key === 'guidance.lifestyle.stressHigh');
-        expect(stressGuidance?.replacements?.impact).toBe('cortisol levels and recovery');
+        expect(stressGuidance?.replacements?.impact).toBe('sleep, recovery, and plan adherence');
       });
     });
 
@@ -429,4 +429,4 @@ describe('Lifestyle Guidance Rules', () => {
       });
     });
   });
-}); 
+});

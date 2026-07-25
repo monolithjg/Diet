@@ -24,10 +24,10 @@ describe('Macronutrient Allocation Engine', () => {
       
       const result = allocateMacros(input);
       
-      // Expected: P = 150 g (1.875 g/kg LBM), F = 83 g (30%), C = 275 g
-      expectClose(result.proteinG, 150, 2);
+      // Balanced defaults allocate 20% protein, 30% fat, and the remainder to carbs.
+      expectClose(result.proteinG, 125, 2);
       expectClose(result.fatG, 83, 2);
-      expectClose(result.carbG, 275, 3);
+      expectClose(result.carbG, 313, 3);
       
       // Check percentages are roughly correct
       expectClose(result.proteinPct, 0.2, 0.02);
@@ -109,14 +109,14 @@ describe('Macronutrient Allocation Engine', () => {
         dietStyle: 'balanced',
         goal: 'maintain',
         custom: {
-          proteinG: 50 // Too low
+          proteinG: 30 // Below the lean-mass-based floor
         }
       };
       
       const result = allocateMacros(input);
       
       // Minimum protein should be enforced (LBM ~ 56kg, min = 0.8g/kg = ~45g)
-      const lbm = 70 * 0.8; // Assuming no bodyFatPct, use 0.8 heuristic
+      const lbm = 70 * 0.8;
       const minProtein = lbm * 0.8; // 0.8g/kg LBM
       expect(result.proteinG).toBeGreaterThanOrEqual(minProtein);
       
@@ -133,7 +133,7 @@ describe('Macronutrient Allocation Engine', () => {
         dietStyle: 'keto',
         goal: 'loss',
         custom: {
-          proteinG: 200 // Too high for the calorie target
+          proteinG: 250 // Too high once minimum fat is also enforced
         }
       };
       
@@ -141,8 +141,7 @@ describe('Macronutrient Allocation Engine', () => {
       expect(() => allocateMacros(input)).toThrow(MacroConflictError);
     });
     
-    it('E-3: Fiber warning for low fiber density', () => {
-      // Create a diet with very low carbs - will have low fiber
+    it('E-3: does not infer fiber intake from carbohydrate grams', () => {
       const input: MacroInput = {
         targetKcal: 2000,
         weightKg: 70,
@@ -153,8 +152,7 @@ describe('Macronutrient Allocation Engine', () => {
       
       const result = allocateMacros(input);
       
-      // Should have fiber_low guidance
-      expect(result.guidance.some(g => g.key === 'fiber_low')).toBe(true);
+      expect(result.guidance.some(g => g.key === 'fiber_low')).toBe(false);
     });
   });
   
@@ -284,4 +282,4 @@ describe('Macronutrient Allocation Engine', () => {
       expectClose(totalCalories, 2200, 50);
     });
   });
-}); 
+});

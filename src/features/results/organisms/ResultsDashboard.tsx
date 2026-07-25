@@ -31,6 +31,15 @@ export function ResultsDashboard({
   className
 }: ResultsDashboardProps) {
   const navigate = useNavigate();
+  const maintenanceLow = Math.round((derivedMetrics.tdee * 0.9) / 50) * 50;
+  const maintenanceHigh = Math.round((derivedMetrics.tdee * 1.1) / 50) * 50;
+  const targetLow = Math.round((macroPlan.targetCalories * 0.95) / 50) * 50;
+  const targetHigh = Math.round((macroPlan.targetCalories * 1.05) / 50) * 50;
+  const estimateConfidence = derivedMetrics.formulaUsed === 'manual'
+    ? 'Higher confidence: measured RMR'
+    : derivedMetrics.formulaUsed === 'katch' || derivedMetrics.formulaUsed === 'cunningham'
+      ? 'Moderate confidence: body-composition estimate'
+      : 'Starting estimate: calibrate with your 2–3 week trend';
   const navigateTo = (path: string) => {
     navigate(path);
   };
@@ -48,7 +57,7 @@ export function ResultsDashboard({
   const handleShare = async () => {
     try {
       // Generate shareable URL with encoded results data
-      const encodedData = serializeResults(derivedMetrics, macroPlan);
+      const encodedData = serializeResults(derivedMetrics, macroPlan, guidance);
       const url = `${window.location.origin}/results?d=${encodedData}`;
 
       await navigator.clipboard.writeText(url);
@@ -100,7 +109,7 @@ export function ResultsDashboard({
         </h1>
         <span className="sr-only">Your Personalized Nutrition Plan</span>
         <p className="text-lg leading-relaxed text-muted max-w-2xl md:text-xl">
-          Your daily calories, macro targets, and practical guidance—all in one clear plan.
+          Use this as a starting estimate, then calibrate it with your weight trend, hunger, adherence, and training performance.
         </p>
         {isSharedResult && sharedDateLabel && (
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-sm text-muted font-medium">
@@ -117,13 +126,14 @@ export function ResultsDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-foreground">{derivedMetrics.rmr}</span>
+              <span className="min-w-0 text-4xl font-bold text-foreground">{Math.round(derivedMetrics.rmr).toLocaleString()}</span>
               <span className="text-sm text-muted">kcal/day</span>
             </div>
             <div className="text-xs text-muted mt-3 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-primary"></span>
               Formula: {getFormulaDisplayName(derivedMetrics.formulaUsed)}
             </div>
+            <p className="mt-2 text-xs leading-relaxed text-muted">{estimateConfidence}</p>
           </CardContent>
         </Card>
 
@@ -133,13 +143,16 @@ export function ResultsDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-primary">{derivedMetrics.tdee}</span>
+              <span className="min-w-0 text-4xl font-bold text-primary">{Math.round(derivedMetrics.tdee).toLocaleString()}</span>
               <span className="text-sm text-muted">kcal/day</span>
             </div>
             <div className="text-xs text-muted mt-3 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-success"></span>
               Activity factor: {derivedMetrics.palFactor.toFixed(2)}x
             </div>
+            <p className="mt-2 text-xs text-muted">
+              Plausible starting range: {maintenanceLow.toLocaleString()}–{maintenanceHigh.toLocaleString()} kcal/day
+            </p>
           </CardContent>
         </Card>
 
@@ -154,12 +167,15 @@ export function ResultsDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline gap-1 relative z-10">
-              <span className="text-4xl font-bold text-primary">{macroPlan.targetCalories.toLocaleString()}</span>
+              <span className="min-w-0 text-4xl font-bold text-primary">{Math.round(macroPlan.targetCalories).toLocaleString()}</span>
               <span className="text-sm text-primary/80">kcal/day</span>
             </div>
             <div className="text-xs text-primary/70 mt-3 relative z-10 font-medium">
-              Goal-adjusted target
+              Goal-adjusted starting point
             </div>
+            <p className="mt-2 text-xs text-primary/70 relative z-10">
+              Working range: {targetLow.toLocaleString()}–{targetHigh.toLocaleString()} kcal/day
+            </p>
           </CardContent>
         </Card>
       </div>

@@ -43,7 +43,7 @@ export function MobileWizardLayout({
       <header className={step === 1 ? "space-y-8 py-4 md:py-8" : "space-y-4"}>
         {step === 1 && <div className="max-w-4xl space-y-5">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">A plan you can live with</p>
-          <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.05em] text-foreground md:text-7xl">
+          <h1 className="max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-foreground md:text-7xl md:leading-[0.98] md:tracking-[-0.05em]">
             Nutrition built around your life.
           </h1>
           <p className="max-w-2xl text-lg leading-relaxed text-muted md:text-xl">
@@ -134,7 +134,7 @@ export function MobileWizardLayout({
                 <>
                   <p>• Use your most recent accurate measurements</p>
                   <p>• Choose the unit system you're comfortable with</p>
-                  <p>• Your data is kept private and secure</p>
+                  <p>• Your profile is saved in this browser so you can return; clear it anytime</p>
                 </>
               )}
               {step === 2 && (
@@ -155,7 +155,7 @@ export function MobileWizardLayout({
                 <>
                   <p>• Pick the diet style you can stick to long-term</p>
                   <p>• Be honest about allergies and intolerances</p>
-                  <p>• Sleep and stress significantly impact results</p>
+          <p>• Sleep and stress can affect recovery and plan consistency</p>
                 </>
               )}
             </div>

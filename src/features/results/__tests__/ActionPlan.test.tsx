@@ -8,8 +8,8 @@ describe('ActionPlan', () => {
     render(<ActionPlan guidance={[]} />);
 
     expect(screen.getByText('Your Action Plan')).toBeInTheDocument();
-    expect(screen.getByText('Great job!')).toBeInTheDocument();
-    expect(screen.getByText('Your nutrition plan looks well-balanced. Continue following your current approach.')).toBeInTheDocument();
+    expect(screen.getByText('No action items available')).toBeInTheDocument();
+    expect(screen.getByText(/Recalculate or refresh your plan/)).toBeInTheDocument();
   });
 
   it('creates meal timing action items from guidance', () => {
@@ -41,15 +41,15 @@ describe('ActionPlan', () => {
 
     // Check pre-workout action
     expect(screen.getByText('Pre-Workout Nutrition')).toBeInTheDocument();
-    expect(screen.getByText(/Have 20g protein 30 minutes before training/)).toBeInTheDocument();
+    expect(screen.getByText(/A practical option is 20g protein 30 minutes before training/)).toBeInTheDocument();
 
     // Check post-workout action  
     expect(screen.getByText('Post-Workout Recovery')).toBeInTheDocument();
-    expect(screen.getByText(/Consume 25g protein within 2 hours/)).toBeInTheDocument();
+    expect(screen.getByText(/Include about 25g protein in a meal within a few hours/)).toBeInTheDocument();
 
     // Check meal frequency action
     expect(screen.getByText('Meal Frequency')).toBeInTheDocument();
-    expect(screen.getByText(/Aim for 4-5 meals per day/)).toBeInTheDocument();
+    expect(screen.getByText(/Use 4-5 that supports muscle gain/)).toBeInTheDocument();
   });
 
   it('creates micronutrient action items from guidance', () => {
@@ -79,15 +79,15 @@ describe('ActionPlan', () => {
 
     // Check B-12 action
     expect(screen.getByText('B-12 Supplementation')).toBeInTheDocument();
-    expect(screen.getByText(/Take 250 mcg weekly B-12 supplement/)).toBeInTheDocument();
+    expect(screen.getByText(/Review B-12-fortified foods or an appropriate supplement/)).toBeInTheDocument();
 
     // Check iron action
     expect(screen.getByText('Iron Optimization')).toBeInTheDocument();
-    expect(screen.getByText(/Consider iron-rich foods or supplementation/)).toBeInTheDocument();
+    expect(screen.getByText(/Use iron supplements only when a clinician or laboratory result supports them/)).toBeInTheDocument();
 
     // Check vitamin D action
     expect(screen.getByText('Vitamin D Support')).toBeInTheDocument();
-    expect(screen.getByText(/Consider vitamin D supplementation/)).toBeInTheDocument();
+    expect(screen.getByText(/Review vitamin D intake, sun exposure/)).toBeInTheDocument();
   });
 
   it('creates hydration action items from guidance', () => {
@@ -104,7 +104,7 @@ describe('ActionPlan', () => {
 
     expect(screen.getByText('Hydration')).toBeInTheDocument();
     expect(screen.getByText('Daily Hydration Target')).toBeInTheDocument();
-    expect(screen.getByText(/Aim for 3.0L water daily, plus 500mL on training days/)).toBeInTheDocument();
+    expect(screen.getByText(/Use 3.0L as a starting point/)).toBeInTheDocument();
   });
 
   it('creates lifestyle action items from guidance', () => {
@@ -132,7 +132,7 @@ describe('ActionPlan', () => {
 
     // Check stress action  
     expect(screen.getByText('Stress Management')).toBeInTheDocument();
-    expect(screen.getByText(/Consider stress management techniques/)).toBeInTheDocument();
+    expect(screen.getByText(/Choose a realistic stress-management practice/)).toBeInTheDocument();
   });
 
   it('creates allergy swap action items from guidance', () => {
@@ -294,7 +294,6 @@ describe('ActionPlan', () => {
 
     render(<ActionPlan guidance={guidanceWithoutReplacements} />);
 
-    // Should use default values (15-20g protein, 30 minutes)
-    expect(screen.getByText(/Have 15-20g protein 30 minutes before training/)).toBeInTheDocument();
+    expect(screen.getByText(/A practical option is 15-20g protein 30-90 minutes before training/)).toBeInTheDocument();
   });
-}); 
+});

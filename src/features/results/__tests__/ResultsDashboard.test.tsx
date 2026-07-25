@@ -89,11 +89,11 @@ describe('ResultsDashboard', () => {
     
     // Check key metrics cards
     expect(screen.getByText('Resting Metabolic Rate')).toBeInTheDocument();
-    expect(screen.getByText('1500')).toBeInTheDocument();
+    expect(screen.getByText('1,500')).toBeInTheDocument();
     expect(screen.getByText('Total Daily Expenditure')).toBeInTheDocument();
-    expect(screen.getByText('2200')).toBeInTheDocument();
+    expect(screen.getByText('2,200')).toBeInTheDocument();
     expect(screen.getByText('Target Calories')).toBeInTheDocument();
-    expect(screen.getByText('2000')).toBeInTheDocument();
+    expect(screen.getByText('2,000')).toBeInTheDocument();
 
     // Check visualization section
     expect(screen.getByText('Macronutrient Distribution')).toBeInTheDocument();

@@ -112,7 +112,7 @@ describe('Meal Timing Rules - CGE Integration', () => {
         g.key === 'guidance.mealTiming.preWorkoutFatLoss'
       );
       expect(preWorkout).toBeDefined();
-      expect(preWorkout?.replacements?.caffeine).toBe('optional');
+      expect(preWorkout?.replacements?.timing).toBe('30-90');
       
       // Should include lean-specific post-workout guidance (carbs allowed)
       const postWorkout = mealTimingGuidance.find(g =>
@@ -121,12 +121,12 @@ describe('Meal Timing Rules - CGE Integration', () => {
       expect(postWorkout).toBeDefined();
       expect(postWorkout?.replacements?.bodyFat).toBe('12.0');
       
-      // Should include IF guidance for PM fat loss workouts
+      // Frequency guidance should remain flexible and preference-led.
       const frequency = mealTimingGuidance.find(g =>
-        g.key === 'guidance.mealTiming.frequencyFatLossIF'
+        g.key === 'guidance.mealTiming.frequencyFatLossRegular'
       );
       expect(frequency).toBeDefined();
-      expect(frequency?.replacements?.method).toBe('16:8 intermittent fasting');
+      expect(frequency?.replacements?.meals).toBe('a schedule you can repeat');
     });
 
     it('should generate appropriate fat loss guidance for higher body fat individuals', () => {
@@ -151,7 +151,7 @@ describe('Meal Timing Rules - CGE Integration', () => {
         g.key === 'guidance.mealTiming.frequencyFatLossRegular'
       );
       expect(frequency).toBeDefined();
-      expect(frequency?.replacements?.meals).toBe('3-4');
+      expect(frequency?.replacements?.meals).toBe('a schedule you can repeat');
     });
 
     it('should generate appropriate maintenance guidance', () => {
@@ -231,12 +231,12 @@ describe('Meal Timing Rules - CGE Integration', () => {
       const mealTimingGuidance = allGuidance.filter(g => g.category === 'mealTiming');
       expect(mealTimingGuidance.length).toBeGreaterThanOrEqual(0);
       
-      // Should include IF guidance if meal timing is present
+      // Any meal-frequency guidance should remain flexible.
       if (mealTimingGuidance.length > 0) {
-        const ifGuidance = mealTimingGuidance.find(g =>
-          g.key === 'guidance.mealTiming.frequencyFatLossIF'
+        const frequencyGuidance = mealTimingGuidance.find(g =>
+          g.key === 'guidance.mealTiming.frequencyFatLossRegular'
         );
-        expect(ifGuidance).toBeDefined();
+        expect(frequencyGuidance).toBeDefined();
       }
     });
   });
@@ -327,11 +327,11 @@ describe('Meal Timing Rules - CGE Integration', () => {
           expect(generalGuidance).toBeDefined();
         }
         
-        // Should include IF for PM fat loss
-        const ifGuidance = mealTimingGuidance.find(g =>
-          g.key === 'guidance.mealTiming.frequencyFatLossIF'
+        // PM workouts should not automatically trigger a fasting protocol.
+        const frequencyGuidance = mealTimingGuidance.find(g =>
+          g.key === 'guidance.mealTiming.frequencyFatLossRegular'
         );
-        expect(ifGuidance).toBeDefined();
+        expect(frequencyGuidance).toBeDefined();
       });
     });
 
@@ -447,4 +447,4 @@ describe('Meal Timing Rules - CGE Integration', () => {
       });
     });
   });
-}); 
+});

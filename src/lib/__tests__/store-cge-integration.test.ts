@@ -68,7 +68,7 @@ describe('Store CGE Integration', () => {
       store.generateGuidance();
       
       const state = useStore.getState();
-      expect(state.ui.guidance.some(g => g.key === 'guidance.missingMacros')).toBe(true);
+      expect(state.ui.guidance).toEqual([]);
     });
   });
 

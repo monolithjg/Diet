@@ -38,7 +38,7 @@ const dietStyles: DietOption[] = [
   {
     value: 'lowCarb',
     title: 'Low Carb',
-    description: 'Fewer carbohydrates with more protein and fat for steadier energy.',
+    description: 'A lower-carbohydrate pattern with more protein and fat.',
     icon: 'low-carb',
     macros: { protein: 25, carbs: 35, fat: 40 }
   },
@@ -285,7 +285,7 @@ function Step4DietPreferences() {
                   <div>
                     <strong className="block text-foreground mb-1">Sleep</strong>
                     <span className="text-xs leading-relaxed">
-                      Affects hunger hormones and recovery. Poor sleep can hinder weight management.
+                      Sleep duration and quality can affect appetite, recovery, and how manageable a plan feels.
                     </span>
                   </div>
                 </div>
@@ -294,7 +294,7 @@ function Step4DietPreferences() {
                   <div>
                     <strong className="block text-foreground mb-1">Stress</strong>
                     <span className="text-xs leading-relaxed">
-                      Elevates cortisol, which can increase appetite and promote fat storage.
+                      Can affect appetite, sleep, recovery, and how consistently a plan feels manageable.
                     </span>
                   </div>
                 </div>

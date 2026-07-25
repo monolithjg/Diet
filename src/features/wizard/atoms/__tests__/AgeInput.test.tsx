@@ -28,7 +28,7 @@ describe('AgeInput', () => {
     fireEvent.change(input, { target: { value: '10' } });
     fireEvent.blur(input);
     
-    expect(screen.getByText(/age must be between 13 and 120 years/i)).toBeInTheDocument();
+    expect(screen.getByText(/age must be between 18 and 120 years/i)).toBeInTheDocument();
   });
 
   it('should call onChange with valid age', () => {
@@ -82,7 +82,7 @@ describe('AgeInput', () => {
     
     expect(input).toHaveAttribute('type', 'number');
     expect(input).toHaveAttribute('inputMode', 'numeric');
-    expect(input).toHaveAttribute('min', '13');
+    expect(input).toHaveAttribute('min', '18');
     expect(input).toHaveAttribute('max', '120');
   });
-}); 
+});

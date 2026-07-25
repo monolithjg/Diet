@@ -5,7 +5,7 @@ import { AgeInput } from '../atoms/AgeInput';
 import { SexSelector } from '../atoms/SexSelector';
 import { WeightInput } from '../atoms/WeightInput';
 import { HeightInput } from '../atoms/HeightInput';
-import { UnitToggle, UnitSelector } from '../atoms/UnitToggle';
+import { UnitSelector } from '../atoms/UnitToggle';
 import { MobileStepCompletion } from '../atoms/MobileStepCompletion';
 import type { Sex } from '../../../models/UserInput';
 import type { UnitSystem } from '../hooks/useUnitConversion';
@@ -14,6 +14,7 @@ import { StepContainer } from './StepContainer';
 export function Step1PersonalInfo() {
   const { user } = useStore(state => state);
   const { updateUserWithGuidance } = useStore(state => state);
+  const reset = useStore(state => state.reset);
 
   // Map store unit preference to UnitSystem
   const currentUnit: UnitSystem = user.unitPreference;
@@ -42,7 +43,7 @@ export function Step1PersonalInfo() {
     // Find the first invalid field and scroll to it
     const inputs = ['age-input', 'sex-selector', 'weight-input', 'height-input'];
     const validationStates = [
-      user.age >= 13 && user.age <= 120,
+      user.age >= 18 && user.age <= 120,
       user.sex === 'male' || user.sex === 'female' || user.sex === 'other',
       user.weightKg >= 30 && user.weightKg <= 300,
       user.heightCm >= 100 && user.heightCm <= 272
@@ -61,7 +62,7 @@ export function Step1PersonalInfo() {
   }, [user.age, user.sex, user.weightKg, user.heightCm]);
 
   // Validation helpers
-  const isAgeValid = user.age >= 13 && user.age <= 120;
+  const isAgeValid = user.age >= 18 && user.age <= 120;
   const isSexValid = user.sex === 'male' || user.sex === 'female' || user.sex === 'other';
   const isWeightValid = user.weightKg >= 30 && user.weightKg <= 300;
   const isHeightValid = user.heightCm >= 100 && user.heightCm <= 272;
@@ -73,7 +74,7 @@ export function Step1PersonalInfo() {
     {
       label: 'Age',
       isValid: isAgeValid,
-      errorMessage: !isAgeValid ? 'Age must be between 13 and 120 years' : undefined,
+      errorMessage: !isAgeValid ? 'Age must be between 18 and 120 years' : undefined,
       helpText: 'Used to calculate age-adjusted metabolic formulas'
     },
     {
@@ -107,6 +108,15 @@ export function Step1PersonalInfo() {
           <p className="text-sm text-muted">
             This information helps us calculate your baseline metabolic needs accurately
           </p>
+          {(user.age > 0 || user.weightKg > 0 || user.heightCm > 0) && (
+            <button
+              type="button"
+              onClick={reset}
+              className="mt-3 text-sm font-medium text-primary hover:text-primary-hover"
+            >
+              Clear saved profile and start fresh
+            </button>
+          )}
         </div>
 
         {/* Unit Selector - Prominent placement at top */}
@@ -151,6 +161,11 @@ export function Step1PersonalInfo() {
           </div>
         </div>
 
+        <div className="rounded-xl border border-warning/30 bg-warning-soft p-4 text-sm leading-relaxed text-warning-foreground">
+          <strong className="block">General adult fitness planning only</strong>
+          This calculator is not designed for pregnancy, breastfeeding, eating-disorder treatment, or medical nutrition therapy. Work with a qualified clinician for those situations.
+        </div>
+
         {/* Mobile-Enhanced Step Completion */}
         <MobileStepCompletion
           stepName="Personal Information"
@@ -160,26 +175,6 @@ export function Step1PersonalInfo() {
           onRetry={handleScrollToFirstError}
         />
 
-        {/* Quick Unit Toggle for mobile - Sticky bottom */}
-        <div className="sm:hidden fixed bottom-4 left-4 right-4 z-20 md:bottom-6 md:left-6 md:right-6">
-          <div className="bg-surface-raised border border-border rounded-xl shadow-lg p-3">
-            <UnitToggle
-              value={currentUnit}
-              onChange={handleUnitChange}
-              className="justify-center"
-            />
-          </div>
-        </div>
-
-        {/* Development Info - Remove in production */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-3 bg-secondary rounded text-xs text-muted">
-            <strong>Debug Info:</strong><br />
-            Age: {user.age} (valid: {isAgeValid.toString()}) | Sex: {user.sex} (valid: {isSexValid.toString()}) <br />
-            Weight: {user.weightKg} kg (valid: {isWeightValid.toString()}) | Height: {user.heightCm} cm (valid: {isHeightValid.toString()}) <br />
-            Unit: {currentUnit} | Step Complete: {isStepComplete.toString()}
-          </div>
-        )}
       </div>
     </StepContainer>
   );

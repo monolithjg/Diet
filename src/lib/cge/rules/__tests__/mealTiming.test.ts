@@ -124,10 +124,10 @@ describe('generateMealTimingGuidance', () => {
       expect(postWorkout?.replacements?.carbs).toBe(35); // Math.round(0.5 * 70)
       expect(postWorkout?.replacements?.bodyFat).toBe('12.0');
       
-      // Should recommend intermittent fasting for PM fat loss workout
-      const frequency = result.find(msg => msg.key === 'guidance.mealTiming.frequencyFatLossIF');
+      // Meal frequency should follow preference rather than prescribing fasting.
+      const frequency = result.find(msg => msg.key === 'guidance.mealTiming.frequencyFatLossRegular');
       expect(frequency).toBeDefined();
-      expect(frequency?.replacements?.method).toBe('16:8 intermittent fasting');
+      expect(frequency?.replacements?.meals).toBe('a schedule you can repeat');
     });
 
     it('should generate regular frequency guidance for fat loss AM workout', () => {
@@ -147,7 +147,7 @@ describe('generateMealTimingGuidance', () => {
       // Should use regular frequency guidance for AM workouts (not IF)
       const frequency = result.find(msg => msg.key === 'guidance.mealTiming.frequencyFatLossRegular');
       expect(frequency).toBeDefined();
-      expect(frequency?.replacements?.meals).toBe('3-4');
+      expect(frequency?.replacements?.meals).toBe('a schedule you can repeat');
     });
   });
 
@@ -318,4 +318,4 @@ describe('generateMealTimingGuidance', () => {
       expect(gainPreWorkout?.replacements?.protein).toBeGreaterThan(lossPreWorkout?.replacements?.protein as number);
     });
   });
-}); 
+});

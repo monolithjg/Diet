@@ -60,7 +60,7 @@ export default function Wizard() {
   const getStepValidationInfo = useCallback((stepNumber: number, userData: UserValidationData) => {
     switch (stepNumber) {
       case 1: {
-        const ageValid = userData.age >= 13 && userData.age <= 120;
+        const ageValid = userData.age >= 18 && userData.age <= 120;
         const sexValid = ['male', 'female', 'other'].includes(userData.sex);
         const weightValid = userData.weightKg >= 30 && userData.weightKg <= 300;
         const heightValid = userData.heightCm >= 100 && userData.heightCm <= 272;
@@ -78,7 +78,7 @@ export default function Wizard() {
       case 2:
         return { isComplete: true, message: 'Body composition information is optional', helpText: undefined };
       case 3: {
-        const activityValid = userData.activityLevel > 1.2;
+        const activityValid = userData.activityLevel >= 1.2;
         const goalValid = ['loss', 'maintain', 'gain'].includes(userData.goal);
         const missingStep3 = [];
         if (!activityValid) missingStep3.push('activity level');
@@ -109,7 +109,6 @@ export default function Wizard() {
   // Add calculation triggers before navigating to results
   const recalcRmr = useStore(state => state.recalcRmr);
   const setTdee = useStore(state => state.setTdee);
-  const setMacros = useStore(state => state.setMacros);
   const palKey = useStore(state => {
     // Map activityLevel to PAL key string
     const al = state.user.activityLevel;
@@ -132,12 +131,11 @@ export default function Wizard() {
       recalcRmr();
       // Use user's actual PAL key and goal for setTdee
       setTdee(palKey, userGoal === 'loss' ? -0.2 : userGoal === 'gain' ? 0.15 : 0);
-      setMacros();
       setTimeout(() => {
         navigate('/results');
       }, 100); // Delay navigation to allow state to update
     }
-  }, [step, updateUi, navigate, recalcRmr, setTdee, setMacros, palKey, userGoal]);
+  }, [step, updateUi, navigate, recalcRmr, setTdee, palKey, userGoal]);
 
   const handleBack = useCallback(() => {
     if (step > 1) updateUi({ step: step - 1 });
@@ -170,15 +168,15 @@ export default function Wizard() {
         </div>
       }
       navigationControls={
-        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
-          <Button onClick={handleBack} disabled={step === 1} variant="secondary" className="sm:min-w-28">
+        <div className="flex items-center justify-between gap-3">
+          <Button onClick={handleBack} disabled={step === 1} variant="secondary" className="min-w-24 sm:min-w-28">
             Back
           </Button>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end">
+          <div className="flex flex-1 items-center gap-3 justify-end">
             {step === WIZARD_STEP_TITLES.length && (
               <p
                 id="diet-style-validation"
-                className={`text-sm sm:max-w-56 sm:text-right ${canProceed ? 'text-success' : 'text-muted'}`}
+                className={`hidden text-sm sm:block sm:max-w-56 sm:text-right ${canProceed ? 'text-success' : 'text-muted'}`}
                 aria-live="polite"
               >
                 {canProceed
@@ -190,7 +188,7 @@ export default function Wizard() {
               onClick={handleNext}
               disabled={!canProceed}
               variant="primary"
-              className="w-full sm:w-auto sm:min-w-44"
+              className="flex-1 sm:flex-none sm:min-w-44"
               aria-describedby={step === WIZARD_STEP_TITLES.length ? 'diet-style-validation' : undefined}
             >
               {step < WIZARD_STEP_TITLES.length ? 'Continue' : 'Calculate my plan'}

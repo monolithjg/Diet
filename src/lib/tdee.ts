@@ -36,7 +36,9 @@ export const PAL_VALUES = {
 export type DietKey = 'balanced' | 'highProtein' | 'keto' | 'lowCarb' | 'vegan' | 'vegetarian' | 'custom';
 
 /**
- * Map of diet styles to their TEF percentages
+ * Estimated share of total expenditure attributable to the thermic effect of
+ * food. These values are informational only: PAL already represents total
+ * 24-hour expenditure, so TEF must not be added on top of RMR × PAL.
  */
 export const TEF_PERCENTAGES: Record<Exclude<DietKey, 'custom'>, number> = {
   balanced: 0.10,      // 10%
@@ -124,21 +126,21 @@ export function calcTdee(
     tefPct = TEF_PERCENTAGES[dietStyle];
   }
   
-  // Calculate base TDEE: RMR × PAL Factor
-  const baseTdee = rmr * palFactor;
+  // PAL is total 24-hour expenditure divided by resting expenditure.
+  // Therefore RMR × PAL is already the maintenance TDEE.
+  const baseTdee = Math.round((rmr * palFactor) * 100) / 100;
   
-  // Calculate TEF: Target Calories × TEF Percentage
+  // Retain an estimated TEF component for explanation without double-counting
+  // it in the maintenance estimate.
   const tef = baseTdee * tefPct;
   
-  // Total TDEE = Base TDEE + TEF
-  // Use Math.round to match the expected test values
-  const tdee = Math.round((baseTdee + tef) * 100) / 100;
+  const tdee = baseTdee;
   
   // Apply goal adjustment if provided
   let adjustedCalories = tdee;
   if (goalPct !== undefined) {
     assertRange('goalPct', goalPct);
-    adjustedCalories = tdee * (1 + goalPct);
+    adjustedCalories = Math.round((tdee * (1 + goalPct)) * 100) / 100;
     
     // Safety check for unrealistically low calories
     if (bodyCompSafety && sex) {

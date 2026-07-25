@@ -103,7 +103,7 @@ describe('Hydration Guidance Rules', () => {
       
       expect(trainingExtra).toBeDefined();
       expect(trainingExtra?.replacements?.amount).toBe(500);
-      expect(trainingExtra?.replacements?.timing).toBe('during and post-workout');
+      expect(trainingExtra?.replacements?.timing).toBe('based on workout duration, climate, and measured sweat loss');
     });
 
     it('should provide +750ml for active individuals', () => {
@@ -119,7 +119,7 @@ describe('Hydration Guidance Rules', () => {
       const trainingExtra = guidance.find(g => g.key === 'guidance.hydration.trainingExtra');
       const electrolytes = guidance.find(g => g.key === 'guidance.hydration.electrolytesConsider');
       
-      expect(dailyTarget?.replacements?.total).toBe(3.2); // 2.5L base + 0.75L = 3.25L rounded to 3.2L
+      expect(dailyTarget?.replacements?.total).toBe(3.3);
       expect(dailyTarget?.replacements?.additional).toBe(750);
       expect(dailyTarget?.replacements?.reason).toBe('high training volume');
       
@@ -142,7 +142,7 @@ describe('Hydration Guidance Rules', () => {
       const dailyTarget = guidance.find(g => g.key === 'guidance.hydration.dailyTarget');
       const electrolytes = guidance.find(g => g.key === 'guidance.hydration.electrolytesConsider');
       
-      expect(dailyTarget?.replacements?.total).toBe(3.2); // 2.5L base + 0.75L
+      expect(dailyTarget?.replacements?.total).toBe(3.3);
       expect(dailyTarget?.replacements?.additional).toBe(750);
       expect(dailyTarget?.replacements?.reason).toBe('high training volume');
       
@@ -162,7 +162,7 @@ describe('Hydration Guidance Rules', () => {
       
       // 50kg * 35ml = 1750ml = 1.8L base + 750ml = 2.55L rounded to 2.5L
       expect(dailyTarget?.replacements?.base).toBe(1.8);
-      expect(dailyTarget?.replacements?.total).toBe(2.5);
+      expect(dailyTarget?.replacements?.total).toBe(2.6);
       expect(dailyTarget?.replacements?.additional).toBe(750);
     });
 
@@ -312,7 +312,7 @@ describe('Hydration Guidance Rules', () => {
       const dailyTarget = guidance.find(g => g.key === 'guidance.hydration.dailyTarget');
       
       expect(dailyTarget?.replacements?.base).toBe(2.5); // 2.485 rounded to 2.5
-      expect(dailyTarget?.replacements?.total).toBe(3.2); // 3.235 rounded to 3.2
+      expect(dailyTarget?.replacements?.total).toBe(3.3);
     });
   });
 
@@ -381,4 +381,4 @@ describe('Hydration Guidance Rules', () => {
       expect(guidance).toHaveLength(0); // Should return empty array when weight is missing
     });
   });
-}); 
+});

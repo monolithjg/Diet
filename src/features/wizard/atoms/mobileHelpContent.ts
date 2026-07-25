@@ -63,7 +63,7 @@ export const dietPreferencesHelp: HelpItem[] = [
   },
   {
     question: "Do sleep and stress really affect nutrition?",
-    answer: "Absolutely! Poor sleep increases hunger hormones and makes weight management harder. High stress elevates cortisol, which can increase appetite and promote fat storage, especially around the midsection.",
+    answer: "They can influence appetite, recovery, decision-making, and how consistently a plan feels manageable. We use these answers for behavior-level suggestions, not to alter your calorie target with a hormone formula.",
     category: "basic"
   },
   {
@@ -72,4 +72,3 @@ export const dietPreferencesHelp: HelpItem[] = [
     category: "troubleshooting"
   }
 ];
-

@@ -14,8 +14,8 @@ export interface HydrationContext {
  * Generate hydration guidance based on body weight and activity level
  * 
  * Rules:
- * - Base hydration: 35ml/kg body weight
- * - Activity adjustment: +500ml on training days
+ * - Starting range: 30-35ml/kg body weight
+ * - Activity adjustment is a prompt to account for sweat, not a prescription
  * - Climate considerations (future enhancement)
  */
 export function generateHydrationGuidance(ctx: HydrationContext): GuidanceMessage[] {
@@ -26,9 +26,8 @@ export function generateHydrationGuidance(ctx: HydrationContext): GuidanceMessag
     return guidance;
   }
   
-  // Calculate base hydration needs (35ml/kg)
-  const baseHydrationMl = Math.round(ctx.weightKg * 35);
-  const baseHydrationL = Math.round((baseHydrationMl / 1000) * 10) / 10; // Round to 1 decimal
+  const baseLowL = Math.round((ctx.weightKg * 30 / 1000) * 10) / 10;
+  const baseHighL = Math.round((ctx.weightKg * 35 / 1000) * 10) / 10;
   
   // Activity-based adjustments
   let additionalMl = 0;
@@ -51,8 +50,7 @@ export function generateHydrationGuidance(ctx: HydrationContext): GuidanceMessag
       break;
   }
   
-  const totalHydrationMl = baseHydrationMl + additionalMl;
-  const totalHydrationL = Math.round((totalHydrationMl / 1000) * 10) / 10;
+  const activityHighL = Math.round((baseHighL + additionalMl / 1000) * 10) / 10;
   
   // Base hydration guidance
   guidance.push({
@@ -60,10 +58,12 @@ export function generateHydrationGuidance(ctx: HydrationContext): GuidanceMessag
     type: 'info',
     category: 'hydration',
     replacements: {
-      total: totalHydrationL,
-      base: baseHydrationL,
-      additional: additionalMl,
-      reason: activityLevel
+      target: `${baseLowL}-${activityHighL}L`,
+      reason: activityLevel,
+      // Structured values retained for analytics and non-display consumers.
+      base: baseHighL,
+      total: activityHighL,
+      additional: additionalMl
     }
   });
   
@@ -75,7 +75,7 @@ export function generateHydrationGuidance(ctx: HydrationContext): GuidanceMessag
       category: 'hydration',
       replacements: {
         amount: additionalMl,
-        timing: 'during and post-workout'
+        timing: 'based on workout duration, climate, and measured sweat loss'
       }
     });
   }
@@ -93,4 +93,4 @@ export function generateHydrationGuidance(ctx: HydrationContext): GuidanceMessag
   }
   
   return guidance;
-} 
+}

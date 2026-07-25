@@ -53,23 +53,15 @@ function calculateProteinRecommendations(weightKg: number, goal: Goal) {
 }
 
 /**
- * Determine if intermittent fasting recommendations should be provided
- */
-function shouldRecommendIF(goal: Goal, workoutTime: WorkoutTime): boolean {
-  // IF is primarily beneficial for fat loss, and easier with PM workouts
-  return goal === 'loss' && workoutTime === 'pm';
-}
-
-/**
  * Generate meal timing guidance based on goal and workout schedule
  * 
  * Rules:
  * - Muscle gain: 20-30g protein + 0.5g/kg carbs 60min pre-workout
  * - Muscle gain: 20-40g protein + 1g/kg carbs within 2h post-workout
- * - Fat loss: Protein + caffeine optional 30min pre-workout
- * - Fat loss: 20g protein, ≤0.5g/kg carbs if <15% BF post-workout
+ * - Fat loss: A small protein-containing meal based on tolerance
+ * - Fat loss: Protein plus carbohydrates based on training demands
  * - Maintenance: Light mixed meal pre/post
- * - Consider intermittent fasting for fat loss with PM workouts
+ * - Meal frequency follows preference and adherence
  */
 export function generateMealTimingGuidance(ctx: MealTimingContext): GuidanceMessage[] {
   const guidance: GuidanceMessage[] = [];
@@ -103,8 +95,7 @@ export function generateMealTimingGuidance(ctx: MealTimingContext): GuidanceMess
       category: 'mealTiming',
       replacements: {
         protein: preWorkoutProtein,
-        timing: '30',
-        caffeine: 'optional'
+        timing: '30-90'
       }
     });
   } else {
@@ -175,28 +166,15 @@ export function generateMealTimingGuidance(ctx: MealTimingContext): GuidanceMess
       }
     });
   } else if (ctx.goal === 'loss') {
-    if (shouldRecommendIF(ctx.goal, ctx.workoutTime)) {
-      guidance.push({
-        key: 'guidance.mealTiming.frequencyFatLossIF',
-        type: 'info',
-        category: 'mealTiming',
-        replacements: {
-          method: '16:8 intermittent fasting',
-          benefit: 'appetite control and adherence',
-          timing: ctx.workoutTime === 'pm' ? 'train in fasted state or near end of eating window' : 'eat within 2-3 hours post-workout'
-        }
-      });
-    } else {
-      guidance.push({
-        key: 'guidance.mealTiming.frequencyFatLossRegular',
-        type: 'info',
-        category: 'mealTiming',
-        replacements: {
-          meals: '3-4',
-          reason: 'caloric control while maintaining energy'
-        }
-      });
-    }
+    guidance.push({
+      key: 'guidance.mealTiming.frequencyFatLossRegular',
+      type: 'info',
+      category: 'mealTiming',
+      replacements: {
+        meals: 'a schedule you can repeat',
+        reason: 'adherence, hunger control, and training quality'
+      }
+    });
   } else {
     guidance.push({
       key: 'guidance.mealTiming.frequencyMaintenance',
@@ -224,4 +202,4 @@ export function generateMealTimingGuidance(ctx: MealTimingContext): GuidanceMess
   }
   
   return guidance;
-} 
+}

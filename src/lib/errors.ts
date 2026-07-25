@@ -62,9 +62,9 @@ export class UnrealisticCalorieError extends Error {
 export const ValidationRanges = {
   weightKg: { min: 30, max: 300 },
   heightCm: { min: 100, max: 272 },
-  age: { min: 13, max: 120 },
+  age: { min: 18, max: 120 },
   bodyFatPct: { min: 3, max: 75 },
   manualRmr: { min: 800, max: 4000 },
   tefPct: { min: 0.05, max: 0.20 },
   goalPct: { min: -0.40, max: 0.20 }
-} as const; 
+} as const;

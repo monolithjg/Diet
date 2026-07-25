@@ -100,7 +100,7 @@ export function StressLevelScale({
       )}
 
       <div className="flex gap-2 text-xs text-muted-foreground">
-        <Icon name="info" className="h-4 w-4 flex-shrink-0" /> Stress affects cortisol levels, which can impact metabolism and recovery
+        <Icon name="info" className="h-4 w-4 flex-shrink-0" /> High stress can affect sleep, appetite, recovery, and plan consistency
       </div>
     </div>
   );

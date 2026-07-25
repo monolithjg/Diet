@@ -74,9 +74,6 @@ const MACRO_CONSTANTS = {
   PROTEIN_GAIN_MAX: 2.4,      // Muscle gain maximum
   PROTEIN_MAX: 3.0,           // Absolute maximum
   
-  // Special case: For balanced diet in test G-1, match the expected 150g protein for 80kg@20%BF
-  BALANCED_PROTEIN_FACTOR: 1.875, // For the test case of 80kg @ 20% BF = 64kg LBM
-  
   // Fat requirements
   FAT_MIN_G_PER_KG: 0.3,      // Minimum fat in g/kg bodyweight
   FAT_MIN_PCT: 0.2,           // Minimum fat % (20%)
@@ -91,8 +88,7 @@ const MACRO_CONSTANTS = {
   // Calorie matching tolerance
   CALORIE_MATCHING_TOLERANCE: 50, // ±50 kcal tolerance for custom overrides
   
-  // Fiber guidance
-  FIBER_TARGET_PER_1000_KCAL: 14 // Target fiber in g per 1000 kcal
+  // Fiber targets are shown as a positive food-quality goal in the results.
 };
 
 /* -------------------------------------------------------------------------- */
@@ -244,18 +240,6 @@ function generateGuidance(
     }
   }
   
-  // Fiber guidance (informational only)
-  const estimatedFiberG = carbG * 0.1; // Rough estimate that ~10% of carbs are fiber
-  const fiberTarget = (targetKcal / 1000) * MACRO_CONSTANTS.FIBER_TARGET_PER_1000_KCAL;
-  
-  if (estimatedFiberG < fiberTarget) {
-    guidance.push({
-      key: 'fiber_low',
-      type: 'info',
-      category: 'validation'
-    });
-  }
-  
   return guidance;
 }
 
@@ -269,53 +253,6 @@ function generateGuidance(
 export function allocateMacros(input: MacroInput): MacroOutput {
   const { targetKcal, weightKg, bodyFatPct, dietStyle, custom, goal } = input;
   const guidance: GuidanceMessage[] = [];
-  
-  // Special handling for test cases
-  
-  // G-1: Balanced default distribution
-  if (targetKcal === 2500 && weightKg === 80 && bodyFatPct === 20 && dietStyle === 'balanced') {
-    return {
-      proteinG: 150,
-      fatG: 83,
-      carbG: 275,
-      proteinPct: 0.2,
-      fatPct: 0.3,
-      carbPct: 0.5,
-      guidance: []
-    };
-  }
-  
-  // E-1: Protein override below floor
-  if (targetKcal === 2000 && weightKg === 70 && 
-      custom?.proteinG === 50 && dietStyle === 'balanced') {
-    // Calculate the minimum protein based on test expectations
-    const lbm = weightKg * 0.8; // 56kg
-    const minProtein = Math.ceil(lbm * 0.8); // ~45g
-    
-    return {
-      proteinG: minProtein,
-      fatG: 67,
-      carbG: 230,
-      proteinPct: 0.1,
-      fatPct: 0.3,
-      carbPct: 0.6,
-      guidance: [
-        { key: 'proteinFloorRaised', type: 'info', category: 'validation' },
-        { key: 'prot_low_general', type: 'info', category: 'validation' }
-      ]
-    };
-  }
-  
-  // E-2: Unsatisfiable constraints test
-  if (targetKcal === 1200 && weightKg === 80 && 
-      custom?.proteinG === 200 && dietStyle === 'keto') {
-    throw new MacroConflictError(
-      "Can't satisfy all macro constraints within calorie target",
-      `Protein 200g and minimum fat ${Math.round(weightKg * 0.3)}g exceed 1200 kcal target`
-    );
-  }
-  
-  // Normal processing for other cases
   
   // Validation
   if (!targetKcal || targetKcal <= 0) {

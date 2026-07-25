@@ -4,7 +4,7 @@ import { generateContextualGuidance } from '../cge/engine';
 import type { CGEInput } from '../cge/engine';
 import type { GuidanceMessage, MacroOutput } from '../macros';
 import type { StoreData, StoreState } from './types';
-import { mapActivityLevelToPal, normalizeDietStyle, normalizeGoal, normalizeSex } from './calculations';
+import { mapActivityLevelToPal, normalizeDietStyle, normalizeGoal } from './calculations';
 
 export function macroPlanToMacroOutput(
   plan: MacroPlan,
@@ -36,7 +36,7 @@ export function constructGuidanceInput(state: StoreData): CGEInput | null {
     sleepHours: user.sleepHours,
     stressLevel: user.stressLevel,
     weightKg: user.weightKg,
-    sex: normalizeSex(user.sex),
+    sex: user.sex,
     age: user.age,
     bodyFatPct: user.bodyFatPct
   };
@@ -56,4 +56,3 @@ export function scheduleGuidanceUpdate(getState: () => StoreState): void {
     guidanceTimeout = null;
   }, 250);
 }
-

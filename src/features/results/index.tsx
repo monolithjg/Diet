@@ -15,6 +15,7 @@ export default function Results() {
   };
   const { derivedMetrics, macroPlan } = useStore(state => state.calc);
   const { guidance } = useStore(state => state.ui);
+  const refreshGuidance = useStore(state => state.refreshGuidance);
   const getSharedResultsFromLocation = (): ShareableResults | null => {
     if (typeof window === 'undefined') {
       return null;
@@ -36,13 +37,17 @@ export default function Results() {
     setSharedResults(getSharedResultsFromLocation());
   }, []);
 
+  useEffect(() => {
+    if (!sharedResults && derivedMetrics.tdee > 0 && macroPlan.targetCalories > 0) {
+      refreshGuidance();
+    }
+  }, [sharedResults, derivedMetrics.tdee, macroPlan.targetCalories, refreshGuidance]);
+
   // Use shared results if available, otherwise use from store
   const metrics = sharedResults?.derivedMetrics || derivedMetrics;
   const macros = sharedResults?.macroPlan || macroPlan;
 
-  // For shared results, we don't have guidance data, so we'll show empty guidance
-  // In a future enhancement, we could serialize guidance with the results
-  const displayGuidance = sharedResults ? [] : guidance;
+  const displayGuidance = sharedResults ? (sharedResults.guidance ?? []) : guidance;
 
   // Check if we have valid data to display
   const hasValidData = metrics?.rmr > 0 && macros?.targetCalories > 0;

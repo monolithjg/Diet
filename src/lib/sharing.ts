@@ -1,5 +1,6 @@
 import type { DerivedMetrics } from "../models/DerivedMetrics";
 import type { MacroPlan } from "../models/MacroPlan";
+import type { GuidanceMessage } from "./macros";
 
 /**
  * Shareable results data structure (excludes PII)
@@ -7,6 +8,7 @@ import type { MacroPlan } from "../models/MacroPlan";
 export type ShareableResults = {
   derivedMetrics: DerivedMetrics;
   macroPlan: MacroPlan;
+  guidance?: GuidanceMessage[];
   timestamp: number;
 };
 
@@ -15,11 +17,13 @@ export type ShareableResults = {
  */
 export function serializeResults(
   derivedMetrics: DerivedMetrics,
-  macroPlan: MacroPlan
+  macroPlan: MacroPlan,
+  guidance: GuidanceMessage[] = []
 ): string {
   const shareableData: ShareableResults = {
     derivedMetrics,
     macroPlan,
+    guidance,
     timestamp: Date.now(),
   };
 
@@ -65,4 +69,4 @@ export function deserializeResults(base64Str: string): ShareableResults | null {
     console.error('Failed to deserialize results:', error);
     return null;
   }
-} 
+}

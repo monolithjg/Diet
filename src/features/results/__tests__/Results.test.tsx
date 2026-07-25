@@ -61,9 +61,14 @@ describe('Results', () => {
     }
   };
 
-  const mockUseStore = (state: typeof mockStoreState) => {
+  const mockRefreshGuidance = vi.fn();
+
+  const mockUseStore = (state: typeof mockStoreState | {
+    calc: typeof mockStoreState.calc;
+    ui: { guidance: typeof mockStoreState.ui.guidance };
+  }) => {
     vi.mocked(useStore).mockImplementation((selector) => {
-      return selector(state as unknown as StoreState);
+      return selector({ ...state, refreshGuidance: mockRefreshGuidance } as unknown as StoreState);
     });
   };
 
@@ -82,9 +87,9 @@ describe('Results', () => {
     render(<MemoryRouter><Results /></MemoryRouter>);
 
     expect(screen.getByText('Your Personalized Nutrition Plan')).toBeInTheDocument();
-    expect(screen.getByText('1500')).toBeInTheDocument(); // RMR
-    expect(screen.getByText('2200')).toBeInTheDocument(); // TDEE
-    expect(screen.getByText('2000')).toBeInTheDocument(); // Target calories
+    expect(screen.getByText('1,500')).toBeInTheDocument(); // RMR
+    expect(screen.getByText('2,200')).toBeInTheDocument(); // TDEE
+    expect(screen.getByText('2,000')).toBeInTheDocument(); // Target calories
   });
 
   it('renders no results state when no valid data is available', () => {
@@ -187,9 +192,9 @@ describe('Results', () => {
     render(<MemoryRouter><Results /></MemoryRouter>);
 
     // Should display shared results instead of store data
-    expect(screen.getByText('1600')).toBeInTheDocument(); // Shared RMR instead of 1500
-    expect(screen.getByText('2400')).toBeInTheDocument(); // Shared TDEE instead of 2200
-    expect(screen.getByText('2200')).toBeInTheDocument(); // Shared target instead of 2000
+    expect(screen.getByText('1,600')).toBeInTheDocument(); // Shared RMR instead of 1500
+    expect(screen.getByText('2,400')).toBeInTheDocument(); // Shared TDEE instead of 2200
+    expect(screen.getByText('2,200')).toBeInTheDocument(); // Shared target instead of 2000
 
     // Should show shared result indicator
     expect(screen.getByText(/Generated:/)).toBeInTheDocument();
@@ -202,9 +207,9 @@ describe('Results', () => {
     render(<MemoryRouter><Results /></MemoryRouter>);
 
     // Should display store data since deserialization failed
-    expect(screen.getByText('1500')).toBeInTheDocument(); // Store RMR
-    expect(screen.getByText('2200')).toBeInTheDocument(); // Store TDEE
-    expect(screen.getByText('2000')).toBeInTheDocument(); // Store target calories
+    expect(screen.getByText('1,500')).toBeInTheDocument(); // Store RMR
+    expect(screen.getByText('2,200')).toBeInTheDocument(); // Store TDEE
+    expect(screen.getByText('2,000')).toBeInTheDocument(); // Store target calories
   });
 
   it('calls deserializeResults with correct parameter', () => {
@@ -215,7 +220,7 @@ describe('Results', () => {
     expect(sharing.deserializeResults).toHaveBeenCalledWith('test-encoded-data');
   });
 
-  it('does not show guidance for shared results', () => {
+  it('handles legacy shared results without embedded guidance', () => {
     const sharedResults = {
       derivedMetrics: {
         rmr: 1600,
@@ -243,7 +248,7 @@ describe('Results', () => {
 
     // For shared results, guidance should be empty
     // We can check this by verifying the ActionPlan shows the empty state
-    expect(screen.getByText('Great job!')).toBeInTheDocument();
+    expect(screen.getByText('No action items available')).toBeInTheDocument();
   });
 
   it('shows store guidance for non-shared results', () => {
@@ -318,7 +323,7 @@ describe('Results', () => {
       ui: { guidance: [] }
     };
 
-    vi.mocked(useStore).mockReturnValue(partialState);
+    mockUseStore(partialState);
 
     render(<MemoryRouter><Results /></MemoryRouter>);
 
@@ -349,7 +354,7 @@ describe('Results', () => {
       ui: { guidance: [] }
     };
 
-    vi.mocked(useStore).mockReturnValue(partialState);
+    mockUseStore(partialState);
 
     render(<MemoryRouter><Results /></MemoryRouter>);
 
@@ -400,7 +405,7 @@ describe('Results', () => {
       timestamp: Date.now()
     };
 
-    vi.mocked(useStore).mockReturnValue(emptyState);
+    mockUseStore(emptyState);
     mockLocation.search = '?d=encoded-shared-data';
     vi.mocked(sharing.deserializeResults).mockReturnValue(sharedResults);
 
@@ -408,6 +413,6 @@ describe('Results', () => {
 
     // Should show results dashboard even though store is empty
     expect(screen.getByText('Your Personalized Nutrition Plan')).toBeInTheDocument();
-    expect(screen.getByText('1600')).toBeInTheDocument(); // Shared RMR
+    expect(screen.getByText('1,600')).toBeInTheDocument(); // Shared RMR
   });
 }); 

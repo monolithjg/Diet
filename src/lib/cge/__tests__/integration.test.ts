@@ -69,8 +69,8 @@ describe('CGE Integration Tests - Meal Timing', () => {
       expect(postWorkout).toBeDefined();
       expect(postWorkout?.replacements?.carbs).toBe(35); // Math.round(0.5 * 70)
       
-      // Should recommend IF for PM workout
-      const frequency = mealTimingMessages.find(msg => msg.key === 'guidance.mealTiming.frequencyFatLossIF');
+      // Meal frequency remains preference-led for PM workouts.
+      const frequency = mealTimingMessages.find(msg => msg.key === 'guidance.mealTiming.frequencyFatLossRegular');
       expect(frequency).toBeDefined();
     });
 
@@ -140,4 +140,4 @@ describe('CGE Integration Tests - Meal Timing', () => {
       expect(hasMealTiming).toBe(true);
     });
   });
-}); 
+});
